@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="dark" name="color-scheme"/>
+<meta content="dark" name="supported-color-schemes"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🐔&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background-color: #0c0c0c;
+    color: #f0ece8;
+  }
+  :root {
+    color-scheme: dark;
+    --bg:     #0c0c0c;
+    --card:   #1a1a1a;
+    --border: rgba(255,255,255,0.22);
+    --text:   #f0ece8;
+    --muted:  #aaa;
+    --mid:    #ccc;
+    --font:   'Space Mono', monospace;
+  }
+
+  body { min-height: 100vh; background: var(--bg); color: var(--text); forced-color-adjust: none; font-family: var(--font); padding: 36px 16px; }
+  .container { max-width: 540px; margin: 0 auto; }
+
+  /* Header */
+  .header { text-align: center; margin-bottom: 40px; }
+  .header .emoji { font-size: 48px; margin-bottom: 8px; }
+  .header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .header p { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; }
+  .header-line { width: 40px; height: 1px; background: var(--border); margin: 16px auto 0; }
+
+  /* Cards */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 2px; padding: 22px 20px; margin-bottom: 16px; }
+  .card-title { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mid); margin-bottom: 16px; }
+
+  /* Sliders */
+  .slider-group { margin-bottom: 16px; }
+  .slider-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+  .slider-label { font-size: 12px; color: var(--mid); }
+  .slider-value { font-size: 14px; font-weight: 700; color: var(--text); }
+  input[type="range"] { width: 100%; accent-color: #fff; background: transparent; cursor: pointer; }
+  .efficiency-note { font-size: 10px; color: var(--mid); text-align: right; margin-top: -6px; margin-bottom: 4px; }
+
+  /* Stats */
+  .stats-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .stats-row:last-of-type { margin-bottom: 0; }
+  .stat-card { background: var(--bg); border: 1px solid var(--border); border-radius: 2px; padding: 16px 14px; flex: 1; min-width: 130px; text-align: center; }
+  .stat-label { font-size: 9px; color: var(--mid); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; }
+  .stat-value { font-size: 26px; font-weight: 700; line-height: 1.1; color: var(--text); }
+  .stat-unit { font-size: 12px; color: var(--mid); margin-top: 4px; }
+  .stat-sub { font-size: 10px; color: var(--mid); margin-top: 5px; }
+
+  /* Thermometer */
+  .thermo-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.06); border-radius: 1px; overflow: hidden; margin-top: 14px; }
+  .thermo-fill { height: 100%; border-radius: 1px; background: #fff; transition: width 0.4s ease; }
+
+  /* Comparisons — chart : on garde les couleurs */
+  .comp-item { margin-bottom: 10px; }
+  .comp-header { display: flex; justify-content: space-between; font-size: 11px; color: var(--mid); margin-bottom: 4px; }
+  .comp-val { color: var(--text); }
+  .comp-bg { width: 100%; height: 5px; background: rgba(255,255,255,0.05); border-radius: 1px; overflow: hidden; }
+  .comp-fill { height: 100%; border-radius: 1px; transition: width 0.5s ease; }
+
+  /* Facts */
+  .facts p { font-size: 12px; color: var(--text); opacity: 0.8; line-height: 1.8; margin-bottom: 10px; }
+  .facts p:last-child { margin-bottom: 0; }
+  .facts strong { color: var(--text); }
+  .facts .formulas { font-size: 11px; color: var(--muted); }
+
+  /* Footer */
+  .footer { text-align: center; font-size: 11px; color: var(--mid); padding: 20px 0 28px; letter-spacing: 0.06em; line-height: 2; border-top: 1px solid var(--border); margin-top: 8px; }
+  .footer a { color: var(--mid); text-decoration: none; transition: color 0.2s; }
+  .footer a:hover { color: var(--text); }
+</style>
+<title>Cuire un poulet à la gifle · Simulateur de physique · Prof. Bucella</title><meta content="Simulateur de thermodynamique : à quelle vitesse faut-il gifler un poulet pour le cuire ? Calcul de l'énergie cinétique et de la vitesse de la main. Prof. Fabrizio Bucella, ULB." name="description"/><meta content="Prof. Fabrizio Bucella" name="author"/><meta content="physique, simulateur, Prof. Bucella, ULB, science, lasciencepeuttout" name="keywords"/><meta content="website" property="og:type"/><meta content="Prof. Fabrizio Bucella" property="og:site_name"/><meta content="Cuire un poulet à la gifle · Simulateur de physique · Prof. Bucella" property="og:title"/><meta content="Simulateur de thermodynamique : à quelle vitesse faut-il gifler un poulet pour le cuire ? Calcul de l'énergie cinétique et de la vitesse de la main. Prof. Fabrizio Bucella, ULB." property="og:description"/><meta content="https://poulet-gifle-profbucella.netlify.app/" property="og:url"/><meta content="https://poulet-gifle-profbucella.netlify.app/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="Cuire un poulet à la gifle — Simulateur du Prof. Fabrizio Bucella" property="og:image:alt"/><meta content="fr_FR" property="og:locale"/><meta content="summary_large_image" name="twitter:card"/><meta content="Cuire un poulet à la gifle · Simulateur de physique · Prof. Bucella" name="twitter:title"/><meta content="Simulateur de thermodynamique : à quelle vitesse faut-il gifler un poulet pour le cuire ? Calcul de l'énergie cinétique et de la vitesse de la main. Prof. Fabrizio Bucella, ULB." name="twitter:description"/><meta content="https://poulet-gifle-profbucella.netlify.app/og-image.png" name="twitter:image"/><meta content="Cuire un poulet à la gifle — Simulateur du Prof. Fabrizio Bucella" name="twitter:image:alt"/><meta content="@fabrizio_bucella" name="twitter:creator"/><link href="https://poulet-gifle-profbucella.netlify.app/" rel="canonical"/></head>
+<body>
+<div class="container">
+<div class="header">
+<div class="emoji">🐔💥✋</div>
+<h1>Cuire un poulet à la gifle</h1>
+<p>Simulateur de thermodynamique par énergie cinétique</p>
+<div class="header-line"></div>
+</div>
+<div class="card">
+<div class="card-title">// Paramètres</div>
+<div class="slider-group">
+<div class="slider-header"><span class="slider-label">🐓 Masse du poulet</span><span class="slider-value" id="v-chicken">2,0 kg</span></div>
+<input id="s-chicken" max="8" min="0.5" oninput="update()" step="0.1" type="range" value="2.0"/>
+</div>
+<div class="slider-group">
+<div class="slider-header"><span class="slider-label">✋ Masse de la main</span><span class="slider-value" id="v-hand">0,70 kg</span></div>
+<input id="s-hand" max="2" min="0.2" oninput="update()" step="0.05" type="range" value="0.7"/>
+</div>
+<div class="slider-group">
+<div class="slider-header"><span class="slider-label">❄️ Température initiale</span><span class="slider-value" id="v-tinit">25 °C</span></div>
+<input id="s-tinit" max="40" min="-20" oninput="update()" step="1" type="range" value="25"/>
+</div>
+<div class="slider-group">
+<div class="slider-header"><span class="slider-label">🔥 Température cible</span><span class="slider-value" id="v-ttarget">165 °C</span></div>
+<input id="s-ttarget" max="250" min="60" oninput="update()" step="5" type="range" value="165"/>
+</div>
+<div class="slider-group">
+<div class="slider-header"><span class="slider-label">⚡ Efficacité du transfert</span><span class="slider-value" id="v-eff">100 %</span></div>
+<input id="s-eff" max="1" min="0.1" oninput="update()" step="0.05" type="range" value="1"/>
+</div>
+<div class="efficiency-note" id="eff-note">100% de l'énergie cinétique → chaleur</div>
+</div>
+<div class="card">
+<div class="card-title">// Résultats</div>
+<div class="stats-row">
+<div class="stat-card">
+<div class="stat-label">Vitesse requise</div>
+<div class="stat-value" id="r-speed">—</div>
+<div class="stat-unit">m/s</div>
+<div class="stat-sub" id="r-speed-kmh">—</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Nombre de Mach</div>
+<div class="stat-value" id="r-mach">—</div>
+<div class="stat-unit" id="r-mach-label">—</div>
+<div class="stat-sub" id="r-mach-sub">—</div>
+</div>
+</div>
+<div class="stats-row">
+<div class="stat-card">
+<div class="stat-label">Énergie nécessaire</div>
+<div class="stat-value" id="r-energy">—</div>
+<div class="stat-unit">joules</div>
+<div class="stat-sub" id="r-energy-kcal">—</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">ΔT</div>
+<div class="stat-value" id="r-dt">—</div>
+<div class="stat-unit">°C</div>
+</div>
+</div>
+<div class="thermo-bg"><div class="thermo-fill" id="thermo-fill" style="width:0%"></div></div>
+</div>
+<div class="card">
+<div class="card-title">// Comparaisons de vitesse</div>
+<div id="comparisons"></div>
+</div>
+<div class="card">
+<div class="card-title">// Le saviez-vous ?</div>
+<div class="facts">
+<p id="fact-slaps">—</p>
+<p id="fact-sonic">—</p>
+<p>📐 <strong>Formules utilisées :</strong><br/>
+<span class="formulas">Q = m<sub>poulet</sub> × c × ΔT  |  KE = ½ × m<sub>main</sub> × v²</span>
+</p>
+</div>
+</div>
+</div>
+<script>
+const C = 3350;
+const SOUND = 343;
+
+function fr(n, dec) { return n.toFixed(dec).replace('.', ','); }
+function fmt(n) {
+  if (n >= 1e6) return fr(n/1e6, 2) + ' M';
+  if (n >= 1e3) return fr(n/1e3, 1) + 'k';
+  return fr(n, 1);
+}
+
+// Graphique comparaisons : couleurs fonctionnelles conservées
+const refs = [
+  { label: '🥊 Coup de poing pro', value: 15,   color: 'rgba(255,255,255,0.35)' },
+  { label: '⚾ Balle de baseball', value: 42,   color: 'rgba(255,255,255,0.45)' },
+  { label: '🔫 Balle de fusil',    value: 960,  color: 'rgba(255,255,255,0.6)'  },
+  { label: '🐔 Vitesse nécessaire',value: 0,    color: '#ffffff'                 },
+  { label: '🚀 Navette spatiale',  value: 7800, color: 'rgba(255,255,255,0.5)'  },
+];
+
+function buildComparisons(chickenV) {
+  refs[3].value = chickenV;
+  const max = Math.max(...refs.map(r => r.value)) * 1.1;
+  const container = document.getElementById('comparisons');
+  container.innerHTML = '';
+  refs.forEach(r => {
+    const ratio = Math.min(r.value / max, 1) * 100;
+    container.innerHTML += `<div class="comp-item">
+      <div class="comp-header"><span>${r.label}</span><span class="comp-val">${fmt(r.value)} m/s</span></div>
+      <div class="comp-bg"><div class="comp-fill" style="width:${ratio}%;background:${r.color}"></div></div>
+    </div>`;
+  });
+}
+
+function update() {
+  const mChicken = parseFloat(document.getElementById('s-chicken').value);
+  const mHand    = parseFloat(document.getElementById('s-hand').value);
+  const tInit    = parseFloat(document.getElementById('s-tinit').value);
+  const tTarget  = parseFloat(document.getElementById('s-ttarget').value);
+  const eff      = parseFloat(document.getElementById('s-eff').value);
+
+  document.getElementById('v-chicken').textContent = fr(mChicken,1) + ' kg';
+  document.getElementById('v-hand').textContent    = fr(mHand,2)    + ' kg';
+  document.getElementById('v-tinit').textContent   = tInit          + ' °C';
+  document.getElementById('v-ttarget').textContent = tTarget        + ' °C';
+  document.getElementById('v-eff').textContent     = (eff*100).toFixed(0) + ' %';
+  document.getElementById('eff-note').textContent  = (eff*100).toFixed(0) + '% de l\'énergie cinétique → chaleur';
+
+  const dT   = tTarget - tInit;
+  const Q    = mChicken * C * dT;
+  const Qeff = Q / eff;
+  const v    = Math.sqrt((2 * Qeff) / mHand);
+  const mach = v / SOUND;
+
+  document.getElementById('r-speed').textContent       = fmt(v);
+  document.getElementById('r-speed-kmh').textContent   = fmt(v*3.6) + ' km/h';
+  document.getElementById('r-mach').textContent        = fr(mach,1);
+  document.getElementById('r-mach-label').textContent  = mach >= 1 ? 'supersonique !' : 'subsonique';
+  document.getElementById('r-mach-sub').textContent    = fr(mach,1) + '× vitesse du son';
+  document.getElementById('r-energy').textContent      = fmt(Qeff);
+  document.getElementById('r-energy-kcal').textContent = fr(Qeff/4184,1) + ' kcal';
+  document.getElementById('r-dt').textContent          = dT;
+
+  const thermoRatio = Math.min((tInit + dT*0.7) / tTarget, 1);
+  document.getElementById('thermo-fill').style.width = (thermoRatio*100) + '%';
+
+  buildComparisons(v);
+
+  const slapCount = Math.ceil(Q / (0.5 * mHand * 225));
+  document.getElementById('fact-slaps').innerHTML =
+    '🤔 Avec une gifle normale (~15 m/s), il faudrait environ <strong>' +
+    slapCount.toLocaleString('fr-FR') + '</strong> gifles pour cuire ce poulet.';
+  document.getElementById('fact-sonic').textContent = mach >= 1
+    ? '💥 À cette vitesse, votre main créerait une onde de choc supersonique — le bang sonique cuirait probablement aussi les voisins.'
+    : '🌪️ Même si c\'est subsonique, l\'impact vaporiserait probablement le poulet plutôt que de le cuire.';
+}
+update();
+</script>
+<footer style="margin-top:48px;padding:32px 24px 24px;border-top:1px solid #2a2a2a;font-family:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;color:#c4c4c4;text-align:center;"><div style="margin-bottom: 18px; font-style: italic; font-size: 12px; opacity:0.8; color:#b8b8b8;">Aucun poulet n'a été maltraité durant cette simulation. Probablement.</div>
+<div style="margin-bottom:8px;">
+<strong style="color:#f0ece8;font-weight:700;"><a href="https://www.instagram.com/fabrizio.bucella" style="color:#f0ece8;font-weight:700;; text-decoration: none; color: inherit;">Prof. Fabrizio Bucella</a></strong>
+<span style="opacity:0.85;"> · ULB · Physicien</span>
+</div>
+<div style="margin-bottom:12px;">
+<span style="margin:0 6px;">#lasciencepeuttout</span>
+<span style="opacity:0.4;">·</span>
+<span style="margin:0 6px;">#salukes</span>
+</div>
+<div>
+<a href="https://linktr.ee/fabrizio.bucella" style="color:#d0d0d0;text-decoration:none;border-bottom:1px dotted #777;">← Tous mes simulateurs</a>
+</div>
+</footer></body></html>

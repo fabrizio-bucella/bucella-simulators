@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2214.19%22%20cy%3D%2217.66%22%20r%3D%222.00%22%20fill%3D%22%231d9e75%22%2F%3E%3Ccircle%20cx%3D%2216.30%22%20cy%3D%2212.54%22%20r%3D%222.00%22%20fill%3D%22%23239b72%22%2F%3E%3Ccircle%20cx%3D%2218.59%22%20cy%3D%2219.38%22%20r%3D%222.00%22%20fill%3D%22%232a986f%22%2F%3E%3Ccircle%20cx%3D%2211.16%22%20cy%3D%2215.14%22%20r%3D%222.00%22%20fill%3D%22%2331966d%22%2F%3E%3Ccircle%20cx%3D%2220.64%22%20cy%3D%2213.05%22%20r%3D%222.00%22%20fill%3D%22%2338936a%22%2F%3E%3Ccircle%20cx%3D%2214.44%22%20cy%3D%2221.81%22%20r%3D%222.00%22%20fill%3D%22%233f9168%22%2F%3E%3Ccircle%20cx%3D%2213.00%22%20cy%3D%2210.23%22%20r%3D%222.00%22%20fill%3D%22%23468e65%22%2F%3E%3Ccircle%20cx%3D%2222.53%22%20cy%3D%2218.38%22%20r%3D%222.00%22%20fill%3D%22%234d8c63%22%2F%3E%3Ccircle%20cx%3D%229.19%22%20cy%3D%2218.81%22%20r%3D%222.00%22%20fill%3D%22%23548960%22%2F%3E%3Ccircle%20cx%3D%2219.29%22%20cy%3D%228.96%22%20r%3D%222.00%22%20fill%3D%22%235b875e%22%2F%3E%3Ccircle%20cx%3D%2218.44%22%20cy%3D%2223.77%22%20r%3D%222.00%22%20fill%3D%22%2362845b%22%2F%3E%3Ccircle%20cx%3D%228.64%22%20cy%3D%2211.73%22%20r%3D%222.00%22%20fill%3D%22%23698258%22%2F%3E%3Ccircle%20cx%3D%2224.65%22%20cy%3D%2214.10%22%20r%3D%222.00%22%20fill%3D%22%23707f56%22%2F%3E%3Ccircle%20cx%3D%2210.71%22%20cy%3D%2223.52%22%20r%3D%222.00%22%20fill%3D%22%23777d53%22%2F%3E%3Ccircle%20cx%3D%2214.78%22%20cy%3D%226.56%22%20r%3D%222.00%22%20fill%3D%22%237d7a51%22%2F%3E%3Ccircle%20cx%3D%2223.51%22%20cy%3D%2222.33%22%20r%3D%222.00%22%20fill%3D%22%2384784e%22%2F%3E%3Ccircle%20cx%3D%225.88%22%20cy%3D%2216.42%22%20r%3D%222.00%22%20fill%3D%22%238b754c%22%2F%3E%3Ccircle%20cx%3D%2223.39%22%20cy%3D%228.65%22%20r%3D%222.00%22%20fill%3D%22%23927349%22%2F%3E%3Ccircle%20cx%3D%2215.51%22%20cy%3D%2226.70%22%20r%3D%222.00%22%20fill%3D%22%23997047%22%2F%3E%3Ccircle%20cx%3D%228.96%22%20cy%3D%227.56%22%20r%3D%222.00%22%20fill%3D%22%23a06e44%22%2F%3E%3Ccircle%20cx%3D%2227.16%22%20cy%3D%2217.50%22%20r%3D%222.00%22%20fill%3D%22%23a76b41%22%2F%3E%3Ccircle%20cx%3D%226.54%22%20cy%3D%2222.58%22%20r%3D%222.00%22%20fill%3D%22%23ae693f%22%2F%3E%3Ccircle%20cx%3D%2218.59%22%20cy%3D%224.51%22%20r%3D%222.00%22%20fill%3D%22%23b5663c%22%2F%3E%3Ccircle%20cx%3D%2221.98%22%20cy%3D%2226.44%22%20r%3D%222.00%22%20fill%3D%22%23bc643a%22%2F%3E%3Ccircle%20cx%3D%224.30%22%20cy%3D%2212.27%22%20r%3D%222.00%22%20fill%3D%22%23c36137%22%2F%3E%3Ccircle%20cx%3D%2227.37%22%20cy%3D%2210.75%22%20r%3D%222.00%22%20fill%3D%22%23ca5f35%22%2F%3E%3Ccircle%20cx%3D%2211.07%22%20cy%3D%2227.78%22%20r%3D%222.00%22%20fill%3D%22%23d15c32%22%2F%3E%3Ccircle%20cx%3D%2211.60%22%20cy%3D%223.77%22%20r%3D%222.00%22%20fill%3D%22%23d85a30%22%2F%3E%3C%2Fsvg%3E" rel="icon" type="image/svg+xml"/>
+<link href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2214.19%22%20cy%3D%2217.66%22%20r%3D%222.00%22%20fill%3D%22%231d9e75%22%2F%3E%3Ccircle%20cx%3D%2216.30%22%20cy%3D%2212.54%22%20r%3D%222.00%22%20fill%3D%22%23239b72%22%2F%3E%3Ccircle%20cx%3D%2218.59%22%20cy%3D%2219.38%22%20r%3D%222.00%22%20fill%3D%22%232a986f%22%2F%3E%3Ccircle%20cx%3D%2211.16%22%20cy%3D%2215.14%22%20r%3D%222.00%22%20fill%3D%22%2331966d%22%2F%3E%3Ccircle%20cx%3D%2220.64%22%20cy%3D%2213.05%22%20r%3D%222.00%22%20fill%3D%22%2338936a%22%2F%3E%3Ccircle%20cx%3D%2214.44%22%20cy%3D%2221.81%22%20r%3D%222.00%22%20fill%3D%22%233f9168%22%2F%3E%3Ccircle%20cx%3D%2213.00%22%20cy%3D%2210.23%22%20r%3D%222.00%22%20fill%3D%22%23468e65%22%2F%3E%3Ccircle%20cx%3D%2222.53%22%20cy%3D%2218.38%22%20r%3D%222.00%22%20fill%3D%22%234d8c63%22%2F%3E%3Ccircle%20cx%3D%229.19%22%20cy%3D%2218.81%22%20r%3D%222.00%22%20fill%3D%22%23548960%22%2F%3E%3Ccircle%20cx%3D%2219.29%22%20cy%3D%228.96%22%20r%3D%222.00%22%20fill%3D%22%235b875e%22%2F%3E%3Ccircle%20cx%3D%2218.44%22%20cy%3D%2223.77%22%20r%3D%222.00%22%20fill%3D%22%2362845b%22%2F%3E%3Ccircle%20cx%3D%228.64%22%20cy%3D%2211.73%22%20r%3D%222.00%22%20fill%3D%22%23698258%22%2F%3E%3Ccircle%20cx%3D%2224.65%22%20cy%3D%2214.10%22%20r%3D%222.00%22%20fill%3D%22%23707f56%22%2F%3E%3Ccircle%20cx%3D%2210.71%22%20cy%3D%2223.52%22%20r%3D%222.00%22%20fill%3D%22%23777d53%22%2F%3E%3Ccircle%20cx%3D%2214.78%22%20cy%3D%226.56%22%20r%3D%222.00%22%20fill%3D%22%237d7a51%22%2F%3E%3Ccircle%20cx%3D%2223.51%22%20cy%3D%2222.33%22%20r%3D%222.00%22%20fill%3D%22%2384784e%22%2F%3E%3Ccircle%20cx%3D%225.88%22%20cy%3D%2216.42%22%20r%3D%222.00%22%20fill%3D%22%238b754c%22%2F%3E%3Ccircle%20cx%3D%2223.39%22%20cy%3D%228.65%22%20r%3D%222.00%22%20fill%3D%22%23927349%22%2F%3E%3Ccircle%20cx%3D%2215.51%22%20cy%3D%2226.70%22%20r%3D%222.00%22%20fill%3D%22%23997047%22%2F%3E%3Ccircle%20cx%3D%228.96%22%20cy%3D%227.56%22%20r%3D%222.00%22%20fill%3D%22%23a06e44%22%2F%3E%3Ccircle%20cx%3D%2227.16%22%20cy%3D%2217.50%22%20r%3D%222.00%22%20fill%3D%22%23a76b41%22%2F%3E%3Ccircle%20cx%3D%226.54%22%20cy%3D%2222.58%22%20r%3D%222.00%22%20fill%3D%22%23ae693f%22%2F%3E%3Ccircle%20cx%3D%2218.59%22%20cy%3D%224.51%22%20r%3D%222.00%22%20fill%3D%22%23b5663c%22%2F%3E%3Ccircle%20cx%3D%2221.98%22%20cy%3D%2226.44%22%20r%3D%222.00%22%20fill%3D%22%23bc643a%22%2F%3E%3Ccircle%20cx%3D%224.30%22%20cy%3D%2212.27%22%20r%3D%222.00%22%20fill%3D%22%23c36137%22%2F%3E%3Ccircle%20cx%3D%2227.37%22%20cy%3D%2210.75%22%20r%3D%222.00%22%20fill%3D%22%23ca5f35%22%2F%3E%3Ccircle%20cx%3D%2211.07%22%20cy%3D%2227.78%22%20r%3D%222.00%22%20fill%3D%22%23d15c32%22%2F%3E%3Ccircle%20cx%3D%2211.60%22%20cy%3D%223.77%22%20r%3D%222.00%22%20fill%3D%22%23d85a30%22%2F%3E%3C%2Fsvg%3E" rel="apple-touch-icon"/>
+<style>
+  :root {
+    --bg: #FAF9F4;
+    --surface: #F1EFE8;
+    --text: #2C2C2A;
+    --text-muted: #5F5E5A;
+    --text-dim: #888780;
+    --border: rgba(0, 0, 0, 0.10);
+    --accent: #0F6E56;
+    --accent-warm: #993C1D;
+    --dot-inner: #0F6E56;
+    --dot-outer: #993C1D;
+    --canvas-bg: #FFFFFF;
+  }
+  [data-theme="dark"] {
+    --bg: #141312;
+    --surface: #1F1E1B;
+    --text: #EDEBE2;
+    --text-muted: #9C9A91;
+    --text-dim: #6E6C64;
+    --border: rgba(255, 255, 255, 0.10);
+    --accent: #5DCAA5;
+    --accent-warm: #F0997B;
+    --dot-inner: #5DCAA5;
+    --dot-outer: #F0997B;
+    --canvas-bg: #0C0B0A;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    transition: background 0.2s, color 0.2s;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    gap: 16px;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 500;
+    margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0;
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+  }
+  .theme-toggle {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover { background: var(--surface); }
+  .canvas-wrap {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    background: var(--canvas-bg);
+    border-radius: 8px;
+  }
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .slider-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    min-width: 70px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .slider-value {
+    font-size: 14px;
+    font-weight: 500;
+    text-align: right;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    min-width: 130px;
+  }
+  input[type="range"] {
+    flex: 1;
+    min-width: 150px;
+    height: 28px;
+    -webkit-appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  input[type="range"]::-moz-range-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-top: -7px;
+    cursor: pointer;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  button.btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    transition: background 0.12s, transform 0.05s;
+  }
+  button.btn:hover { background: var(--surface); }
+  button.btn:active { transform: scale(0.97); }
+  button.btn.primary {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+  button.btn.primary:hover { opacity: 0.9; background: var(--accent); }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .info-card {
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .info-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .info-value {
+    font-size: 15px;
+    font-weight: 500;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .explanation {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+  }
+  .explanation h2 {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 10px;
+  }
+  .explanation p {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .explanation p:last-child { margin-bottom: 0; }
+  .explanation code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background: var(--bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--text);
+  }
+  footer {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-dim);
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+    margin: 0 4px;
+  }
+  footer a:hover { color: var(--accent); }
+  @media (max-width: 480px) {
+    .container { padding: 16px 14px 40px; }
+    h1 { font-size: 19px; }
+    .slider-value { min-width: 110px; font-size: 13px; }
+  }
+
+  /* --- Bouton Légende dans le header --- */
+  .header-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .legend-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    line-height: 1;
+    transition: background 0.15s;
+  }
+  .legend-btn:hover { background: var(--surface); }
+
+  /* --- Modal Légende (slide up depuis le bas, sans backdrop visuel) --- */
+  .legend-modal {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 100%);
+    width: 100%;
+    max-width: 680px;
+    max-height: 72vh;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 16px 16px 0 0;
+    z-index: 100;
+    transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -12px 36px rgba(0, 0, 0, 0.18);
+    visibility: hidden;
+  }
+  .legend-modal.open {
+    transform: translate(-50%, 0);
+    visibility: visible;
+  }
+  .legend-grip {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    margin: 8px auto 0;
+    flex-shrink: 0;
+  }
+  .legend-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 14px 22px 12px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .legend-header h2 {
+    font-size: 17px;
+    font-weight: 500;
+    margin: 0 0 3px;
+    letter-spacing: -0.01em;
+  }
+  .legend-header .legend-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .legend-close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+  }
+  .legend-close:hover {
+    background: var(--surface);
+    color: var(--text);
+  }
+  .legend-body {
+    padding: 16px 22px 24px;
+    overflow-y: auto;
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .legend-body p {
+    margin: 0 0 12px;
+  }
+  .legend-body p:last-child { margin-bottom: 0; }
+  .legend-body code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background: var(--surface);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  .legend-body strong {
+    font-weight: 500;
+    color: var(--text);
+  }
+  .legend-body em {
+    font-style: italic;
+    color: var(--text);
+  }
+  .legend-body .sources {
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .legend-body .sources a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .legend-body .sources a:hover { text-decoration: underline; }
+</style>
+<title>Phyllotaxie de Vogel · Simulateur de physique · Prof. Bucella</title><meta content="Simulateur interactif de la phyllotaxie de Vogel : observez comment l'angle d'or 360°/φ² ≈ 137,5078° produit le motif optimal d'empilement (tournesol, pomme de pin). Prof. Fabrizio Bucella, ULB." name="description"/><meta content="Prof. Fabrizio Bucella" name="author"/><meta content="physique, simulateur, Prof. Bucella, ULB, science, lasciencepeuttout, salukes" name="keywords"/><meta content="website" property="og:type"/><meta content="Prof. Fabrizio Bucella" property="og:site_name"/><meta content="Phyllotaxie de Vogel · Simulateur de physique · Prof. Bucella" property="og:title"/><meta content="Simulateur interactif de la phyllotaxie de Vogel : observez comment l'angle d'or 360°/φ² ≈ 137,5078° produit le motif optimal d'empilement (tournesol, pomme de pin). Prof. Fabrizio Bucella, ULB." property="og:description"/><meta content="https://phyllotaxie-vogel-profbucella.netlify.app/" property="og:url"/><meta content="https://phyllotaxie-vogel-profbucella.netlify.app/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="Phyllotaxie de Vogel — Simulateur du Prof. Fabrizio Bucella" property="og:image:alt"/><meta content="fr_FR" property="og:locale"/><meta content="summary_large_image" name="twitter:card"/><meta content="Phyllotaxie de Vogel · Simulateur de physique · Prof. Bucella" name="twitter:title"/><meta content="Simulateur interactif de la phyllotaxie de Vogel : observez comment l'angle d'or 360°/φ² ≈ 137,5078° produit le motif optimal d'empilement (tournesol, pomme de pin). Prof. Fabrizio Bucella, ULB." name="twitter:description"/><meta content="https://phyllotaxie-vogel-profbucella.netlify.app/og-image.png" name="twitter:image"/><meta content="Phyllotaxie de Vogel — Simulateur du Prof. Fabrizio Bucella" name="twitter:image:alt"/><meta content="@fabrizio_bucella" name="twitter:creator"/><link href="https://phyllotaxie-vogel-profbucella.netlify.app/" rel="canonical"/></head>
+<body>
+<div class="container">
+<header>
+<div>
+<h1>Phyllotaxie de Vogel</h1>
+<p class="subtitle">α<sub>or</sub> = 360°/φ² ≈ 137,5077640°</p>
+</div>
+<div class="header-actions">
+<button aria-label="Afficher la légende" class="legend-btn" id="legend-btn">Légende</button>
+<button aria-label="Basculer le thème" class="theme-toggle" id="theme-btn">
+<span id="theme-icon">☾</span>
+</button>
+</div>
+</header>
+<div class="canvas-wrap">
+<canvas height="1200" id="phyllo" width="1200"></canvas>
+</div>
+<div class="controls">
+<div class="slider-row">
+<span class="slider-label">Angle α</span>
+<input id="angle" max="145" min="130" step="0.0001" type="range" value="137.5078"/>
+<span class="slider-value" id="angle-out">137,5078°</span>
+</div>
+<div class="slider-row">
+<span class="slider-label">N graines</span>
+<input id="count" max="3000" min="50" step="25" type="range" value="1500"/>
+<span class="slider-value" id="count-out">1500</span>
+</div>
+<div class="btn-row">
+<button class="btn primary" id="play-btn">⏸ Pause</button>
+<button class="btn" data-amp="0.1">±0,1°</button>
+<button class="btn" data-amp="0.5">±0,5°</button>
+<button class="btn" data-amp="2">±2°</button>
+<button class="btn" data-amp="5">±5°</button>
+<button class="btn" id="reset-btn">α<sub>or</sub> exact</button>
+</div>
+</div>
+<div class="info-grid">
+<div class="info-card">
+<div class="info-label">Écart à α_or</div>
+<div class="info-value" id="diff">+0,0000°</div>
+</div>
+<div class="info-card">
+<div class="info-label">φ = (1+√5)/2</div>
+<div class="info-value">1,6180339887</div>
+</div>
+<div class="info-card">
+<div class="info-label">α<sub>or</sub> = 360°/φ²</div>
+<div class="info-value">137,5077640°</div>
+</div>
+</div>
+<div aria-hidden="true" aria-labelledby="legend-title" aria-modal="false" class="legend-modal" id="legend-modal" role="dialog">
+<div aria-hidden="true" class="legend-grip"></div>
+<div class="legend-header">
+<div>
+<h2 id="legend-title">La phyllotaxie de Vogel</h2>
+<p class="legend-sub">Comment ranger des graines sans réfléchir</p>
+</div>
+<button aria-label="Fermer la légende" class="legend-close" id="legend-close">×</button>
+</div>
+<div class="legend-body">
+<p>Regardez le cœur d'un tournesol, les écailles d'une pomme de pin, les florets d'un chou romanesco. Vous y verrez deux familles de spirales entrelacées qui tournent en sens opposés. Comptez-les : les nombres tombent presque toujours sur des termes consécutifs de la suite de Fibonacci — 21 et 34 pour une marguerite, 34 et 55 pour un tournesol moyen, 89 et 144 pour un beau spécimen.</p>
+<p>Ce n'est pas un hasard. C'est une conséquence presque inévitable d'une règle géométrique formalisée en 1979 par le mathématicien Helmut Vogel : placer la n‑ième graine en coordonnées polaires <code>r(n) = c·√n</code> et <code>θ(n) = n·α</code>. Le rayon croît en √n pour que la surface progresse linéairement avec n, et la même rotation α est répétée à chaque pas.</p>
+<p>Pourquoi α = 137,5078° précisément ? Si α est un multiple rationnel du tour complet (par exemple 144° = 360° × 2/5), les graines s'alignent en quelques rayons — essayez 144° dans le simulateur. Pour densifier l'occupation du disque, il faut α irrationnel, mais tous les irrationnels ne se valent pas. Le nombre d'or φ = (1+√5)/2 ≈ 1,6180339887 est <strong>l'irrationnel le moins bien approximable par les rationnels</strong> : sa fraction continue est purement [1; 1, 1, 1, …]. Le théorème de Hurwitz (1891) le démontre : pour tout irrationnel ξ, il existe une infinité de p/q tels que |ξ − p/q| &lt; 1/(√5·q²), et la constante √5 est optimale, atteinte précisément pour les nombres équivalents à φ.</p>
+<p>Conséquence visuelle : les spirales détectées par l'œil — les <em>parastiches</em> — ont pour comptes les dénominateurs des convergents de 1/φ², qui sont les nombres de Fibonacci 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144… Quand le nombre de graines N augmente, l'œil bascule entre familles voisines.</p>
+<p>Côté biologie, Stéphane Douady et Yves Couder ont montré expérimentalement en 1992, à l'aide de gouttes de ferrofluide magnétisé tombant sur un disque tournant lentement, que la dynamique de répulsion entre primordia voisins dans un méristème en croissance radiale converge spontanément vers α<sub>or</sub> comme attracteur. La sélection naturelle n'a pas inventé l'angle d'or — elle l'a découvert, parce que les contraintes physiques pointent toutes vers le même optimum géométrique.</p>
+<p class="sources">
+        Sources :
+        <a href="https://doi.org/10.1016/0025-5564(79)90080-4" rel="noopener" target="_blank">Vogel, Math. Biosciences (1979)</a> ·
+        <a href="https://doi.org/10.1103/PhysRevLett.68.2098" rel="noopener" target="_blank">Douady &amp; Couder, Phys. Rev. Lett. (1992)</a> ·
+        <a href="https://archive.org/details/ongrowthform00thom" rel="noopener" target="_blank">D'Arcy Thompson, On Growth and Form (1917)</a>.
+      </p>
+</div>
+</div>
+</div>
+<script>
+(function () {
+  'use strict';
+
+  const PHI = (1 + Math.sqrt(5)) / 2;
+  const GOLDEN_DEG = 360 / (PHI * PHI);
+
+  const canvas = document.getElementById('phyllo');
+  const ctx = canvas.getContext('2d');
+  const angleInput = document.getElementById('angle');
+  const angleOut = document.getElementById('angle-out');
+  const countInput = document.getElementById('count');
+  const countOut = document.getElementById('count-out');
+  const diffOut = document.getElementById('diff');
+  const playBtn = document.getElementById('play-btn');
+  const resetBtn = document.getElementById('reset-btn');
+  const themeBtn = document.getElementById('theme-btn');
+  const themeIcon = document.getElementById('theme-icon');
+
+  // HiDPI canvas sizing
+  function fitCanvas() {
+    const cssSize = canvas.getBoundingClientRect().width;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(cssSize * dpr);
+    canvas.height = Math.round(cssSize * dpr);
+  }
+
+  function getDotColors() {
+    const styles = getComputedStyle(document.documentElement);
+    const parse = (v) => {
+      v = v.trim();
+      if (v.startsWith('#')) {
+        const h = v.slice(1);
+        return {
+          r: parseInt(h.slice(0, 2), 16),
+          g: parseInt(h.slice(2, 4), 16),
+          b: parseInt(h.slice(4, 6), 16)
+        };
+      }
+      const m = v.match(/\d+/g);
+      return { r: +m[0], g: +m[1], b: +m[2] };
+    };
+    return {
+      inner: parse(styles.getPropertyValue('--dot-inner')),
+      outer: parse(styles.getPropertyValue('--dot-outer'))
+    };
+  }
+
+  function fmtFr(x, n) {
+    return x.toFixed(n).replace('.', ',');
+  }
+
+  function draw() {
+    fitCanvas();
+    const W = canvas.width, H = canvas.height;
+    const cx = W / 2, cy = H / 2;
+    const angleDeg = parseFloat(angleInput.value);
+    const count = parseInt(countInput.value);
+    const angleRad = angleDeg * Math.PI / 180;
+
+    const margin = W * 0.04;
+    const c = (Math.min(cx, cy) - margin) / Math.sqrt(count);
+    const dotR = Math.max(1.5, c * 0.62);
+
+    ctx.clearRect(0, 0, W, H);
+
+    const cols = getDotColors();
+    const dr = cols.outer.r - cols.inner.r;
+    const dg = cols.outer.g - cols.inner.g;
+    const db = cols.outer.b - cols.inner.b;
+
+    for (let n = 1; n <= count; n++) {
+      const r = c * Math.sqrt(n);
+      const theta = n * angleRad;
+      const x = cx + r * Math.cos(theta);
+      const y = cy + r * Math.sin(theta);
+      const t = n / count;
+      const rr = Math.round(cols.inner.r + dr * t);
+      const gg = Math.round(cols.inner.g + dg * t);
+      const bb = Math.round(cols.inner.b + db * t);
+      ctx.fillStyle = 'rgb(' + rr + ',' + gg + ',' + bb + ')';
+      ctx.beginPath();
+      ctx.arc(x, y, dotR, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    angleOut.textContent = fmtFr(angleDeg, 4) + '°';
+    countOut.textContent = count;
+    const d = angleDeg - GOLDEN_DEG;
+    diffOut.textContent = (d >= 0 ? '+' : '−') + fmtFr(Math.abs(d), 4) + '°';
+  }
+
+  // Animation loop
+  let playing = true;
+  let amplitude = 0.5;
+  let phase = 0;
+  const PERIOD_MS = 18000;
+  let lastT = performance.now();
+
+  function tick(now) {
+    const dt = now - lastT;
+    lastT = now;
+    if (playing) {
+      phase += (2 * Math.PI) * (dt / PERIOD_MS);
+      const angle = GOLDEN_DEG + amplitude * Math.sin(phase);
+      angleInput.value = angle.toFixed(4);
+      draw();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function setPlaying(p) {
+    playing = p;
+    playBtn.textContent = p ? '⏸ Pause' : '▶ Lecture';
+  }
+
+  playBtn.addEventListener('click', () => setPlaying(!playing));
+
+  angleInput.addEventListener('input', () => {
+    setPlaying(false);
+    draw();
+  });
+  countInput.addEventListener('input', draw);
+
+  document.querySelectorAll('[data-amp]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      amplitude = parseFloat(btn.dataset.amp);
+      const cur = parseFloat(angleInput.value);
+      const arg = Math.max(-1, Math.min(1, (cur - GOLDEN_DEG) / amplitude));
+      phase = Math.asin(arg);
+      setPlaying(true);
+    });
+  });
+
+  resetBtn.addEventListener('click', () => {
+    angleInput.value = GOLDEN_DEG.toFixed(4);
+    phase = 0;
+    setPlaying(false);
+    draw();
+  });
+
+  // Theme toggle (with system preference detection)
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    themeIcon.textContent = t === 'dark' ? '☀' : '☾';
+    try { localStorage.setItem('phyllo-theme', t); } catch (e) {}
+    draw();
+  }
+  let initialTheme = 'light';
+  try {
+    const saved = localStorage.getItem('phyllo-theme');
+    if (saved) initialTheme = saved;
+    else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      initialTheme = 'dark';
+    }
+  } catch (e) {}
+  applyTheme(initialTheme);
+
+  themeBtn.addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  });
+
+  // Resize
+  let resizeTO = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTO);
+    resizeTO = setTimeout(draw, 80);
+  });
+
+  // --- Modal Légende ---
+  const legendBtn = document.getElementById('legend-btn');
+  const legendClose = document.getElementById('legend-close');
+  const legendModal = document.getElementById('legend-modal');
+
+  function openLegend() {
+    legendModal.classList.add('open');
+    legendModal.setAttribute('aria-hidden', 'false');
+    legendClose.focus();
+  }
+  function closeLegend() {
+    legendModal.classList.remove('open');
+    legendModal.setAttribute('aria-hidden', 'true');
+    legendBtn.focus();
+  }
+
+  legendBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (legendModal.classList.contains('open')) closeLegend();
+    else openLegend();
+  });
+  legendClose.addEventListener('click', closeLegend);
+
+  // ESC ferme aussi (les sliders et le canvas restent interactifs pendant l'affichage)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && legendModal.classList.contains('open')) closeLegend();
+  });
+
+  // Initial render + start loop
+  draw();
+  requestAnimationFrame((t) => { lastT = t; requestAnimationFrame(tick); });
+})();
+</script>
+<footer style="margin-top:48px;padding:32px 24px 24px;border-top:1px solid #2a2a2a;font-family:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;color:#c4c4c4;text-align:center;"><div style="margin-bottom: 18px; font-style: italic; font-size: 12px; opacity:0.8; color:#b8b8b8;">Aucun tournesol n'a perdu son angle d'or pendant cette simulation.</div>
+<div style="margin-bottom:8px;">
+<a href="https://www.instagram.com/fabrizio.bucella" style="color:#f0ece8;font-weight:700;text-decoration:none;">Prof. Fabrizio Bucella</a>
+<span style="opacity:0.85;"> · ULB · Physicien</span>
+</div>
+<div style="margin-bottom:12px;">
+<span style="margin:0 6px;">#lasciencepeuttout</span>
+<span style="opacity:0.4;">·</span>
+<span style="margin:0 6px;">#salukes</span>
+</div>
+<div>
+<a href="https://linktr.ee/fabrizio.bucella" style="color:#d0d0d0;text-decoration:none;border-bottom:1px dotted #777;">← Tous mes simulateurs</a>
+</div>
+</footer></body>
+</html>

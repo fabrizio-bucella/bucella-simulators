@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&amp;display=swap" rel="stylesheet"/>
+<style>
+  /* === MODE CLAIR (défaut) — papier crème === */
+  :root {
+    --ink: #1a1612;
+    --paper: #f5efe2;
+    --accent: #8b1a1a;
+    --rule: #1a1612;
+    --rule-soft: rgba(26, 22, 18, 0.6);
+    --texture: rgba(26, 22, 18, 0.06);
+    --bg-page: linear-gradient(180deg, #ebe2cc 0%, #d8cfb8 100%);
+    --card-bg: #f5efe2;
+    --card-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.6) inset,
+      0 30px 60px -20px rgba(26, 22, 18, 0.35),
+      0 10px 20px -10px rgba(26, 22, 18, 0.25);
+    --fleck-1: rgba(139, 26, 26, 0.04);
+    --fleck-2: rgba(26, 22, 18, 0.05);
+    --frame-glow: none;
+  }
+
+  /* === MODE SOMBRE — papier nuit / encre or === */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #ede4cd;
+      --paper: #ede4cd;
+      --accent: #e8c878;
+      --rule: #c9a449;
+      --rule-soft: rgba(201, 164, 73, 0.55);
+      --texture: rgba(201, 164, 73, 0.05);
+      --bg-page: radial-gradient(ellipse at top, #1a1f2e 0%, #0a0d14 50%, #050810 100%);
+      --card-bg: radial-gradient(ellipse at center, #14181f 0%, #0a0d14 100%);
+      --card-shadow:
+        0 0 0 1px rgba(201, 164, 73, 0.15),
+        0 30px 80px -20px rgba(0, 0, 0, 0.8),
+        0 10px 30px -5px rgba(0, 0, 0, 0.5),
+        inset 0 0 80px rgba(201, 164, 73, 0.04);
+      --fleck-1: rgba(232, 200, 120, 0.06);
+      --fleck-2: rgba(232, 200, 120, 0.04);
+      --frame-glow: 0 0 20px rgba(201, 164, 73, 0.15);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg-page);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    font-family: 'Crimson Pro', Georgia, serif;
+  }
+
+  .card {
+    width: min(680px, 100%);
+    aspect-ratio: 4 / 5;
+    background: var(--card-bg);
+    position: relative;
+    box-shadow: var(--card-shadow);
+    padding: 44px 40px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Texture pointillée */
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 1px 1px, var(--texture) 1px, transparent 0);
+    background-size: 4px 4px;
+    pointer-events: none;
+  }
+
+  /* Flecks pour donner de la matière */
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 80%, var(--fleck-1) 0%, transparent 8%),
+      radial-gradient(circle at 85% 20%, var(--fleck-2) 0%, transparent 6%),
+      radial-gradient(circle at 50% 50%, var(--fleck-1) 0%, transparent 5%);
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+  @media (prefers-color-scheme: dark) {
+    .card::after { mix-blend-mode: screen; }
+  }
+
+  /* Cadre rectangulaire double */
+  .frame-outer {
+    position: absolute;
+    inset: 20px;
+    border: 1.5px solid var(--rule);
+    pointer-events: none;
+    box-shadow: var(--frame-glow);
+    z-index: 1;
+  }
+  .frame-inner {
+    position: absolute;
+    inset: 26px;
+    border: 0.5px solid var(--rule-soft);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Fleurons aux quatre coins */
+  .corner {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+    z-index: 2;
+    color: var(--rule);
+  }
+  .corner svg { display: block; width: 100%; height: 100%; }
+  .corner.tl { top: 11px; left: 11px; }
+  .corner.tr { top: 11px; right: 11px; transform: rotate(90deg); }
+  .corner.br { bottom: 11px; right: 11px; transform: rotate(180deg); }
+  .corner.bl { bottom: 11px; left: 11px; transform: rotate(270deg); }
+
+  .header {
+    text-align: center;
+    margin-top: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .eyebrow {
+    font-family: 'Crimson Pro', serif;
+    font-size: 13px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.75;
+    font-weight: 500;
+    margin-bottom: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .eyebrow { color: var(--accent); opacity: 0.9; }
+  }
+
+  .ornament-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 4px 0 22px;
+  }
+  .ornament-line .rule {
+    flex: 0 1 90px;
+    height: 1px;
+    background: var(--rule-soft);
+  }
+  @media (prefers-color-scheme: dark) {
+    .ornament-line .rule {
+      background: linear-gradient(90deg, transparent, var(--rule), transparent);
+    }
+  }
+  .ornament-line .symbol {
+    font-family: 'Crimson Pro', serif;
+    font-size: 22px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .title {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(28px, 5.4vw, 38px);
+    line-height: 1.15;
+    text-align: center;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .attribution {
+    font-family: 'Crimson Pro', serif;
+    font-size: 15px;
+    text-align: center;
+    color: var(--ink);
+    opacity: 0.78;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 26px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .attribution { color: var(--accent); opacity: 0.85; }
+  }
+  .attribution .dash { color: var(--accent); margin: 0 6px; }
+
+  .quote {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 0 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .lead {
+    font-family: 'Crimson Pro', serif;
+    font-size: clamp(18px, 3.2vw, 22px);
+    color: var(--ink);
+    line-height: 1.5;
+    margin-bottom: 24px;
+    font-style: italic;
+    opacity: 0.92;
+  }
+  @media (prefers-color-scheme: dark) {
+    .lead { opacity: 0.85; }
+  }
+
+  .signs {
+    list-style: none;
+    counter-reset: sign;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .sign {
+    counter-increment: sign;
+    font-family: 'Crimson Pro', serif;
+    font-size: clamp(18px, 3.2vw, 22px);
+    line-height: 1.45;
+    color: var(--ink);
+  }
+
+  .sign::before {
+    content: counter(sign, upper-roman) ".";
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-weight: 600;
+    color: var(--accent);
+    margin-right: 10px;
+    font-size: 1.05em;
+  }
+
+  .footer {
+    margin-top: 26px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer .ornament-line { margin: 0 0 12px; }
+
+  .source {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink);
+    opacity: 0.6;
+    letter-spacing: 0.05em;
+  }
+  @media (prefers-color-scheme: dark) {
+    .source { color: var(--accent); opacity: 0.65; }
+  }
+
+  .source .qed {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--ink);
+    opacity: 0.7;
+    margin-left: 8px;
+    transform: translateY(-1px);
+  }
+  @media (prefers-color-scheme: dark) {
+    .source .qed { background: var(--accent); opacity: 1; }
+  }
+
+  .hashtags {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink);
+    opacity: 0.5;
+    letter-spacing: 0.04em;
+    margin-top: 8px;
+  }
+  .hashtags .sep {
+    color: var(--accent);
+    margin: 0 6px;
+    opacity: 0.85;
+  }
+  @media (prefers-color-scheme: dark) {
+    .hashtags { color: var(--accent); opacity: 0.6; }
+  }
+</style>
+<title>Les trois signes de la sénilité · d'après Paul Erdős · Prof. Bucella</title><meta content="Selon Paul Erdős, il existe trois signes de la sénilité chez le mathématicien. Une carte typographique du Prof. Fabrizio Bucella, ULB." name="description"/><meta content="Prof. Fabrizio Bucella" name="author"/><meta content="physique, simulateur, Prof. Bucella, ULB, science, lasciencepeuttout" name="keywords"/><meta content="website" property="og:type"/><meta content="Prof. Fabrizio Bucella" property="og:site_name"/><meta content="Les trois signes de la sénilité · d'après Paul Erdős · Prof. Bucella" property="og:title"/><meta content="Selon Paul Erdős, il existe trois signes de la sénilité chez le mathématicien. Une carte typographique du Prof. Fabrizio Bucella, ULB." property="og:description"/><meta content="https://trois-signes-senilite-profbucella.netlify.app/" property="og:url"/><meta content="https://trois-signes-senilite-profbucella.netlify.app/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="Les trois signes de la sénilité — Simulateur du Prof. Fabrizio Bucella" property="og:image:alt"/><meta content="fr_FR" property="og:locale"/><meta content="summary_large_image" name="twitter:card"/><meta content="Les trois signes de la sénilité · d'après Paul Erdős · Prof. Bucella" name="twitter:title"/><meta content="Selon Paul Erdős, il existe trois signes de la sénilité chez le mathématicien. Une carte typographique du Prof. Fabrizio Bucella, ULB." name="twitter:description"/><meta content="https://trois-signes-senilite-profbucella.netlify.app/og-image.png" name="twitter:image"/><meta content="Les trois signes de la sénilité — Simulateur du Prof. Fabrizio Bucella" name="twitter:image:alt"/><meta content="@fabrizio_bucella" name="twitter:creator"/><link href="https://trois-signes-senilite-profbucella.netlify.app/" rel="canonical"/></head>
+<body>
+<article class="card">
+<div class="frame-outer"></div>
+<div class="frame-inner"></div>
+<div class="corner tl"><svg fill="none" stroke="currentColor" stroke-width="1" viewbox="0 0 24 24">
+<path d="M2 12 L2 2 L12 2"></path>
+<path d="M5 5 Q8 5 8 8"></path>
+<circle cx="5" cy="5" fill="currentColor" r="1"></circle>
+</svg></div>
+<div class="corner tr"><svg fill="none" stroke="currentColor" stroke-width="1" viewbox="0 0 24 24">
+<path d="M2 12 L2 2 L12 2"></path>
+<path d="M5 5 Q8 5 8 8"></path>
+<circle cx="5" cy="5" fill="currentColor" r="1"></circle>
+</svg></div>
+<div class="corner br"><svg fill="none" stroke="currentColor" stroke-width="1" viewbox="0 0 24 24">
+<path d="M2 12 L2 2 L12 2"></path>
+<path d="M5 5 Q8 5 8 8"></path>
+<circle cx="5" cy="5" fill="currentColor" r="1"></circle>
+</svg></div>
+<div class="corner bl"><svg fill="none" stroke="currentColor" stroke-width="1" viewbox="0 0 24 24">
+<path d="M2 12 L2 2 L12 2"></path>
+<path d="M5 5 Q8 5 8 8"></path>
+<circle cx="5" cy="5" fill="currentColor" r="1"></circle>
+</svg></div>
+<header class="header">
+<div class="eyebrow">Mathematica · Senilitas</div>
+<div class="ornament-line">
+<span class="rule"></span>
+<span class="symbol">❦</span>
+<span class="rule"></span>
+</div>
+<h1 class="title">Les trois signes<br/>de la sénilité</h1>
+<p class="attribution">Paul Erdős <span class="dash">·</span> 1913 – 1996</p>
+</header>
+<section class="quote">
+<p class="lead">Selon le mathématicien Paul Erdős,<br/>il y a trois signes de sénilité.</p>
+<ol class="signs">
+<li class="sign">Le premier, c’est d’oublier ses théorèmes.</li>
+<li class="sign">Le deuxième, c’est d’oublier de fermer sa braguette.</li>
+<li class="sign">Le troisième, c’est d’oublier de l’ouvrir.</li>
+</ol>
+</section>
+<footer class="footer">
+<div class="ornament-line">
+<span class="rule"></span>
+<span class="symbol">∴</span>
+<span class="rule"></span>
+</div><p class="source" style="font-style: italic; font-size: 0.85em; opacity: 0.7; margin-top: 10px;">Aucune braguette n'a été oubliée pendant la rédaction de cette page.</p>
+<p class="source">attribué à Erdős · attesté chez Hoffman, 1998<span class="qed"></span></p>
+<p class="hashtags">#lasciencepeuttout <span class="sep">·</span> #salukes</p>
+<p class="hashtags" style="margin-top: 22px; font-size: 0.95em; opacity: 0.85; font-style: italic;"><a href="https://www.instagram.com/fabrizio.bucella" style="color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; padding-bottom: 1px;">Prof. Fabrizio Bucella</a> · ULB · Physicien</p><p class="hashtags" style="margin-top: 10px; font-size: 0.9em; opacity: 0.75;"><a href="https://linktr.ee/fabrizio.bucella" style="color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; padding-bottom: 1px;">← Tous mes simulateurs</a></p></footer></article>
+</body>
+</html>

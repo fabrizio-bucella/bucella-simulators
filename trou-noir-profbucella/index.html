@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="dark" name="color-scheme"/>
+<meta content="dark" name="supported-color-schemes"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;⚫&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<link href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;⚫&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+  html, body {
+    background-color: #0c0c0c;
+    color: #f0ece8;
+  }
+  :root {
+    color-scheme: dark;
+    --bg:     #0c0c0c;
+    --card:   #1a1a1a;
+    --border: rgba(255,255,255,0.22);
+    --text:   #f0ece8;
+    --muted:  #aaa;
+    --mid:    #ccc;
+    --font:   'Space Mono', monospace;
+  }
+
+  html { background: var(--bg); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; overflow-x: hidden; position: relative; forced-color-adjust: none; }
+
+  #stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .star { position: absolute; border-radius: 50%; background: white; animation: twinkle var(--dur, 3s) ease-in-out infinite alternate; }
+  @keyframes twinkle {
+    from { opacity: var(--a1, 0.08); transform: scale(1); }
+    to   { opacity: var(--a2, 0.4);  transform: scale(1.2); }
+  }
+
+  .container { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  header { text-align: center; margin-bottom: 48px; }
+  .eyebrow { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid); margin-bottom: 14px; }
+  h1 { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 700; line-height: 1.1; margin-bottom: 14px; }
+  .subtitle { color: var(--mid); font-size: 12px; letter-spacing: 0.06em; line-height: 2; }
+  .horizon { width: 40px; height: 1px; background: var(--border); margin: 18px auto 0; }
+
+  .input-section { background: var(--card); border: 1px solid var(--border); border-radius: 2px; padding: 28px; margin-bottom: 28px; }
+  .section-label { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mid); margin-bottom: 18px; }
+
+  .presets { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 24px; }
+  .preset-btn {
+    -webkit-appearance: none; appearance: none;
+    background: var(--card); border: 1px solid var(--border); color: var(--mid);
+    font-family: var(--font); font-size: 11px; padding: 5px 13px; cursor: pointer;
+    border-radius: 1px; transition: all 0.15s; letter-spacing: 0.04em;
+  }
+  .preset-btn:hover, .preset-btn.active { border-color: var(--text); color: var(--bg); background: var(--text); }
+
+  .input-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 14px; align-items: end; }
+  @media (max-width: 600px) { .input-row { grid-template-columns: 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid); }
+
+  input[type="text"], input[type="number"] {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 1px;
+    color: var(--text); font-family: var(--font); font-size: 13px;
+    padding: 9px 13px; outline: none; transition: border-color 0.15s; width: 100%;
+  }
+  input[type="text"]:focus, input[type="number"]:focus { border-color: var(--mid); }
+
+  .calculate-btn {
+    -webkit-appearance: none; appearance: none;
+    background: var(--text); border: none; border-radius: 1px;
+    color: var(--bg); font-family: var(--font); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; padding: 10px 24px;
+    cursor: pointer; transition: opacity 0.15s; white-space: nowrap;
+  }
+  .calculate-btn:hover { opacity: 0.85; }
+
+  .viz-section { display: flex; justify-content: center; margin-bottom: 28px; opacity: 0; transition: opacity 0.6s ease; }
+  .viz-section.visible { opacity: 1; }
+  #bh-canvas { border-radius: 2px; display: block; }
+
+  .results { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .results.visible { opacity: 1; transform: translateY(0); }
+
+  .result-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; text-align: center; }
+  .result-object-name { color: var(--text); }
+
+  .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 550px) { .cards-grid { grid-template-columns: 1fr; } }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 2px; padding: 18px 20px; }
+  .card.highlight { grid-column: 1 / -1; border-color: rgba(255,255,255,0.18); }
+  .card-icon { font-size: 16px; margin-bottom: 7px; }
+  .card-name { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 7px; }
+  .card-value { font-size: 15px; color: var(--text); line-height: 1.4; word-break: break-all; }
+  .card-value .unit { font-size: 11px; color: var(--muted); margin-left: 3px; }
+  .card-value .big { font-size: 22px; color: var(--text); }
+  .card-sub { font-size: 11px; color: var(--mid); margin-top: 7px; line-height: 1.7; }
+
+  .context-bar { background: var(--card); border: 1px solid var(--border); border-radius: 2px; padding: 18px 22px; margin-bottom: 14px; }
+  .context-title { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid); margin-bottom: 12px; }
+  .compare-items { display: flex; flex-direction: column; gap: 9px; }
+  .compare-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; gap: 12px; }
+  .compare-label { color: var(--mid); flex: 1; }
+  .compare-val { color: var(--text); font-size: 11px; text-align: right; }
+
+  .formula-note {
+    background: var(--bg); border-left: 2px solid rgba(255,255,255,0.3);
+    padding: 13px 16px; font-size: 11px; color: var(--mid); line-height: 2;
+    border-radius: 0 2px 2px 0; margin-bottom: 20px;
+  }
+  .formula-note span { color: var(--text); }
+
+  .verdict { text-align: center; font-size: 12px; color: var(--text); opacity: 0.8; margin-top: 18px; font-style: italic; line-height: 2; }
+  .verdict strong { color: var(--text); font-style: normal; }
+
+  footer { text-align: center; margin-top: 48px; padding: 20px 0; font-size: 11px; color: var(--mid); letter-spacing: 0.06em; border-top: 1px solid var(--border); }
+  footer a { color: var(--mid); text-decoration: none; transition: color 0.2s; }
+  footer a:hover { color: var(--text); }
+
+  sup { font-size: 0.7em; }
+</style>
+<title>Trou noir · Simulateur de physique · Prof. Bucella</title><meta content="Rayon de Schwarzschild, température de Hawking, temps d'évaporation : choisissez un objet, la gravité fait le reste. Simulateur de physique relativiste du Prof. Fabrizio Bucella, ULB." name="description"/><meta content="Prof. Fabrizio Bucella" name="author"/><meta content="physique, simulateur, Prof. Bucella, ULB, science, lasciencepeuttout" name="keywords"/><meta content="website" property="og:type"/><meta content="Prof. Fabrizio Bucella" property="og:site_name"/><meta content="Trou noir · Simulateur de physique · Prof. Bucella" property="og:title"/><meta content="Rayon de Schwarzschild, température de Hawking, temps d'évaporation : choisissez un objet, la gravité fait le reste. Simulateur de physique relativiste du Prof. Fabrizio Bucella, ULB." property="og:description"/><meta content="https://trou-noir-profbucella.netlify.app/" property="og:url"/><meta content="https://trou-noir-profbucella.netlify.app/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="Trou noir — Simulateur du Prof. Fabrizio Bucella" property="og:image:alt"/><meta content="fr_FR" property="og:locale"/><meta content="summary_large_image" name="twitter:card"/><meta content="Trou noir · Simulateur de physique · Prof. Bucella" name="twitter:title"/><meta content="Rayon de Schwarzschild, température de Hawking, temps d'évaporation : choisissez un objet, la gravité fait le reste. Simulateur de physique relativiste du Prof. Fabrizio Bucella, ULB." name="twitter:description"/><meta content="https://trou-noir-profbucella.netlify.app/og-image.png" name="twitter:image"/><meta content="Trou noir — Simulateur du Prof. Fabrizio Bucella" name="twitter:image:alt"/><meta content="@fabrizio_bucella" name="twitter:creator"/><link href="https://trou-noir-profbucella.netlify.app/" rel="canonical"/></head>
+<body>
+<div id="stars"></div>
+<div class="container">
+<header>
+<p class="eyebrow">Simulateur de physique relativiste</p>
+<h1>Trou noir</h1>
+<p class="subtitle">
+      Rayon de Schwarzschild · Température de Hawking · Temps d'évaporation<br/>
+      Choisissez un objet — la gravité fait le reste.
+    </p>
+<div class="horizon"></div>
+</header>
+<!-- Input -->
+<div class="input-section">
+<p class="section-label">// Choisir un objet</p>
+<div class="presets" id="presets">
+<button class="preset-btn" data-mass="1.67e-27" data-name="Proton">Proton</button>
+<button class="preset-btn" data-mass="5e-8" data-name="Grain de sable">Grain de sable</button>
+<button class="preset-btn" data-mass="70" data-name="Chèvre">Chèvre</button>
+<button class="preset-btn" data-mass="70" data-name="Humain">Humain</button>
+<button class="preset-btn" data-mass="5000" data-name="Éléphant">Éléphant</button>
+<button class="preset-btn" data-mass="150000" data-name="Baleine bleue">Baleine bleue</button>
+<button class="preset-btn" data-mass="7.3e6" data-name="Tour Eiffel">Tour Eiffel</button>
+<button class="preset-btn" data-mass="7.33e10" data-name="Astéroïde Bénou">Astéroïde Bénou</button>
+<button class="preset-btn" data-mass="7.34e22" data-name="Lune">Lune</button>
+<button class="preset-btn" data-mass="6.42e23" data-name="Mars">Mars</button>
+<button class="preset-btn" data-mass="5.97e24" data-name="Terre">Terre</button>
+<button class="preset-btn" data-mass="1.02e26" data-name="Neptune">Neptune</button>
+<button class="preset-btn" data-mass="5.68e26" data-name="Saturne">Saturne</button>
+<button class="preset-btn" data-mass="1.90e27" data-name="Jupiter">Jupiter</button>
+<button class="preset-btn" data-mass="1.99e30" data-name="Soleil">Soleil</button>
+<button class="preset-btn" data-mass="5.6e30" data-name="Étoile à neutrons">Étoile à neutrons</button>
+<button class="preset-btn" data-mass="7.96e36" data-name="Sagittarius A*">Sagittarius A*</button>
+</div>
+<div class="input-row">
+<div class="field">
+<label>Nom de l'objet</label>
+<input id="obj-name" placeholder="ex. chèvre, Saturne…" type="text"/>
+</div>
+<div class="field">
+<label>Masse (kg)</label>
+<input id="obj-mass" placeholder="ex. 70" step="any" type="number"/>
+</div>
+<button class="calculate-btn" id="calc-btn" onclick="calculate()">
+        ▶ Calculer
+      </button>
+</div>
+</div>
+<!-- Visualization -->
+<div class="viz-section" id="viz-section">
+<canvas height="220" id="bh-canvas" width="700"></canvas>
+</div>
+<!-- Results -->
+<div class="results" id="results">
+<p class="result-title">
+      Trou noir de <span class="result-object-name" id="res-name">—</span>
+</p>
+<div class="formula-note">
+      Rayon de Schwarzschild : <span>Rₛ = 2GM/c²</span>  · 
+      Température de Hawking : <span>T = ℏc³ / (8πGMk_B)</span>  · 
+      Évaporation : <span>t = 5120πG²M³ / (ℏc⁴)</span>
+</div>
+<div class="cards-grid">
+<div class="card highlight">
+<div class="card-icon">⚫</div>
+<div class="card-name">Rayon de Schwarzschild</div>
+<div class="card-value"><span class="big" id="res-rs">—</span></div>
+<div class="card-sub" id="res-rs-sub">—</div>
+</div>
+<div class="card">
+<div class="card-icon">🌡️</div>
+<div class="card-name">Température de Hawking</div>
+<div class="card-value"><span id="res-T">—</span></div>
+<div class="card-sub" id="res-T-sub">—</div>
+</div>
+<div class="card">
+<div class="card-icon">⏳</div>
+<div class="card-name">Temps d'évaporation</div>
+<div class="card-value"><span id="res-t">—</span></div>
+<div class="card-sub" id="res-t-sub">—</div>
+</div>
+<div class="card">
+<div class="card-icon">🗜️</div>
+<div class="card-name">Densité critique</div>
+<div class="card-value"><span id="res-rho">—</span></div>
+<div class="card-sub" id="res-rho-sub">—</div>
+</div>
+<div class="card">
+<div class="card-icon">💡</div>
+<div class="card-name">Luminosité de Hawking</div>
+<div class="card-value"><span id="res-L">—</span></div>
+<div class="card-sub" id="res-L-sub">—</div>
+</div>
+<div class="card">
+<div class="card-icon">📐</div>
+<div class="card-name">Masse initiale</div>
+<div class="card-value"><span id="res-mass">—</span></div>
+<div class="card-sub" id="res-mass-sub">—</div>
+</div>
+</div>
+<div class="context-bar">
+<p class="context-title">// Mise en contexte</p>
+<div class="compare-items" id="compare-items"></div>
+</div>
+<div class="verdict" id="verdict"></div>
+</div>
+</div>
+<script>
+// ─── CONSTANTES ────────────────────────────────────────────────────────────────
+const G  = 6.674e-11;   // m³ kg⁻¹ s⁻²
+const c  = 2.998e8;     // m/s
+const hb = 1.055e-34;   // ℏ (J·s)
+const kB = 1.381e-23;   // k_B (J/K)
+const c2 = c * c;
+const c4 = c2 * c2;
+
+// ─── ÉTOILES ───────────────────────────────────────────────────────────────────
+(function createStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 200; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.2;
+    const dur  = 2 + Math.random() * 5;
+    const a1   = 0.1 + Math.random() * 0.3;
+    const a2   = 0.5 + Math.random() * 0.5;
+    s.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      width:${size}px;
+      height:${size}px;
+      --dur:${dur}s;
+      --a1:${a1};
+      --a2:${a2};
+      animation-delay:${Math.random()*6}s;
+    `;
+    container.appendChild(s);
+  }
+})();
+
+// ─── PRESETS ───────────────────────────────────────────────────────────────────
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('obj-name').value = btn.dataset.name;
+    document.getElementById('obj-mass').value = btn.dataset.mass;
+  });
+});
+
+// ─── FORMATAGE ─────────────────────────────────────────────────────────────────
+// Convertit les séparateurs décimaux en virgules (convention française).
+// N'affecte que les chiffres — pas les exposants ni le HTML.
+function fr(s) {
+  // Remplace le point décimal entre chiffres par une virgule
+  return s.replace(/(\d)\.(\d)/g, '$1,$2');
+}
+
+function fmtSci(x) {
+  if (x === 0) return '0';
+  const exp = Math.floor(Math.log10(Math.abs(x)));
+  const mant = x / Math.pow(10, exp);
+  const m = fr(mant.toFixed(3).replace(/\.?0+$/, ''));
+  if (Math.abs(exp) < 4) return fr(x.toPrecision(4));
+  return `${m} × 10<sup>${exp}</sup>`;
+}
+
+function fmtMass(m) {
+  if (m < 1e-3) return `${fmtSci(m)} kg`;
+  if (m < 1e3)  return `${fr(m.toPrecision(4))} kg`;
+  if (m < 1e6)  return `${fr((m/1e3).toPrecision(4))} t`;
+  if (m < 1e9)  return `${fmtSci(m)} kg`;
+  return `${fmtSci(m)} kg`;
+}
+
+function fmtLength(r) {
+  if (r < 1e-20) return `${fmtSci(r)} m`;
+  if (r < 1e-9)  return `${fmtSci(r*1e12)} pm`;
+  if (r < 1e-6)  return `${fmtSci(r*1e9)} nm`;
+  if (r < 1e-3)  return `${fmtSci(r*1e6)} µm`;
+  if (r < 1)     return `${fmtSci(r*1e3)} mm`;
+  if (r < 1e3)   return `${fmtSci(r)} m`;
+  if (r < 1e6)   return `${fmtSci(r/1e3)} km`;
+  if (r < 1.496e11) return `${fmtSci(r/1e3)} km (${fmtSci(r/1.496e11)} UA)`;
+  return `${fmtSci(r/9.461e15)} années-lumière`;
+}
+
+function fmtTemp(T) {
+  if (T > 1e30) return `${fmtSci(T)} K &nbsp;<span class="unit">(≫ Planck)</span>`;
+  if (T > 1e15) return `${fmtSci(T)} K`;
+  if (T > 1e9)  return `${fmtSci(T)} K &nbsp;<span class="unit">(${fmtSci(T/1e9)} GK)</span>`;
+  if (T > 1e6)  return `${fmtSci(T)} K &nbsp;<span class="unit">(${fmtSci(T/1e6)} MK)</span>`;
+  if (T > 1e3)  return `${fmtSci(T)} K &nbsp;<span class="unit">(${fr((T-273.15).toPrecision(4))} °C)</span>`;
+  if (T < 0.001) return `${fmtSci(T)} K &nbsp;<span class="unit">(infiniment froid)</span>`;
+  return `${fr(T.toPrecision(4))} K`;
+}
+
+function fmtTime(t) {
+  const SECOND = 1;
+  const MINUTE = 60;
+  const HOUR   = 3600;
+  const DAY    = 86400;
+  const YEAR   = 3.156e7;
+  const MYR    = YEAR * 1e6;
+  const GYR    = YEAR * 1e9;
+  const AGE    = 13.8e9 * YEAR;
+
+  if (t < 1e-43) return `${fmtSci(t)} s &nbsp;<span class="unit">(sub-Planck)</span>`;
+  if (t < 1e-6)  return `${fmtSci(t)} s`;
+  if (t < MINUTE) return `${fr(t.toFixed(2))} s`;
+  if (t < HOUR)  return `${fr((t/MINUTE).toFixed(2))} min`;
+  if (t < DAY)   return `${fr((t/HOUR).toFixed(2))} h`;
+  if (t < YEAR)  return `${fr((t/DAY).toFixed(1))} jours`;
+  if (t < MYR)   return `${fr((t/YEAR).toPrecision(3))} ans`;
+  if (t < GYR)   return `${fr((t/MYR).toPrecision(3))} millions d'années`;
+  if (t < AGE)   return `${fr((t/GYR).toPrecision(3))} milliards d'années`;
+  if (t < AGE*1000) return `${fr((t/AGE).toPrecision(3))} × l'âge de l'Univers`;
+  return `${fmtSci(t/YEAR)} ans`;
+}
+
+function fmtDensity(rho) {
+  if (rho > 1e90) return `${fmtSci(rho)} kg/m³ &nbsp;<span class="unit">(densité de Planck ≈ 5×10<sup>96</sup>)</span>`;
+  if (rho > 1e17) return `${fmtSci(rho)} kg/m³ &nbsp;<span class="unit">(≫ noyau atomique ~2×10<sup>17</sup>)</span>`;
+  if (rho > 1e10) return `${fmtSci(rho)} kg/m³`;
+  return `${fmtSci(rho)} kg/m³`;
+}
+
+function fmtLuminosity(L) {
+  const LSUN = 3.828e26; // W
+  if (L < 1e-10) return `${fmtSci(L)} W`;
+  if (L < 1e3)   return `${fmtSci(L)} W`;
+  if (L < LSUN)  return `${fmtSci(L)} W &nbsp;<span class="unit">(${fmtSci(L/LSUN)} L☉)</span>`;
+  return `${fmtSci(L)} W &nbsp;<span class="unit">(${fmtSci(L/LSUN)} L☉)</span>`;
+}
+
+// ─── CALCUL ────────────────────────────────────────────────────────────────────
+function calculate() {
+  const name = document.getElementById('obj-name').value.trim() || 'l\'objet';
+  const M    = parseFloat(document.getElementById('obj-mass').value);
+
+  if (!M || M <= 0 || !isFinite(M)) {
+    alert('Veuillez entrer une masse valide (en kg).');
+    return;
+  }
+
+  // Rayon de Schwarzschild : Rₛ = 2GM/c²
+  const Rs = 2 * G * M / c2;
+
+  // Densité critique : ρ = M / (4/3 π Rₛ³)
+  const Rho = M / (4/3 * Math.PI * Math.pow(Rs, 3));
+
+  // Température de Hawking : T = ℏc³/(8πGMkB)
+  const T = (hb * c * c2) / (8 * Math.PI * G * M * kB);
+
+  // Luminosité de Hawking : L = ℏc⁶/(15360πG²M²)
+  const L = (hb * c4 * c2) / (15360 * Math.PI * G * G * M * M);
+
+  // Temps d'évaporation : t = 5120πG²M³/(ℏc⁴)
+  const tevap = (5120 * Math.PI * G * G * Math.pow(M, 3)) / (hb * c4);
+
+  // ── Affichage ──
+  document.getElementById('res-name').textContent = name;
+
+  // Schwarzschild
+  document.getElementById('res-rs').innerHTML = fmtLength(Rs);
+  document.getElementById('res-rs-sub').innerHTML = rsContext(Rs, M);
+
+  // Température
+  document.getElementById('res-T').innerHTML = fmtTemp(T);
+  document.getElementById('res-T-sub').innerHTML = tempContext(T);
+
+  // Évaporation
+  document.getElementById('res-t').innerHTML = fmtTime(tevap);
+  document.getElementById('res-t-sub').innerHTML = timeContext(tevap);
+
+  // Densité
+  document.getElementById('res-rho').innerHTML = fmtDensity(Rho);
+  document.getElementById('res-rho-sub').innerHTML = rhoContext(Rho);
+
+  // Luminosité
+  document.getElementById('res-L').innerHTML = fmtLuminosity(L);
+  document.getElementById('res-L-sub').innerHTML = 'Rayonnement de Hawking émis';
+
+  // Masse
+  document.getElementById('res-mass').innerHTML = fmtMass(M);
+  document.getElementById('res-mass-sub').innerHTML = massContext(M);
+
+  // Comparaisons
+  buildCompare(M, Rs, T, tevap);
+
+  // Verdict
+  document.getElementById('verdict').innerHTML = buildVerdict(name, M, Rs, T, tevap);
+
+  // Afficher
+  document.getElementById('results').classList.add('visible');
+  document.getElementById('viz-section').classList.add('visible');
+  drawCanvas(M, Rs);
+}
+
+// ─── CONTEXTES ─────────────────────────────────────────────────────────────────
+function rsContext(Rs, M) {
+  if (Rs < 1e-35) return 'Inférieur à la longueur de Planck (1,6×10⁻³⁵ m)';
+  if (Rs < 1e-15) return 'Inférieur au rayon d\'un proton (~10⁻¹⁵ m)';
+  if (Rs < 1e-10) return 'Échelle atomique (~10⁻¹⁰ m)';
+  if (Rs < 1e-3)  return 'Invisible à l\'œil nu';
+  if (Rs < 1)     return 'Quelques centimètres ou millimètres';
+  if (Rs < 1e4)   return `Comparable à une ville de ${fr((Rs/1e3).toFixed(1))} km de rayon`;
+  if (Rs < 6.4e6) return `Fraction du rayon terrestre (R⊕ = 6 371 km)`;
+  if (Rs < 7e8)   return `Fraction du rayon solaire (R☉ = 696 000 km)`;
+  return 'Échelle stellaire ou galactique';
+}
+
+function tempContext(T) {
+  if (T < 1e-10) return 'Plus froid que le fond diffus cosmologique (2,7 K)';
+  if (T < 2.7)   return 'Inférieur à la température du fond diffus cosmologique — impossible à rayonner';
+  if (T < 300)   return `${(T - 273.15).toFixed(1)} °C — température ordinaire`;
+  if (T < 1e6)   return 'Gamme stellaire';
+  if (T < 1e10)  return 'Gamme des supernovæ';
+  if (T > 1e30)  return 'Températures trans-planckiennes — physique inconnue';
+  return 'Rayonnement gamma intense';
+}
+
+function timeContext(t) {
+  const AGE = 4.35e17;
+  if (t < 1e-43) return 'Durée sub-Planck — physique quantique de la gravité requise';
+  if (t < 1e-20) return 'Évaporation quasi instantanée';
+  if (t < 1)     return 'Évaporation en moins d\'une seconde — explosion de Hawking';
+  if (t < 3.156e7) return 'Évaporation en moins d\'un an';
+  if (t < AGE)   return 'Évaporation avant l\'âge actuel de l\'Univers';
+  return 'Survie bien au-delà de l\'âge de l\'Univers (13,8 Ga)';
+}
+
+function rhoContext(rho) {
+  if (rho > 5e96)  return 'Dépasse la densité de Planck — relativité générale non applicable';
+  if (rho > 2e17)  return 'Plus dense qu\'un noyau atomique (~2×10¹⁷ kg/m³)';
+  if (rho > 1e10)  return 'Plus dense que le cœur d\'une étoile à neutrons';
+  if (rho > 1.4e3) return 'Plus dense que l\'acier (7 800 kg/m³)';
+  if (rho > 1)     return `Comparable à l\'eau (1 000 kg/m³) — trous noirs supermassifs`;
+  return 'Moins dense que l\'air — trous noirs supermassifs géants';
+}
+
+function massContext(M) {
+  const MSUN = 1.99e30;
+  if (M < 1e-30) return 'Masse sub-atomique';
+  if (M < 1e-3)  return 'Masse microscopique';
+  if (M < 1e6)   return 'Masse macroscopique courante';
+  if (M < 5.97e24) return 'Masse planétaire';
+  if (M < MSUN)   return `${fmtSci(M/5.97e24)} masses terrestres`;
+  if (M < 1e6*MSUN) return `${fmtSci(M/MSUN)} masses solaires`;
+  return `${fmtSci(M/MSUN)} masses solaires`;
+}
+
+// ─── COMPARAISONS ──────────────────────────────────────────────────────────────
+function buildCompare(M, Rs, T, tevap) {
+  const MSUN   = 1.99e30;
+  const RS_SUN = 2 * G * MSUN / c2;       // ~2958 m
+  const T_CMB  = 2.7;                      // K
+  const AGE_U  = 4.35e17;                  // s
+  const R_EARTH = 6.371e6;
+  const R_SUN   = 6.957e8;
+  const AU      = 1.496e11;
+
+  const items = [];
+
+  // Comparaison Rₛ
+  if (Rs < 1e-15)
+    items.push(['Rₛ vs rayon proton', `${fmtSci(Rs/1e-15)} × r_p`]);
+  else if (Rs < R_EARTH)
+    items.push(['Rₛ vs Terre (R⊕ = 6 371 km)', `${fmtSci(Rs/R_EARTH)} × R⊕`]);
+  else if (Rs < R_SUN)
+    items.push(['Rₛ vs Soleil (R☉ = 696 000 km)', `${fmtSci(Rs/R_SUN)} × R☉`]);
+  else
+    items.push(['Rₛ vs distance Terre-Soleil (1 UA)', `${fmtSci(Rs/AU)} UA`]);
+
+  // Rₛ vs Rₛ⊙
+  items.push(['Rₛ vs Rₛ du Soleil (2,95 km)', `${fmtSci(Rs/RS_SUN)} × Rₛ⊙`]);
+
+  // Masse
+  items.push(['Masse vs Soleil', `${fmtSci(M/MSUN)} M☉`]);
+
+  // Température vs CMB
+  items.push(['Température vs fond diffus (2,7 K)', T > T_CMB
+    ? `${fmtSci(T/T_CMB)} × T_CMB — rayonne`
+    : `${fmtSci(T/T_CMB)} × T_CMB — absorbe le CMB`]);
+
+  // Évaporation vs âge Univers
+  items.push(['Temps d\'évaporation vs âge de l\'Univers (13,8 Ga)',
+    `${fmtSci(tevap/AGE_U)} × t_U`]);
+
+  const container = document.getElementById('compare-items');
+  container.innerHTML = items.map(([label, val]) => `
+    <div class="compare-item">
+      <span class="compare-label">${label}</span>
+      <span class="compare-val">${val}</span>
+    </div>`).join('');
+}
+
+// ─── VERDICT ───────────────────────────────────────────────────────────────────
+function buildVerdict(name, M, Rs, T, tevap) {
+  const MSUN = 1.99e30;
+  const T_CMB = 2.7;
+  const AGE_U = 4.35e17;
+
+  let lines = [];
+
+  // Schwarzschild comment
+  if (Rs < 1e-35) {
+    lines.push(`Le rayon de Schwarzschild de <strong>${name}</strong> est inférieur à la longueur de Planck : la relativité générale s'y effondre, et une théorie quantique de la gravité serait nécessaire pour décrire cet objet.`);
+  } else if (Rs < 1e-10) {
+    lines.push(`Pour transformer <strong>${name}</strong> en trou noir, il faudrait comprimer toute sa masse dans une sphère de rayon Rₛ ≈ ${fmtLength(Rs)} — bien en dessous de l'échelle atomique.`);
+  } else {
+    lines.push(`Le rayon de Schwarzschild de <strong>${name}</strong> vaut ${fmtLength(Rs)}.`);
+  }
+
+  // Hawking evaporation
+  if (T < T_CMB) {
+    lines.push(`Sa température de Hawking (${fmtSci(T)} K) est inférieure à celle du fond diffus cosmologique (2,7 K) : ce trou noir <strong>absorberait</strong> davantage de rayonnement qu'il n'en émet. Il ne s'évapore pas — il grossit.`);
+  } else if (tevap < 1) {
+    lines.push(`Ce trou noir s'évaporerait en <strong>moins d'une seconde</strong> dans une explosion de rayonnement de Hawking intense.`);
+  } else if (tevap < AGE_U) {
+    lines.push(`Il s'évaporerait en ${fmtTime(tevap)}, bien avant l'âge actuel de l'Univers (13,8 Ga).`);
+  } else {
+    lines.push(`Son temps d'évaporation dépasse largement l'âge de l'Univers : ce trou noir serait pratiquement <strong>éternel</strong> à l'échelle cosmologique.`);
+  }
+
+  if (M > MSUN) {
+    lines.push(`Avec ${fmtSci(M/MSUN)} masses solaires, ce trou noir entrerait dans la catégorie des trous noirs <strong>stellaires ou supermassifs</strong>.`);
+  }
+
+  return lines.join('<br><br>');
+}
+
+// ─── CANVAS ────────────────────────────────────────────────────────────────────
+function drawCanvas(M, Rs) {
+  const canvas = document.getElementById('bh-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = '#03010a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Stars
+  ctx.save();
+  for (let i = 0; i < 80; i++) {
+    const x = Math.random() * W, y = Math.random() * H;
+    const r = Math.random() * 1.2;
+    const a = 0.3 + Math.random() * 0.7;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${a})`;
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // ── Objet original (gauche) ──
+  const objX = W * 0.22, objY = H * 0.5;
+  const MSUN = 1.99e30;
+
+  // Rayon visuel de l'objet source — basé sur log de la masse
+  const logM = Math.log10(Math.max(M, 1e-27));
+  const minLog = Math.log10(1e-27), maxLog = Math.log10(1e36);
+  const norm = (logM - minLog) / (maxLog - minLog);
+  const objR = 8 + norm * 55;
+
+  // Couleur selon type
+  // Opacité selon la masse — tout en blanc pur, alpha variable
+  let objAlpha = 0.9;
+  if (M < 1e3)       objAlpha = 0.75;
+  else if (M < 1e20) objAlpha = 0.82;
+  else if (M < 2e24) objAlpha = 0.88;
+  else if (M < 2e31) objAlpha = 0.95;
+  else               objAlpha = 1.0;
+
+  const gradObj = ctx.createRadialGradient(objX, objY, 0, objX, objY, objR);
+  gradObj.addColorStop(0,   `rgba(255,255,255,${objAlpha})`);
+  gradObj.addColorStop(0.6, `rgba(255,255,255,${(objAlpha * 0.6).toFixed(2)})`);
+  gradObj.addColorStop(1,   'rgba(255,255,255,0)');
+  ctx.beginPath();
+  ctx.arc(objX, objY, objR, 0, Math.PI * 2);
+  ctx.fillStyle = gradObj;
+  ctx.fill();
+
+  // Halo
+  const haloR = objR * 1.7;
+  const haloG = ctx.createRadialGradient(objX, objY, objR * 0.5, objX, objY, haloR);
+  haloG.addColorStop(0, `rgba(255,255,255,${(objAlpha * 0.2).toFixed(2)})`);
+  haloG.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.beginPath();
+  ctx.arc(objX, objY, haloR, 0, Math.PI * 2);
+  ctx.fillStyle = haloG;
+  ctx.fill();
+
+  // Label objet
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.font = '11px Space Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('Objet d\'origine', objX, objY + objR + 18);
+
+  // ── Flèche de compression ──
+  const arrowX1 = W * 0.38, arrowX2 = W * 0.52;
+  const midY = H * 0.5;
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(arrowX1, midY);
+  ctx.lineTo(arrowX2 - 10, midY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Tête de flèche
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.beginPath();
+  ctx.moveTo(arrowX2, midY);
+  ctx.lineTo(arrowX2 - 12, midY - 5);
+  ctx.lineTo(arrowX2 - 12, midY + 5);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(255,255,255,0.35)';
+  ctx.font = '10px Space Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('compression', (arrowX1 + arrowX2) / 2, midY - 10);
+
+  // ── Trou noir (droite) ──
+  const bhX = W * 0.72, bhY = H * 0.5;
+
+  // Rayon visuel du trou noir (log de Rₛ)
+  const logRs  = Math.log10(Math.max(Rs, 1e-36));
+  const minRs  = Math.log10(1e-36), maxRs = Math.log10(1e14);
+  const normRs = Math.max(0, Math.min(1, (logRs - minRs) / (maxRs - minRs)));
+  const bhR    = 4 + normRs * 50;
+
+  // Disque d'accrétion
+  const nbRings = 5;
+  for (let i = nbRings; i >= 1; i--) {
+    const r1 = bhR * (1.4 + i * 0.3);
+    const r2 = bhR * (1.4 + (i - 0.3) * 0.3);
+    const alpha = 0.05 + (nbRings - i) * 0.04;
+    const hue = 30 + i * 10;
+    ctx.beginPath();
+    ctx.ellipse(bhX, bhY, r1, r1 * 0.22, 0.3, 0, Math.PI * 2);
+    ctx.strokeStyle = `hsla(${hue},90%,60%,${alpha})`;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
+
+  // Photosphere / couronne
+  const coronaG = ctx.createRadialGradient(bhX, bhY, bhR, bhX, bhY, bhR * 2.5);
+  coronaG.addColorStop(0, 'rgba(255,255,255,0.12)');
+  coronaG.addColorStop(0.4, 'rgba(88,28,135,0.12)');
+  coronaG.addColorStop(1, 'transparent');
+  ctx.beginPath();
+  ctx.arc(bhX, bhY, bhR * 2.5, 0, Math.PI * 2);
+  ctx.fillStyle = coronaG;
+  ctx.fill();
+
+  // Singularité
+  ctx.beginPath();
+  ctx.arc(bhX, bhY, bhR, 0, Math.PI * 2);
+  ctx.fillStyle = '#000000';
+  ctx.fill();
+
+  // Horizon des événements
+  ctx.beginPath();
+  ctx.arc(bhX, bhY, bhR, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Label trou noir
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.font = '11px Space Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('Trou noir', bhX, bhY + Math.max(bhR, 12) + 18);
+  ctx.fillStyle = 'rgba(255,255,255,0.35)';
+  ctx.font = '10px Space Mono, monospace';
+  ctx.fillText('Rₛ = ' + fmtLengthShort(Rs), bhX, bhY + Math.max(bhR, 12) + 32);
+}
+
+function fmtLengthShort(r) {
+  if (r < 1e-35) return '< ℓ_P';
+  if (r < 1e-3)  return fmtSci(r) + ' m';
+  if (r < 1)     return fr((r * 100).toFixed(2)) + ' cm';
+  if (r < 1e3)   return fr(r.toFixed(2)) + ' m';
+  if (r < 1e6)   return fr((r / 1e3).toFixed(2)) + ' km';
+  return fmtSci(r) + ' m';
+}
+</script>
+<footer style="margin-top:48px;padding:32px 24px 24px;border-top:1px solid #2a2a2a;font-family:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;color:#c4c4c4;text-align:center;"><div style="margin-bottom: 18px; font-style: italic; font-size: 12px; opacity:0.8; color:#b8b8b8;">Aucune information n'a été perdue dans le trou noir. Vraiment.</div>
+<div style="margin-bottom:8px;">
+<strong style="color:#f0ece8;font-weight:700;"><a href="https://www.instagram.com/fabrizio.bucella" style="color:#f0ece8;font-weight:700;; text-decoration: none; color: inherit;">Prof. Fabrizio Bucella</a></strong>
+<span style="opacity:0.85;"> · ULB · Physicien</span>
+</div>
+<div style="margin-bottom:12px;">
+<span style="margin:0 6px;">#lasciencepeuttout</span>
+<span style="opacity:0.4;">·</span>
+<span style="margin:0 6px;">#salukes</span>
+</div>
+<div>
+<a href="https://linktr.ee/fabrizio.bucella" style="color:#d0d0d0;text-decoration:none;border-bottom:1px dotted #777;">← Tous mes simulateurs</a>
+</div>
+</footer></body>
+</html>

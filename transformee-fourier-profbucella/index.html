@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;〰️&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #131826;
+    --border: #1f2638;
+    --text: #e8eaf0;
+    --muted: #8892a8;
+    --accent: #ffd23f;
+    --accent2: #ff5e7e;
+    --target: #4cc9f0;
+    --grid: rgba(255, 255, 255, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.5;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 20px; }
+  h1 {
+    font-size: clamp(1.3rem, 2.8vw, 1.9rem);
+    font-weight: 600;
+    margin-bottom: 6px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .subtitle { color: var(--muted); font-size: 0.95rem; }
+
+  .intro {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    font-size: 0.92rem;
+    color: var(--muted);
+  }
+  .intro strong { color: var(--text); }
+
+  .controls {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .presets { display: flex; gap: 6px; flex-wrap: wrap; }
+  button {
+    background: #1c2336;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  button:hover { background: #252d44; border-color: #2e374e; }
+  button.active {
+    background: linear-gradient(135deg, var(--accent2), #d6386f);
+    border-color: transparent;
+  }
+  .play-btn {
+    background: linear-gradient(135deg, var(--accent2), #d6386f);
+    border: none;
+    padding: 8px 16px;
+    font-weight: 500;
+  }
+  .play-btn:hover { filter: brightness(1.1); }
+  .slider-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 220px;
+  }
+  .slider-group label {
+    font-size: 0.85rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .slider-group .val {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    min-width: 28px;
+    text-align: right;
+    font-weight: 600;
+  }
+  input[type="range"] { flex: 1; accent-color: var(--accent); }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  @media (min-width: 900px) {
+    .main-grid { grid-template-columns: 2fr 1fr; }
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .panel h3 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    background: #060912;
+    border-radius: 6px;
+  }
+  #mainCanvas { aspect-ratio: 16 / 9; }
+  #spectrumCanvas { aspect-ratio: 4 / 3; }
+  #harmonicsCanvas { aspect-ratio: 16 / 9; }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .swatch {
+    display: inline-block;
+    width: 18px;
+    height: 3px;
+    border-radius: 2px;
+  }
+  .swatch.target { background: var(--target); }
+  .swatch.recon { background: var(--accent); }
+  .swatch.dashed {
+    background: repeating-linear-gradient(
+      90deg, var(--target) 0 4px, transparent 4px 8px
+    );
+  }
+
+  .formula {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 18px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .formula code {
+    color: var(--accent);
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+  .formula p { margin-bottom: 8px; }
+  .formula p:last-child { margin-bottom: 0; }
+
+  .footer {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+</style>
+<title>Reconstruction de Fourier · Simulateur de physique · Prof. Bucella</title><meta content="Visualisation interactive de la série de Fourier : reconstruisez un signal en additionnant des sinusoïdes une par une. Simulateur du Prof. Fabrizio Bucella, ULB." name="description"/><meta content="Prof. Fabrizio Bucella" name="author"/><meta content="physique, simulateur, Prof. Bucella, ULB, science, lasciencepeuttout, salukes" name="keywords"/><meta content="website" property="og:type"/><meta content="Prof. Fabrizio Bucella" property="og:site_name"/><meta content="Reconstruction de Fourier · Simulateur de physique · Prof. Bucella" property="og:title"/><meta content="Visualisation interactive de la série de Fourier : reconstruisez un signal en additionnant des sinusoïdes une par une. Simulateur du Prof. Fabrizio Bucella, ULB." property="og:description"/><meta content="https://transformee-fourier-profbucella.netlify.app/" property="og:url"/><meta content="https://transformee-fourier-profbucella.netlify.app/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="Reconstruction de Fourier — Simulateur du Prof. Fabrizio Bucella" property="og:image:alt"/><meta content="fr_FR" property="og:locale"/><meta content="summary_large_image" name="twitter:card"/><meta content="Reconstruction de Fourier · Simulateur de physique · Prof. Bucella" name="twitter:title"/><meta content="Visualisation interactive de la série de Fourier : reconstruisez un signal en additionnant des sinusoïdes une par une. Simulateur du Prof. Fabrizio Bucella, ULB." name="twitter:description"/><meta content="https://transformee-fourier-profbucella.netlify.app/og-image.png" name="twitter:image"/><meta content="Reconstruction de Fourier — Simulateur du Prof. Fabrizio Bucella" name="twitter:image:alt"/><meta content="@fabrizio_bucella" name="twitter:creator"/><link href="https://transformee-fourier-profbucella.netlify.app/" rel="canonical"/></head>
+<body>
+<div class="container">
+<header>
+<h1>Reconstruire un signal en additionnant des sinusoïdes</h1>
+<p class="subtitle">La série de Fourier en action : on ajoute les ondes une par une</p>
+</header>
+<div class="intro">
+<p><strong>Idée.</strong> Tout signal périodique se décompose en somme de cosinus et sinus de fréquences entières. Pour une <strong>impulsion étroite</strong> (un quasi-Dirac), toutes les fréquences ont à peu près la même amplitude : les ondes s'additionnent <em>en phase</em> au pic et s'<em>annulent par interférence destructive</em> partout ailleurs. Choisissez un signal et faites glisser K — vous verrez la reconstruction émerger.</p>
+</div>
+<div class="controls">
+<div class="presets">
+<button class="preset-btn active" data-preset="dirac">Impulsion</button>
+<button class="preset-btn" data-preset="square">Créneau</button>
+<button class="preset-btn" data-preset="triangle">Triangle</button>
+<button class="preset-btn" data-preset="sawtooth">Dent de scie</button>
+<button class="preset-btn" data-preset="halfsine">Sinus redressé</button>
+</div>
+<div class="slider-group">
+<label>Harmoniques K =</label>
+<span class="val" id="k-val">1</span>
+<input id="k-slider" max="80" min="0" type="range" value="1"/>
+</div>
+<button class="play-btn" id="play-btn">▶ Reconstruire</button>
+</div>
+<div class="main-grid">
+<div class="panel">
+<h3>Signal cible et reconstruction</h3>
+<canvas id="mainCanvas"></canvas>
+<div class="legend">
+<div class="legend-item"><span class="swatch dashed"></span>Signal cible f(t)</div>
+<div class="legend-item"><span class="swatch recon"></span>Reconstruction avec K harmoniques</div>
+</div>
+</div>
+<div class="panel">
+<h3>Spectre |cₙ|</h3>
+<canvas id="spectrumCanvas"></canvas>
+<p style="font-size: 0.8rem; color: var(--muted); margin-top: 8px;">
+        Hauteur de chaque barre = amplitude de l'harmonique n. Les barres <span style="color: var(--accent)">jaunes</span> sont déjà incluses dans la reconstruction.
+      </p>
+</div>
+</div>
+<div class="panel" style="margin-top: 18px;">
+<h3>Les premières harmoniques additionnées</h3>
+<canvas id="harmonicsCanvas"></canvas>
+<p style="font-size: 0.8rem; color: var(--muted); margin-top: 8px;">
+      Chaque courbe est <code style="color: var(--accent)">aₙ cos(2πnt) + bₙ sin(2πnt)</code> pour n = 1, 2, 3… Leur somme (plus la moyenne a₀) donne la reconstruction du haut.
+    </p>
+</div>
+<div class="formula">
+<p><strong style="color: var(--text)">Le calcul.</strong> Pour un signal réel f(t) de période 1, la série de Fourier est :</p>
+<p style="text-align: center; margin: 10px 0;"><code>f(t) ≈ a₀ + Σₙ₌₁ᴷ [aₙ cos(2πnt) + bₙ sin(2πnt)]</code></p>
+<p>avec <code>aₙ = 2∫₀¹ f(t) cos(2πnt) dt</code> et <code>bₙ = 2∫₀¹ f(t) sin(2πnt) dt</code>. L'amplitude de l'harmonique n est <code>|cₙ| = √(aₙ² + bₙ²)</code>.</p>
+<p><strong style="color: var(--text)">Cas notables.</strong> Impulsion idéale δ(t) : toutes les |cₙ| sont égales (spectre plat). Créneau : |cₙ| ∝ 1/n pour n impair, zéro pour n pair, et on voit apparaître les oscillations de Gibbs aux discontinuités. Triangle : |cₙ| ∝ 1/n² (convergence rapide, le triangle est lisse). Dent de scie : |cₙ| ∝ 1/n.</p>
+</div>
+</div>
+<script>
+"use strict";
+
+// ===== Configuration =====
+const N = 512;  // nombre d'échantillons du signal
+const MAX_K = 80;
+
+// ===== State =====
+let signal = new Float64Array(N);
+let coeffs = { a: new Float64Array(MAX_K + 1), b: new Float64Array(MAX_K + 1), amp: new Float64Array(MAX_K + 1) };
+let K = 1;
+let currentPreset = "dirac";
+let isPlaying = false;
+let playStart = 0;
+
+// ===== Canvas setup with HiDPI =====
+function setupCanvas(canvas) {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  return { ctx, w: rect.width, h: rect.height };
+}
+
+let main, spectrum, harm;
+function resizeAll() {
+  main = setupCanvas(document.getElementById("mainCanvas"));
+  spectrum = setupCanvas(document.getElementById("spectrumCanvas"));
+  harm = setupCanvas(document.getElementById("harmonicsCanvas"));
+  redrawAll();
+}
+window.addEventListener("resize", resizeAll);
+
+// ===== Signal generators =====
+const presets = {
+  dirac: () => {
+    // Pic gaussien centré sur t=0.5, très étroit
+    const sigma = 0.012;
+    const center = 0.5;
+    for (let k = 0; k < N; k++) {
+      const t = k / N;
+      const dt = t - center;
+      signal[k] = Math.exp(-(dt * dt) / (2 * sigma * sigma));
+    }
+  },
+  square: () => {
+    // Créneau : +1 sur [0.25, 0.75], -1 ailleurs (moyenne nulle)
+    for (let k = 0; k < N; k++) {
+      const t = k / N;
+      signal[k] = (t >= 0.25 && t < 0.75) ? 1 : -1;
+    }
+  },
+  triangle: () => {
+    // Triangle : monte de 0 à 1 sur [0, 0.5], redescend à 0 sur [0.5, 1]
+    for (let k = 0; k < N; k++) {
+      const t = k / N;
+      signal[k] = (t < 0.5) ? (2 * t) : (2 - 2 * t);
+    }
+  },
+  sawtooth: () => {
+    // Dent de scie : monte de -1 à 1 sur [0, 1)
+    for (let k = 0; k < N; k++) {
+      const t = k / N;
+      signal[k] = 2 * t - 1;
+    }
+  },
+  halfsine: () => {
+    // Sinusoïde redressée : |sin(πt)| sur [0, 1]
+    for (let k = 0; k < N; k++) {
+      const t = k / N;
+      signal[k] = Math.abs(Math.sin(Math.PI * t));
+    }
+  }
+};
+
+// ===== Compute Fourier coefficients =====
+function computeFourier() {
+  // a_0 = moyenne
+  let sum = 0;
+  for (let k = 0; k < N; k++) sum += signal[k];
+  coeffs.a[0] = sum / N;
+  coeffs.b[0] = 0;
+  coeffs.amp[0] = Math.abs(coeffs.a[0]);
+
+  // a_n et b_n pour n >= 1
+  for (let n = 1; n <= MAX_K; n++) {
+    let ac = 0, bs = 0;
+    for (let k = 0; k < N; k++) {
+      const phi = 2 * Math.PI * n * k / N;
+      ac += signal[k] * Math.cos(phi);
+      bs += signal[k] * Math.sin(phi);
+    }
+    coeffs.a[n] = 2 * ac / N;
+    coeffs.b[n] = 2 * bs / N;
+    coeffs.amp[n] = Math.sqrt(coeffs.a[n] ** 2 + coeffs.b[n] ** 2);
+  }
+}
+
+// ===== Reconstruct signal with K harmonics =====
+function reconstruct(K) {
+  const result = new Float64Array(N);
+  for (let k = 0; k < N; k++) {
+    let val = coeffs.a[0];
+    const tk = k / N;
+    for (let n = 1; n <= K; n++) {
+      const phi = 2 * Math.PI * n * tk;
+      val += coeffs.a[n] * Math.cos(phi) + coeffs.b[n] * Math.sin(phi);
+    }
+    result[k] = val;
+  }
+  return result;
+}
+
+// ===== Signal range (for y-axis) =====
+function signalRange() {
+  let lo = Infinity, hi = -Infinity;
+  for (let k = 0; k < N; k++) {
+    if (signal[k] < lo) lo = signal[k];
+    if (signal[k] > hi) hi = signal[k];
+  }
+  // Petite marge
+  const pad = (hi - lo) * 0.15;
+  return { lo: lo - pad, hi: hi + pad };
+}
+
+// ===== Drawing =====
+function drawMain() {
+  const { ctx, w, h } = main;
+  ctx.clearRect(0, 0, w, h);
+
+  const { lo, hi } = signalRange();
+  const yMin = lo, yMax = hi;
+  const padX = 30, padY = 20;
+  const plotW = w - 2 * padX;
+  const plotH = h - 2 * padY;
+
+  const xOf = (t) => padX + t * plotW;
+  const yOf = (v) => padY + plotH * (1 - (v - yMin) / (yMax - yMin));
+
+  // Grille
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let i = 0; i <= 4; i++) {
+    const x = padX + (i / 4) * plotW;
+    ctx.moveTo(x, padY); ctx.lineTo(x, padY + plotH);
+  }
+  for (let i = 0; i <= 4; i++) {
+    const y = padY + (i / 4) * plotH;
+    ctx.moveTo(padX, y); ctx.lineTo(padX + plotW, y);
+  }
+  ctx.stroke();
+
+  // Axe horizontal y=0 si dans l'intervalle
+  if (yMin < 0 && yMax > 0) {
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padX, yOf(0));
+    ctx.lineTo(padX + plotW, yOf(0));
+    ctx.stroke();
+  }
+
+  // Signal cible (pointillé)
+  ctx.strokeStyle = "#4cc9f0";
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  for (let k = 0; k < N; k++) {
+    const x = xOf(k / N);
+    const y = yOf(signal[k]);
+    if (k === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Reconstruction
+  const recon = reconstruct(K);
+  ctx.strokeStyle = "#ffd23f";
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  for (let k = 0; k < N; k++) {
+    const x = xOf(k / N);
+    const y = yOf(recon[k]);
+    if (k === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Labels d'axes
+  ctx.fillStyle = "#8892a8";
+  ctx.font = "11px -apple-system, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("t = 0", padX, h - 4);
+  ctx.fillText("t = 1", padX + plotW, h - 4);
+  ctx.textAlign = "right";
+  ctx.fillText(yMax.toFixed(2), padX - 4, padY + 4);
+  ctx.fillText(yMin.toFixed(2), padX - 4, padY + plotH);
+}
+
+function drawSpectrum() {
+  const { ctx, w, h } = spectrum;
+  ctx.clearRect(0, 0, w, h);
+
+  const padX = 28, padY = 16;
+  const plotW = w - 2 * padX;
+  const plotH = h - 2 * padY;
+
+  // Max amplitude pour normaliser
+  let maxAmp = 0;
+  for (let n = 0; n <= MAX_K; n++) {
+    if (coeffs.amp[n] > maxAmp) maxAmp = coeffs.amp[n];
+  }
+  if (maxAmp < 1e-9) maxAmp = 1;
+
+  const nBars = MAX_K + 1;
+  const barW = plotW / nBars;
+
+  // Grille
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padX, padY + plotH); ctx.lineTo(padX + plotW, padY + plotH);
+  ctx.stroke();
+
+  for (let n = 0; n <= MAX_K; n++) {
+    const x = padX + n * barW;
+    const barH = (coeffs.amp[n] / maxAmp) * plotH;
+    const y = padY + plotH - barH;
+
+    if (n <= K) {
+      ctx.fillStyle = "#ffd23f";
+    } else {
+      ctx.fillStyle = "rgba(136, 146, 168, 0.35)";
+    }
+    ctx.fillRect(x + 0.5, y, Math.max(barW - 1, 1), barH);
+  }
+
+  // Indicateur visuel : ligne verticale à la position K
+  const kx = padX + (K + 0.5) * barW;
+  ctx.strokeStyle = "rgba(255, 94, 126, 0.6)";
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.moveTo(kx, padY);
+  ctx.lineTo(kx, padY + plotH);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Labels
+  ctx.fillStyle = "#8892a8";
+  ctx.font = "10px -apple-system, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("n = 0", padX, h - 3);
+  ctx.fillText(`n = ${MAX_K}`, padX + plotW, h - 3);
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#ff5e7e";
+  ctx.fillText(`K = ${K}`, kx + 4, padY + 10);
+}
+
+function drawHarmonics() {
+  const { ctx, w, h } = harm;
+  ctx.clearRect(0, 0, w, h);
+
+  // Combien d'harmoniques afficher individuellement (max 8 ou K, whichever smaller)
+  const maxShow = Math.min(8, Math.max(K, 1));
+  const padX = 60, padY = 12;
+  const plotW = w - 2 * padX;
+  const plotH = h - 2 * padY;
+  const rowH = plotH / (maxShow + 1);  // +1 pour la moyenne a_0
+
+  // Échelle commune pour pouvoir comparer visuellement
+  // On utilise comme échelle l'amplitude maximale parmi celles à afficher
+  let maxAmp = Math.abs(coeffs.a[0]);
+  for (let n = 1; n <= maxShow; n++) {
+    if (coeffs.amp[n] > maxAmp) maxAmp = coeffs.amp[n];
+  }
+  if (maxAmp < 1e-9) maxAmp = 1;
+  const halfH = rowH * 0.4;
+
+  const colors = [
+    "#ffd23f", "#ff5e7e", "#4cc9f0", "#90e0ef",
+    "#b5179e", "#f72585", "#7209b7", "#3a0ca3"
+  ];
+
+  // Ligne 0 : moyenne a_0
+  let yBase = padY + rowH * 0.5;
+  ctx.fillStyle = "#8892a8";
+  ctx.font = "11px -apple-system, sans-serif";
+  ctx.textAlign = "right";
+  ctx.fillText(`a₀ = ${coeffs.a[0].toFixed(3)}`, padX - 8, yBase + 4);
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+  ctx.setLineDash([2, 3]);
+  ctx.beginPath();
+  ctx.moveTo(padX, yBase); ctx.lineTo(padX + plotW, yBase); ctx.stroke();
+  ctx.setLineDash([]);
+  // Trait horizontal représentant la constante a_0
+  const offset0 = (coeffs.a[0] / maxAmp) * halfH;
+  ctx.strokeStyle = "#90e0ef";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(padX, yBase - offset0);
+  ctx.lineTo(padX + plotW, yBase - offset0);
+  ctx.stroke();
+
+  // Harmoniques 1 à maxShow
+  for (let n = 1; n <= maxShow; n++) {
+    yBase = padY + rowH * (n + 0.5);
+    const included = n <= K;
+    const color = colors[(n - 1) % colors.length];
+
+    // Label
+    ctx.fillStyle = included ? "#e8eaf0" : "#5a627a";
+    ctx.font = "11px -apple-system, sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText(`n = ${n}`, padX - 8, yBase + 4);
+    ctx.fillStyle = "#8892a8";
+    ctx.font = "10px -apple-system, sans-serif";
+    ctx.fillText(`|c| = ${coeffs.amp[n].toFixed(3)}`, padX - 8, yBase + 16);
+
+    // Ligne médiane
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.10)";
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    ctx.moveTo(padX, yBase); ctx.lineTo(padX + plotW, yBase); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Tracé de aₙ cos(2πnt) + bₙ sin(2πnt)
+    ctx.strokeStyle = included ? color : "rgba(136, 146, 168, 0.3)";
+    ctx.lineWidth = included ? 1.8 : 1;
+    ctx.beginPath();
+    for (let k = 0; k < N; k++) {
+      const t = k / N;
+      const phi = 2 * Math.PI * n * t;
+      const val = coeffs.a[n] * Math.cos(phi) + coeffs.b[n] * Math.sin(phi);
+      const x = padX + t * plotW;
+      const y = yBase - (val / maxAmp) * halfH;
+      if (k === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+}
+
+function redrawAll() {
+  drawMain();
+  drawSpectrum();
+  drawHarmonics();
+}
+
+// ===== Controls =====
+const kSlider = document.getElementById("k-slider");
+const kVal = document.getElementById("k-val");
+const playBtn = document.getElementById("play-btn");
+
+kSlider.addEventListener("input", () => {
+  K = parseInt(kSlider.value);
+  kVal.textContent = K;
+  stopPlay();
+  redrawAll();
+});
+
+document.querySelectorAll(".preset-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentPreset = btn.dataset.preset;
+    presets[currentPreset]();
+    computeFourier();
+    redrawAll();
+  });
+});
+
+function stopPlay() {
+  if (isPlaying) {
+    isPlaying = false;
+    playBtn.textContent = "▶ Reconstruire";
+  }
+}
+
+function playLoop(now) {
+  if (!isPlaying) return;
+  const elapsed = (now - playStart) / 1000;
+  // 1 harmonique toutes les 180ms
+  const newK = Math.min(MAX_K, Math.floor(elapsed / 0.18));
+  if (newK !== K) {
+    K = newK;
+    kSlider.value = K;
+    kVal.textContent = K;
+    redrawAll();
+  }
+  if (K >= MAX_K) {
+    stopPlay();
+    return;
+  }
+  requestAnimationFrame(playLoop);
+}
+
+playBtn.addEventListener("click", () => {
+  if (isPlaying) {
+    stopPlay();
+  } else {
+    K = 0;
+    kSlider.value = 0;
+    kVal.textContent = 0;
+    redrawAll();
+    isPlaying = true;
+    playBtn.textContent = "⏸ Pause";
+    playStart = performance.now();
+    requestAnimationFrame(playLoop);
+  }
+});
+
+// ===== Init =====
+window.addEventListener("load", () => {
+  resizeAll();
+  presets.dirac();
+  computeFourier();
+  redrawAll();
+});
+</script>
+<footer style="margin-top:48px;padding:32px 24px 24px;border-top:1px solid #2a2a2a;font-family:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;color:#c4c4c4;text-align:center;"><div style="margin-bottom: 18px; font-style: italic; font-size: 12px; opacity:0.8; color:#b8b8b8;">Aucune harmonique n'a été additionnée sans son consentement.</div>
+<div style="margin-bottom:8px;">
+<a href="https://www.instagram.com/fabrizio.bucella" style="color:#f0ece8;font-weight:700;text-decoration:none;">Prof. Fabrizio Bucella</a>
+<span style="opacity:0.85;"> · ULB · Physicien</span>
+</div>
+<div style="margin-bottom:12px;">
+<span style="margin:0 6px;">#lasciencepeuttout</span>
+<span style="opacity:0.4;">·</span>
+<span style="margin:0 6px;">#salukes</span>
+</div>
+<div>
+<a href="https://linktr.ee/fabrizio.bucella" style="color:#d0d0d0;text-decoration:none;border-bottom:1px dotted #777;">← Tous mes simulateurs</a>
+</div>
+</footer></body>
+</html>

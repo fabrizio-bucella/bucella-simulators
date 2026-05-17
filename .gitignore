@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+._*
+
+# Editeurs
+.vscode/
+.idea/
+*.swp
+
+# Système
+Thumbs.db
+desktop.ini
+
+# Backups locaux
+*~
+*.bak

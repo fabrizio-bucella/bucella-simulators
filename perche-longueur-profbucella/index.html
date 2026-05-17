@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="dark" name="color-scheme"/>
+<meta content="dark" name="supported-color-schemes"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🤸&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  html, body {
+    background-color: #0c0c0c;
+    color: #f0ece8;
+  }
+  :root {
+    color-scheme: dark;
+    --bg:     #0c0c0c;
+    --card:   #1a1a1a;
+    --border: rgba(255,255,255,0.22);
+    --text:   #f0ece8;
+    --muted:  #aaa;
+    --mid:    #ccc;
+    --font:   'Space Mono', monospace;
+  }
+
+  body { min-height: 100vh; background: var(--bg); color: var(--text); forced-color-adjust: none; font-family: var(--font); -webkit-font-smoothing: antialiased; }
+
+  /* Header */
+  .header { border-bottom: 1px solid var(--border); padding: 32px 24px 28px; text-align: center; }
+  .header-tag { font-size: 9px; letter-spacing: 0.25em; color: var(--mid); margin-bottom: 10px; text-transform: uppercase; }
+  .header h1 { font-size: clamp(20px, 4vw, 30px); font-weight: 700; margin: 0 0 8px; line-height: 1.2; }
+  .header-sub { color: var(--mid); font-size: 12px; }
+  .header-hash { color: var(--mid); font-size: 11px; margin-top: 6px; }
+  .header-hash a { color: var(--muted); text-decoration: none; }
+  .header-hash a:hover { color: var(--mid); }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .grid-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
+
+  /* Cards */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 2px; padding: 18px; }
+  .card-title { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mid); margin-bottom: 14px; }
+
+  /* Chips */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    -webkit-appearance: none; appearance: none;
+    padding: 5px 11px; border-radius: 1px; border: 1px solid var(--border);
+    cursor: pointer; font-size: 11px; font-family: var(--font);
+    background: var(--card); color: var(--mid); transition: all 0.15s; outline: none;
+  }
+  .chip.active-blue, .chip.active-green { background: var(--text); border-color: var(--text); color: var(--bg); }
+  .chip:hover:not(.active-blue):not(.active-green) { border-color: var(--text); color: var(--text); }
+
+  /* Sliders */
+  .slider-row { margin-bottom: 10px; }
+  .slider-header { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; }
+  .slider-label { color: var(--text); opacity: 0.7; }
+  .slider-value { font-weight: 700; color: var(--text); }
+  .slider-value.highlight { color: var(--text); }
+  input[type=range] { width: 100%; accent-color: #fff; cursor: pointer; }
+  .g-info { font-size: 10px; color: var(--mid); margin-top: 6px; }
+
+  /* Result cards */
+  .result-card { background: var(--bg); border: 1px solid var(--border); border-radius: 2px; padding: 12px; text-align: center; }
+  .result-card.big { padding: 16px; }
+  .result-label { font-size: 9px; color: var(--muted); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 6px; }
+  .result-val { font-weight: 700; font-family: var(--font); line-height: 1.1; color: var(--text); }
+  .result-unit { font-size: 11px; color: var(--mid); margin-top: 4px; }
+
+  /* Canvas */
+  .canvas-card { height: clamp(260px, 40vw, 380px); padding: 12px; margin-bottom: 20px; }
+  canvas { width: 100%; height: 100%; display: block; }
+
+  /* Comparison buttons — vert/rouge conservés : signal fonctionnel bat/ne bat pas */
+  .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 6px; }
+  .comp-btn {
+    -webkit-appearance: none; appearance: none;
+    display: flex; align-items: center; gap: 8px; padding: 7px 11px;
+    border-radius: 2px; cursor: pointer; text-align: left;
+    font-size: 11px; font-family: var(--font); transition: all 0.15s; outline: none;
+    background: var(--card); border: 1px solid var(--border); color: var(--mid);
+  }
+  .comp-btn .emoji { font-size: 15px; }
+  .comp-btn .clabel { flex: 1; }
+  .comp-btn .cdist { font-weight: 700; color: var(--muted); }
+  .comp-btn.on-beat { border-color: rgba(46,204,113,0.4); color: var(--text); }
+  .comp-btn.on-beat .cdist { color: #2ecc71; }
+  .comp-btn.on-miss { border-color: rgba(231,76,60,0.35); color: var(--text); }
+  .comp-btn.on-miss .cdist { color: #e74c3c; }
+
+  /* Formula */
+  .formula-card { margin-top: 14px; }
+  .formula-body { font-size: 12px; line-height: 2; color: var(--text); opacity: 0.85; }
+  .formula-body strong.green { color: var(--text); }
+  .formula-body strong.blue  { color: var(--text); }
+  .formula-body strong.red   { color: var(--text); font-size: 15px; }
+  .formula-box {
+    margin-top: 10px; padding: 8px 12px;
+    background: rgba(255,255,255,0.04); border-radius: 2px; border: 1px solid var(--border);
+  }
+  .formula-box strong { color: var(--text); }
+
+  /* Footer */
+  .footer { text-align: center; margin-top: 32px; padding: 20px 16px 28px; border-top: 1px solid var(--border); color: var(--mid); font-size: 11px; letter-spacing: 0.06em; line-height: 2; }
+  .footer a { color: var(--mid); text-decoration: none; transition: color 0.2s; }
+  .footer a:hover { color: var(--text); }
+</style>
+<title>Saut à la perche → longueur · Simulateur de physique · Prof. Bucella</title><meta content="Et si l'énergie du saut à la perche propulsait horizontalement ? Duplantis battrait-il le record du monde de saut en longueur ? Simulateur du Prof. Fabrizio Bucella, ULB." name="description"/><meta content="Prof. Fabrizio Bucella" name="author"/><meta content="physique, simulateur, Prof. Bucella, ULB, science, lasciencepeuttout" name="keywords"/><meta content="website" property="og:type"/><meta content="Prof. Fabrizio Bucella" property="og:site_name"/><meta content="Saut à la perche → longueur · Simulateur de physique · Prof. Bucella" property="og:title"/><meta content="Et si l'énergie du saut à la perche propulsait horizontalement ? Duplantis battrait-il le record du monde de saut en longueur ? Simulateur du Prof. Fabrizio Bucella, ULB." property="og:description"/><meta content="https://perche-longueur-profbucella.netlify.app/" property="og:url"/><meta content="https://perche-longueur-profbucella.netlify.app/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="Saut à la perche → saut en longueur — Simulateur du Prof. Fabrizio Bucella" property="og:image:alt"/><meta content="fr_FR" property="og:locale"/><meta content="summary_large_image" name="twitter:card"/><meta content="Saut à la perche → longueur · Simulateur de physique · Prof. Bucella" name="twitter:title"/><meta content="Et si l'énergie du saut à la perche propulsait horizontalement ? Duplantis battrait-il le record du monde de saut en longueur ? Simulateur du Prof. Fabrizio Bucella, ULB." name="twitter:description"/><meta content="https://perche-longueur-profbucella.netlify.app/og-image.png" name="twitter:image"/><meta content="Saut à la perche → saut en longueur — Simulateur du Prof. Fabrizio Bucella" name="twitter:image:alt"/><meta content="@fabrizio_bucella" name="twitter:creator"/><link href="https://perche-longueur-profbucella.netlify.app/" rel="canonical"/></head>
+<body>
+<div class="header">
+<div class="header-tag">Simulateur de physique</div>
+<h1>La perche → saut en longueur</h1>
+<p class="header-sub">Et si l'énergie du saut à la perche propulsait horizontalement ?</p>
+<p class="header-hash"><a href="https://linktr.ee/fabrizio.bucella" rel="noopener" target="_blank">@fabrizio_bucella</a> · #physique · #lasciencepeuttout</p>
+</div>
+<div class="container">
+<!-- Controls -->
+<div class="grid2">
+<!-- Athlete -->
+<div class="card">
+<div class="card-title">🏃 Athlète</div>
+<div class="chips" id="athlete-chips"></div>
+<div id="custom-sliders" style="display:none; margin-top:12px;">
+<div class="slider-row">
+<div class="slider-header"><span class="slider-label">Barre</span><span class="slider-value" id="val-bar">5.00 m</span></div>
+<input id="sl-bar" max="8" min="3" step="0.01" type="range" value="5"/>
+</div>
+<div class="slider-row">
+<div class="slider-header"><span class="slider-label">Taille</span><span class="slider-value" id="val-height">1.80 m</span></div>
+<input id="sl-height" max="2.10" min="1.50" step="0.01" type="range" value="1.80"/>
+</div>
+</div>
+</div>
+<!-- Physics -->
+<div class="card">
+<div class="card-title">⚙️ Paramètres physiques</div>
+<div class="slider-row">
+<div class="slider-header"><span class="slider-label">Angle de lancement</span><span class="slider-value" id="val-angle">45°</span></div>
+<input id="sl-angle" max="85" min="5" step="1" type="range" value="45"/>
+</div>
+<div class="slider-row">
+<div class="slider-header"><span class="slider-label">Rendement perche</span><span class="slider-value" id="val-eff">100 %</span></div>
+<input id="sl-eff" max="120" min="50" step="1" type="range" value="100"/>
+</div>
+<div class="chips" id="planet-chips" style="margin-top:10px;"></div>
+<div class="g-info" id="g-info">g = 9.81 m/s²</div>
+</div>
+</div>
+<!-- Results -->
+<div class="grid-results" id="results"></div>
+<!-- Trajectory -->
+<div class="card canvas-card">
+<canvas id="trajectory"></canvas>
+</div>
+<!-- Comparisons -->
+<div class="card">
+<div class="card-title">📏 Points de comparaison</div>
+<div class="comp-grid" id="comp-grid"></div>
+</div>
+<!-- Formula -->
+<div class="card formula-card">
+<div class="card-title">📐 La physique derrière</div>
+<div class="formula-body" id="formula"></div>
+</div>
+</div>
+<script>
+const ATHLETES = [
+  { name: "Duplantis (6,31 m)", height: 1.81, bar: 6.31 },
+  { name: "Lavillenie (6,16 m)", height: 1.77, bar: 6.16 },
+  { name: "Bubka (6,15 m)", height: 1.83, bar: 6.15 },
+  { name: "Personnalisé", height: 1.80, bar: 5.00 },
+];
+const PLANETS = [
+  { name: "Terre", g: 9.81, emoji: "🌍" },
+  { name: "Lune", g: 1.62, emoji: "🌙" },
+  { name: "Mercure", g: 3.70, emoji: "☿️" },
+  { name: "Mars", g: 3.72, emoji: "🔴" },
+  { name: "Jupiter", g: 24.79, emoji: "🟠" },
+  { name: "Neptune", g: 11.15, emoji: "🔵" },
+  { name: "Pluton", g: 0.62, emoji: "⚫" },
+  { name: "Titan", g: 1.35, emoji: "🪐" },
+  { name: "Europa", g: 1.31, emoji: "🧊" },
+];
+const COMPARISONS = [
+  { label: "Kangourou (saut)", dist: 12.8, emoji: "🦘" },
+  { label: "Record saut en longueur (Powell, 1991)", dist: 8.95, emoji: "🏅" },
+  { label: "Record triple saut (Edwards, 1995)", dist: 18.29, emoji: "🏅" },
+  { label: "Autobus (longueur)", dist: 12.0, emoji: "🚌" },
+  { label: "Terrain de basket (largeur)", dist: 15.0, emoji: "🏀" },
+  { label: "Baleine bleue (longueur)", dist: 30.0, emoji: "🐋" },
+  { label: "Largeur piscine olympique", dist: 25.0, emoji: "🏊" },
+  { label: "Longueur Boeing 737", dist: 33.4, emoji: "✈️" },
+  { label: "Puce (saut × échelle humaine)", dist: 0.33, emoji: "🪲" },
+  { label: "Grenouille (record saut)", dist: 6.1, emoji: "🐸" },
+];
+
+let state = {
+  athleteIdx: 0, planetIdx: 0,
+  customBar: 5.0, customHeight: 1.80,
+  angle: 45, efficiency: 100,
+  activeComps: new Set([0, 1, 3, 9]),
+};
+
+function getPhysics() {
+  const a = ATHLETES[state.athleteIdx];
+  const bar = state.athleteIdx === 3 ? state.customBar : a.bar;
+  const h = state.athleteIdx === 3 ? state.customHeight : a.height;
+  const gPlanet = PLANETS[state.planetIdx].g;
+  const gEarth = 9.81;
+  const com = h * 0.55;
+  const dh = bar - com;
+  if (dh <= 0) return { v: 0, range: 0, maxH: 0, dh: 0, com, tFlight: 0, bar, h, g: gPlanet, gEarth };
+  const v2 = 2 * gEarth * dh * (state.efficiency / 100);
+  const v = Math.sqrt(v2);
+  const rad = state.angle * Math.PI / 180;
+  const vx = v * Math.cos(rad), vy = v * Math.sin(rad);
+  const tFlight = 2 * vy / gPlanet;
+  const range = vx * tFlight;
+  const maxH = vy * vy / (2 * gPlanet);
+  return { v, range, maxH, dh, com, tFlight, bar, h, g: gPlanet, gEarth };
+}
+
+// --- Build UI ---
+function buildChips(containerId, items, activeIdx, activeClass, labelFn, onClick) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  items.forEach((item, i) => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (i === activeIdx ? ' ' + activeClass : '');
+    b.textContent = labelFn(item);
+    b.onclick = () => onClick(i);
+    c.appendChild(b);
+  });
+}
+
+function buildComps() {
+  const c = document.getElementById('comp-grid');
+  c.innerHTML = '';
+  const p = getPhysics();
+  COMPARISONS.forEach((comp, i) => {
+    const active = state.activeComps.has(i);
+    const beaten = p.range >= comp.dist;
+    const b = document.createElement('button');
+    b.className = 'comp-btn' + (active ? (beaten ? ' on-beat' : ' on-miss') : '');
+    b.innerHTML = `<span class="emoji">${comp.emoji}</span><span class="clabel">${comp.label}</span><span class="cdist">${comp.dist} m${active ? (beaten ? ' ✓' : ' ✗') : ''}</span>`;
+    b.onclick = () => { state.activeComps.has(i) ? state.activeComps.delete(i) : state.activeComps.add(i); update(); };
+    c.appendChild(b);
+  });
+}
+
+function buildResults() {
+  const p = getPhysics();
+  const items = [
+    { label: "Portée",         val: p.range.toFixed(2),        unit: "m",    big: true },
+    { label: "Vitesse d'élan", val: p.v.toFixed(1),            unit: "m/s"  },
+    { label: "Vitesse d'élan", val: (p.v * 3.6).toFixed(1),   unit: "km/h" },
+    { label: "Élévation Δh",   val: p.dh.toFixed(2),          unit: "m"    },
+    { label: "Apex trajectoire",val: p.maxH.toFixed(2),        unit: "m"    },
+    { label: "Temps de vol",   val: p.tFlight.toFixed(2),      unit: "s"    },
+  ];
+  const c = document.getElementById('results');
+  c.innerHTML = '';
+  items.forEach(r => {
+    const d = document.createElement('div');
+    d.className = 'result-card' + (r.big ? ' big' : '');
+    d.innerHTML = `<div class="result-label">${r.label}</div><div class="result-val" style="font-size:${r.big ? 30 : 22}px">${r.val}</div><div class="result-unit">${r.unit}</div>`;
+    c.appendChild(d);
+  });
+}
+
+function buildFormula() {
+  const p = getPhysics();
+  const eff = state.efficiency;
+  const ang = state.angle;
+  const isEarth = state.planetIdx === 0;
+  const planetName = PLANETS[state.planetIdx].emoji + ' ' + PLANETS[state.planetIdx].name;
+  let html = '';
+  html += `Centre de masse : h_cm = ${p.com.toFixed(2)} m (≈ 55 % de ${p.h.toFixed(2)} m)<br>`;
+  html += `Élévation : Δh = ${p.bar.toFixed(2)} − ${p.com.toFixed(2)} = <strong class="green">${p.dh.toFixed(2)} m</strong><br><br>`;
+  html += `½mv² = mg<sub>Terre</sub>·Δh${eff !== 100 ? ' × η (' + eff + ' %)' : ''} → v = √(2×9,81×${p.dh.toFixed(2)}${eff !== 100 ? '×η' : ''}) = <strong class="blue">${p.v.toFixed(2)} m/s</strong><br>`;
+  if (!isEarth) html += `<span style="color:rgba(255,255,255,0.4)">(énergie stockée sur Terre, trajectoire sur ${planetName}, g = ${p.g} m/s²)</span><br>`;
+  html += `<br>R = v²·sin(2θ) / g${!isEarth ? '<sub>' + PLANETS[state.planetIdx].name + '</sub>' : ''} = ${p.v.toFixed(2)}²·sin(${2 * ang}°) / ${p.g}<br>`;
+  html += `R = <strong class="red">${p.range.toFixed(2)} m</strong>`;
+  if (ang === 45 && isEarth) {
+    html += `<div class="formula-box">À 45°, sin(90°) = 1 → R = v²/g = 2·Δh${eff !== 100 ? '·η' : ''} = <strong>${p.range.toFixed(2)} m</strong> — la portée est${eff === 100 ? ' exactement' : ''} ${eff === 100 ? 'le double' : (p.range / p.dh).toFixed(2) + '×'} de Δh !</div>`;
+  } else if (ang === 45 && !isEarth) {
+    html += `<div class="formula-box">À 45° : R = v²/g = 2·g<sub>Terre</sub>·Δh / g<sub>${PLANETS[state.planetIdx].name}</sub>${eff !== 100 ? '·η' : ''} = 2×9,81×${p.dh.toFixed(2)} / ${p.g} = <strong>${p.range.toFixed(2)} m</strong> — facteur ×${(9.81 / p.g).toFixed(1)} par rapport à la Terre !</div>`;
+  }
+  document.getElementById('formula').innerHTML = html;
+}
+
+function drawTrajectory() {
+  const canvas = document.getElementById('trajectory');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+  const W = rect.width, H = rect.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const p = getPhysics();
+  const activeComps = [...state.activeComps].map(i => COMPARISONS[i]);
+  const pad = { left: 50, right: 30, top: 30, bottom: 50 };
+  const plotW = W - pad.left - pad.right;
+  const plotH = H - pad.top - pad.bottom;
+  const maxX = Math.max(p.range * 1.15, ...activeComps.map(c => c.dist * 1.05), 10);
+  const maxY = Math.max(p.maxH * 1.3, 5);
+  const toX = x => pad.left + (x / maxX) * plotW;
+  const toY = y => pad.top + plotH - (y / maxY) * plotH;
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1;
+  const xStep = maxX > 30 ? 10 : maxX > 15 ? 5 : maxX > 6 ? 2 : 1;
+  for (let x = 0; x <= maxX; x += xStep) { ctx.beginPath(); ctx.moveTo(toX(x), pad.top); ctx.lineTo(toX(x), pad.top + plotH); ctx.stroke(); }
+  const yStep = maxY > 20 ? 5 : maxY > 8 ? 2 : 1;
+  for (let y = 0; y <= maxY; y += yStep) { ctx.beginPath(); ctx.moveTo(pad.left, toY(y)); ctx.lineTo(pad.left + plotW, toY(y)); ctx.stroke(); }
+
+  // Axes
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(pad.left, pad.top + plotH); ctx.lineTo(pad.left + plotW, pad.top + plotH); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, pad.top + plotH); ctx.stroke();
+
+  ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.font = "11px 'Space Mono', monospace"; ctx.textAlign = 'center';
+  for (let x = 0; x <= maxX; x += xStep) ctx.fillText(x + '', toX(x), pad.top + plotH + 18);
+  ctx.textAlign = 'right';
+  for (let y = 0; y <= maxY; y += yStep) ctx.fillText(y + '', pad.left - 8, toY(y) + 4);
+  ctx.save(); ctx.translate(14, pad.top + plotH / 2); ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = 'center'; ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.fillText('hauteur (m)', 0, 0); ctx.restore();
+  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.textAlign = 'center'; ctx.fillText('distance (m)', pad.left + plotW / 2, H - 8);
+
+  // Comparisons
+  activeComps.forEach(c => {
+    if (c.dist > maxX) return;
+    const cx = toX(c.dist);
+    ctx.strokeStyle = c.dist <= p.range ? 'rgba(46,204,113,0.3)' : 'rgba(231,76,60,0.25)';
+    ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx, pad.top); ctx.lineTo(cx, pad.top + plotH); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.save(); ctx.translate(cx, pad.top + 8); ctx.rotate(-Math.PI / 4);
+    ctx.fillStyle = c.dist <= p.range ? 'rgba(46,204,113,0.7)' : 'rgba(231,76,60,0.6)';
+    ctx.font = "10px 'Space Mono', monospace"; ctx.textAlign = 'left';
+    const lbl = c.emoji + ' ' + c.label;
+    ctx.fillText(lbl.length > 30 ? lbl.slice(0, 28) + '…' : lbl, 0, 0);
+    ctx.restore();
+  });
+
+  // Trajectory
+  if (p.v > 0) {
+    const vx = p.v * Math.cos(state.angle * Math.PI / 180);
+    const vy = p.v * Math.sin(state.angle * Math.PI / 180);
+    const tT = 2 * vy / p.g;
+    const steps = 200;
+    // Glow
+    ctx.strokeStyle = 'rgba(52,152,219,0.15)'; ctx.lineWidth = 12;
+    ctx.beginPath();
+    for (let i = 0; i <= steps; i++) { const t = i / steps * tT; const x = vx * t; const y = vy * t - 0.5 * p.g * t * t; i === 0 ? ctx.moveTo(toX(x), toY(y)) : ctx.lineTo(toX(x), toY(y)); }
+    ctx.stroke();
+    // Main
+    const grad = ctx.createLinearGradient(toX(0), 0, toX(p.range), 0);
+    grad.addColorStop(0, '#3498db'); grad.addColorStop(0.5, '#2ecc71'); grad.addColorStop(1, '#e74c3c');
+    ctx.strokeStyle = grad; ctx.lineWidth = 3; ctx.beginPath();
+    for (let i = 0; i <= steps; i++) { const t = i / steps * tT; const x = vx * t; const y = vy * t - 0.5 * p.g * t * t; i === 0 ? ctx.moveTo(toX(x), toY(y)) : ctx.lineTo(toX(x), toY(y)); }
+    ctx.stroke();
+    // Landing
+    ctx.beginPath(); ctx.arc(toX(p.range), toY(0), 6, 0, 2 * Math.PI);
+    ctx.fillStyle = '#e74c3c'; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.font = "bold 13px 'Space Mono', monospace"; ctx.textAlign = 'center';
+    ctx.fillText(p.range.toFixed(2) + ' m', toX(p.range), toY(0) + 22);
+    // Apex
+    ctx.beginPath(); ctx.arc(toX(p.range / 2), toY(p.maxH), 4, 0, 2 * Math.PI);
+    ctx.fillStyle = '#2ecc71'; ctx.fill();
+    ctx.fillStyle = 'rgba(46,204,113,0.8)'; ctx.font = "11px 'Space Mono', monospace";
+    ctx.fillText('apex : ' + p.maxH.toFixed(2) + ' m', toX(p.range / 2), toY(p.maxH) - 10);
+  }
+}
+
+function updateSliderLabels() {
+  document.getElementById('val-angle').textContent = state.angle + '°';
+  document.getElementById('val-angle').className = 'slider-value' + (state.angle === 45 ? ' highlight' : '');
+  document.getElementById('val-eff').textContent = state.efficiency + ' %';
+  document.getElementById('val-bar').textContent = state.customBar.toFixed(2) + ' m';
+  document.getElementById('val-height').textContent = state.customHeight.toFixed(2) + ' m';
+  document.getElementById('custom-sliders').style.display = state.athleteIdx === 3 ? 'block' : 'none';
+  document.getElementById('g-info').textContent = 'g = ' + PLANETS[state.planetIdx].g + ' m/s²';
+}
+
+function update() {
+  buildChips('athlete-chips', ATHLETES, state.athleteIdx, 'active-blue', a => a.name, i => { state.athleteIdx = i; update(); });
+  buildChips('planet-chips', PLANETS, state.planetIdx, 'active-green', p => p.emoji + ' ' + p.name, i => { state.planetIdx = i; update(); });
+  updateSliderLabels();
+  buildResults();
+  buildComps();
+  buildFormula();
+  drawTrajectory();
+}
+
+// Slider bindings
+document.getElementById('sl-angle').addEventListener('input', e => { state.angle = +e.target.value; update(); });
+document.getElementById('sl-eff').addEventListener('input', e => { state.efficiency = +e.target.value; update(); });
+document.getElementById('sl-bar').addEventListener('input', e => { state.customBar = +e.target.value; update(); });
+document.getElementById('sl-height').addEventListener('input', e => { state.customHeight = +e.target.value; update(); });
+
+// Resize
+window.addEventListener('resize', () => drawTrajectory());
+
+// Init
+update();
+</script>
+<footer style="margin-top:48px;padding:32px 24px 24px;border-top:1px solid #2a2a2a;font-family:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;color:#c4c4c4;text-align:center;"><div style="margin-bottom: 18px; font-style: italic; font-size: 12px; opacity:0.8; color:#b8b8b8;">Aucun perchiste n'a été maltraité dans cette simulation.</div>
+<div style="margin-bottom:8px;">
+<strong style="color:#f0ece8;font-weight:700;"><a href="https://www.instagram.com/fabrizio.bucella" style="color:#f0ece8;font-weight:700;; text-decoration: none; color: inherit;">Prof. Fabrizio Bucella</a></strong>
+<span style="opacity:0.85;"> · ULB · Physicien</span>
+</div>
+<div style="margin-bottom:12px;">
+<span style="margin:0 6px;">#lasciencepeuttout</span>
+<span style="opacity:0.4;">·</span>
+<span style="margin:0 6px;">#salukes</span>
+</div>
+<div>
+<a href="https://linktr.ee/fabrizio.bucella" style="color:#d0d0d0;text-decoration:none;border-bottom:1px dotted #777;">← Tous mes simulateurs</a>
+</div>
+</footer></body>
+</html>

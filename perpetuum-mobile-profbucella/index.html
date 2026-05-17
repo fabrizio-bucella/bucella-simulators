@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;🪫&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500&display=swap');
+  :root{--bg:#0e0e10;--bg2:#16161a;--bg3:#1e1e24;--border:#2a2a35;--text:#e8e6f0;--muted:#7a7890;--accent:#f5c842;--mp1:#e8543a;--mp2:#4e9eff;--fraud:#c084fc}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+  header{padding:1.4rem 1.8rem;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:1.1rem}
+  .logo{width:46px;height:46px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:0 0 0 3px rgba(245,200,66,.2)}
+  .htitle{font-family:'Space Mono',ui-monospace,monospace;font-weight:800;font-size:1.25rem;letter-spacing:-.02em}
+  .hsub{font-size:.73rem;color:var(--muted);font-family:'DM Mono',monospace;margin-top:.2rem;letter-spacing:.04em}
+  .layout{display:grid;grid-template-columns:245px 1fr;min-height:calc(100vh - 75px)}
+  .sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:1.2rem .9rem;overflow-y:auto}
+  .slabel{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;padding:0 .4rem;margin-bottom:.7rem}
+  .mbtn{width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:9px;padding:.65rem .8rem;cursor:pointer;margin-bottom:.28rem;display:flex;align-items:center;gap:.65rem;color:var(--text);font-family:'DM Sans',sans-serif;transition:all .14s}
+  .mbtn:hover{background:var(--bg3);border-color:var(--border)}
+  .mbtn.active{background:var(--bg3);border-color:var(--accent)}
+  .mbtn.active .bname{color:var(--accent);font-weight:500}
+  .badge{font-family:'DM Mono',monospace;font-size:.58rem;font-weight:500;padding:.13rem .4rem;border-radius:4px;flex-shrink:0;letter-spacing:.03em}
+  .badge.mp1{background:rgba(232,84,58,.18);color:var(--mp1);border:1px solid rgba(232,84,58,.3)}
+  .badge.mp2{background:rgba(78,158,255,.15);color:var(--mp2);border:1px solid rgba(78,158,255,.25)}
+  .badge.fraud{background:rgba(192,132,252,.15);color:var(--fraud);border:1px solid rgba(192,132,252,.25)}
+  .bname{font-size:.81rem;line-height:1.2;flex:1}
+  .bdate{font-size:.67rem;color:var(--muted);font-family:'DM Mono',monospace}
+  .main{padding:1.8rem 2rem;overflow-y:auto}
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.6rem;margin-bottom:1.1rem}
+  .toprow{display:flex;justify-content:space-between;align-items:flex-start;gap:1.2rem}
+  .mname{font-family:'Space Mono',ui-monospace,monospace;font-weight:800;font-size:1.75rem;letter-spacing:-.03em;line-height:1.1;margin-bottom:.45rem}
+  .mmeta{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem;align-items:center}
+  .chip{font-family:'DM Mono',monospace;font-size:.68rem;padding:.22rem .6rem;border-radius:5px;background:var(--bg3);border:1px solid var(--border);color:var(--muted)}
+  .tagline{font-size:.94rem;color:var(--muted);font-style:italic;line-height:1.5}
+  .tbadge{font-family:'Space Mono',ui-monospace,monospace;font-weight:800;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;padding:.55rem .9rem;border-radius:9px;text-align:center;white-space:nowrap;line-height:1.5}
+  .tbadge.mp1{background:rgba(232,84,58,.15);color:var(--mp1);border:2px solid rgba(232,84,58,.4)}
+  .tbadge.mp2{background:rgba(78,158,255,.12);color:var(--mp2);border:2px solid rgba(78,158,255,.3)}
+  .tbadge.fraud{background:rgba(192,132,252,.12);color:var(--fraud);border:2px solid rgba(192,132,252,.3)}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin-bottom:1.1rem}
+  .icard{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:1.1rem}
+  .stitle{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.65rem;display:flex;align-items:center;gap:.45rem}
+  .stitle::after{content:'';flex:1;height:1px;background:var(--border)}
+  .btext{font-size:.86rem;line-height:1.75;color:#c8c6d8}
+  .eqbox{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 7px 7px 0;padding:.8rem 1.1rem;font-family:'DM Mono',monospace;font-size:.95rem;color:var(--accent);margin:.45rem 0;letter-spacing:.02em}
+  .verdict{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:1.1rem 1.3rem;display:flex;gap:.8rem;align-items:flex-start;margin-bottom:1.1rem}
+  .vicon{font-size:1.3rem;flex-shrink:0;margin-top:.05rem}
+  .vlabel{font-family:'Space Mono',ui-monospace,monospace;font-weight:700;font-size:.76rem;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.28rem}
+  .vlabel.mp1{color:var(--mp1)}.vlabel.mp2{color:var(--mp2)}.vlabel.fraud{color:var(--fraud)}
+  .vtext{font-size:.84rem;line-height:1.65;color:#c8c6d8}
+  .ff{background:linear-gradient(135deg,rgba(245,200,66,.08),rgba(232,84,58,.05));border:1px solid rgba(245,200,66,.2);border-radius:11px;padding:1.1rem 1.3rem;display:flex;gap:.65rem}
+  .fftext{font-size:.84rem;line-height:1.65;color:#d4d0e8;font-style:italic}
+  .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:55vh;gap:.8rem;color:var(--muted);text-align:center;font-size:.86rem}
+  .footer{text-align:right;font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);padding:.9rem 2rem;border-top:1px solid var(--border)}
+  @keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+  .ani{animation:fi .25s ease}
+  @media(max-width:660px){.layout{grid-template-columns:1fr}.g2{grid-template-columns:1fr}.toprow{flex-direction:column}.main{padding:1.1rem}}
+</style>
+<title>Mouvement perpétuel · Simulateur de physique · Prof. Bucella</title><meta content="Encyclopédie des machines à mouvement perpétuel : roue de Bhaskara, démon de Maxwell, moteur de Keely... Pourquoi aucune ne marche. Prof. Fabrizio Bucella, ULB." name="description"/><meta content="Prof. Fabrizio Bucella" name="author"/><meta content="physique, simulateur, Prof. Bucella, ULB, science, lasciencepeuttout" name="keywords"/><meta content="website" property="og:type"/><meta content="Prof. Fabrizio Bucella" property="og:site_name"/><meta content="Mouvement perpétuel · Simulateur de physique · Prof. Bucella" property="og:title"/><meta content="Encyclopédie des machines à mouvement perpétuel : roue de Bhaskara, démon de Maxwell, moteur de Keely... Pourquoi aucune ne marche. Prof. Fabrizio Bucella, ULB." property="og:description"/><meta content="https://perpetuum-mobile-profbucella.netlify.app/" property="og:url"/><meta content="https://perpetuum-mobile-profbucella.netlify.app/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="Mouvement perpétuel — Simulateur du Prof. Fabrizio Bucella" property="og:image:alt"/><meta content="fr_FR" property="og:locale"/><meta content="summary_large_image" name="twitter:card"/><meta content="Mouvement perpétuel · Simulateur de physique · Prof. Bucella" name="twitter:title"/><meta content="Encyclopédie des machines à mouvement perpétuel : roue de Bhaskara, démon de Maxwell, moteur de Keely... Pourquoi aucune ne marche. Prof. Fabrizio Bucella, ULB." name="twitter:description"/><meta content="https://perpetuum-mobile-profbucella.netlify.app/og-image.png" name="twitter:image"/><meta content="Mouvement perpétuel — Simulateur du Prof. Fabrizio Bucella" name="twitter:image:alt"/><meta content="@fabrizio_bucella" name="twitter:creator"/><link href="https://perpetuum-mobile-profbucella.netlify.app/" rel="canonical"/></head>
+<body>
+<header>
+<div class="logo">🐔</div>
+<div>
+<h1 class="htitle">Machines à Mouvement Perpétuel</h1>
+<div class="hsub">Prof. Bucella · Encyclopédie des magouilles thermodynamiques</div>
+</div>
+</header>
+<div class="layout">
+<aside class="sidebar">
+<div class="slabel">Sélectionner une machine</div>
+<div id="ml"></div>
+</aside>
+<main class="main">
+<div id="ct">
+<div class="empty">
+<div style="font-size:3.5rem">⚙️</div>
+<p>Sélectionnez une machine dans la liste<br/>pour découvrir sa magouille thermodynamique.</p>
+</div>
+</div>
+</main>
+</div>
+<script>
+var machines = [
+  {
+    id: "bhaskara",
+    name: "Roue de Bhaskara",
+    date: "XIIe si\u00e8cle",
+    lieu: "Inde",
+    inv: "Bhaskara II",
+    type: "mp1",
+    tl: "MP1 \u2014 1re esp\u00e8ce",
+    icon: "\uD83D\uDD34",
+    tag: "La plus ancienne roue d\u00e9s\u00e9quilibr\u00e9e de l\u2019histoire",
+    desc: "Des tubes courb\u00e9s remplis de mercure sont dispos\u00e9s en rayons d\u2019une roue. L\u2019id\u00e9e\u00a0: le mercure glisse vers l\u2019extr\u00e9mit\u00e9 des tubes d\u2019un c\u00f4t\u00e9, cr\u00e9ant un d\u00e9s\u00e9quilibre apparent. La roue devrait toujours pencher du m\u00eame c\u00f4t\u00e9 et tourner ind\u00e9finiment.",
+    mag: "La gravit\u00e9 est une force conservative\u00a0: son travail sur un cycle complet est exactement nul. Chaque tube qui tire dans le bon sens se retrouve 180\u00b0 plus tard \u00e0 tirer dans le mauvais sens, avec exactement le m\u00eame bras de levier. Couple net total\u00a0= 0 pour n\u2019importe quelle position.",
+    eq: "\u222E F_grav \u00b7 dr = 0   \u2192   W_cycle = 0",
+    prin: "Viole le 1er principe\u00a0: \u0394U\u00a0= 0 et Q\u00a0= 0, donc W\u00a0= 0. La roue pr\u00e9tend W\u00a0>\u00a00.",
+    vt: "mp1",
+    vx: "Violation du 1er principe. Pas de source d\u2019\u00e9nergie \u2192 aucun travail extractible sur un cycle.",
+    ff: "L\u2019illusion vient du fait que le mercure se d\u00e9place \u00e0 l\u2019int\u00e9rieur des tubes au fil de la rotation, masquant que la distance \u00e0 l\u2019axe est identique des deux c\u00f4t\u00e9s sur un tour complet. Astuce p\u00e9dagogique\u00a0: regardez un seul tube \u2014 pas tous en m\u00eame temps."
+  },
+  {
+    id: "stevin",
+    name: "Cha\u00eene de Stevin",
+    date: "1586",
+    lieu: "Pays-Bas",
+    inv: "Simon Stevin",
+    type: "mp1",
+    tl: "MP1 \u2014 r\u00e9futation",
+    icon: "\uD83D\uDD34",
+    tag: "La machine construite pour prouver qu\u2019elle ne tourne pas",
+    desc: "Un collier de boules pos\u00e9 sur un prisme triangulaire. Stevin imagine que si la cha\u00eene tournait spontan\u00e9ment, ce serait un MPP1. Il utilise cet argument comme raisonnement par l\u2019absurde pour d\u00e9river les lois du plan inclin\u00e9.",
+    mag: "Stevin utilise l\u2019impossibilit\u00e9 du MPP1 comme outil logique\u00a0: SI la cha\u00eene tournait \u2192 \u00e9nergie gratuite \u2192 impossible. DONC la cha\u00eene est en \u00e9quilibre statique. C\u2019est l\u2019un des premiers raisonnements par l\u2019absurde document\u00e9s en m\u00e9canique.",
+    eq: "F\u2081 / sin \u03b8\u2081 = F\u2082 / sin \u03b8\u2082   (loi du plan inclin\u00e9)",
+    prin: "Pas une violation \u2014 Stevin utilise l\u2019impossibilit\u00e9 du MPP pour d\u00e9montrer la statique. L\u2019outil p\u00e9dagogique par excellence.",
+    vt: "mp1",
+    vx: "Dispositif de r\u00e9futation, pas d\u2019invention. Stevin d\u00e9montre les lois de l\u2019\u00e9quilibre en prouvant que la roue NE tourne PAS.",
+    ff: "Stevin grave au bas de son sch\u00e9ma\u00a0: \u00ab\u00a0Wonder en is gheen wonder\u00a0\u00bb \u2014 ce qui est merveilleux n\u2019est pas miracle. La devise de la m\u00e9thode scientifique, grav\u00e9e en 1586."
+  },
+  {
+    id: "bessler",
+    name: "Roue d\u2019Orffyreus",
+    date: "1712",
+    lieu: "Hesse-Kassel, Allemagne",
+    inv: "Johann Bessler (alias Orffyreus)",
+    type: "fraud",
+    tl: "MP1 \u2014 fraude av\u00e9r\u00e9e",
+    icon: "\uD83D\uDFE3",
+    tag: "La plus grande escroquerie de l\u2019histoire de la physique",
+    desc: "Une roue de 3,7\u00a0m de diam\u00e8tre, couverte de toile, scell\u00e9e dans une pi\u00e8ce cadenass\u00e9e pendant 54\u00a0jours. \u00c0 l\u2019ouverture, elle tourne encore. Leibniz, Bernoulli et le Landgrave de Hesse-Kassel y croient. Elle peut soulever une charge de 18\u00a0kg.",
+    mag: "En novembre 1727, la servante Anne Rosine Mauersbergerin t\u00e9moigne sous serment\u00a0: elle et la femme de Bessler, son fr\u00e8re Gottfried et Bessler lui-m\u00eame faisaient tourner la roue depuis la pi\u00e8ce adjacente, via une manivelle cach\u00e9e dans la cloison mitoyenne.",
+    eq: "W_net = 0 si Q = 0   \u2192   ici W vient des bras des complices",
+    prin: "Pr\u00e9tend W\u00a0>\u00a00 sans source d\u2019\u00e9nergie. En r\u00e9alit\u00e9\u00a0: source humaine cach\u00e9e dans la cloison. Aucun principe physique viol\u00e9 \u2014 juste la confiance des savants.",
+    vt: "fraud",
+    vx: "Fraude d\u00e9lib\u00e9r\u00e9e. M\u00e9canisme cach\u00e9 dans la cloison, actionn\u00e9 \u00e0 la main. Bessler mourut en 1745 en emportant ses secrets.",
+    ff: "Le pseudonyme \u00ab\u00a0Orffyreus\u00a0\u00bb est un chiffre ROT13 de \u00ab\u00a0Bessler\u00a0\u00bb en alphabet circulaire. Son nom lui-m\u00eame \u00e9tait une magouille cryptographique. \u2019s Gravesande, math\u00e9maticien de Leiden, refusa de croire la servante jusqu\u2019\u00e0 la fin de sa vie."
+  },
+  {
+    id: "boyle",
+    name: "Flacon de Boyle",
+    date: "1660",
+    lieu: "Angleterre",
+    inv: "Robert Boyle",
+    type: "mp2",
+    tl: "MP2 \u2014 2e esp\u00e8ce",
+    icon: "\uD83D\uDD35",
+    tag: "La capillarit\u00e9 comme pompe \u00e9ternelle",
+    desc: "Un tube fin plonge dans un liquide et ressort par le haut. La capillarit\u00e9 aspire le liquide vers le haut. Une fois en haut, il est cens\u00e9 d\u00e9border et redescendre en continu \u2014 une pompe perp\u00e9tuelle sans aucun apport d\u2019\u00e9nergie.",
+    mag: "La capillarit\u00e9 fait monter le liquide jusqu\u2019\u00e0 h\u00a0= 2\u03b3/(\u03c1gr) \u2014 puis s\u2019arr\u00eate. Les forces capillaires et le poids de la colonne s\u2019annulent exactement. Il n\u2019y a plus aucune force disponible pour faire d\u00e9border le liquide. On tenterait de convertir l\u2019\u00e9nergie de surface (agitation thermique) en travail depuis une seule source.",
+    eq: "h_cap = 2\u03b3 / (\u03c1gr)   \u2192   force nette = 0 au sommet",
+    prin: "Viole le 2e principe\u00a0: tentative de convertir l\u2019\u00e9nergie d\u2019une seule source thermique (tension de surface) en travail m\u00e9canique continu, sans source froide.",
+    vt: "mp2",
+    vx: "Violation du 2e principe. Ordonner les mol\u00e9cules pour forcer le d\u00e9bordement diminuerait l\u2019entropie \u2014 \u0394S\u00a0<\u00a00, interdit par la physique.",
+    ff: "Boyle lui-m\u00eame d\u00e9crivit le dispositif comme une curiosit\u00e9 probl\u00e9matique, pas comme une invention fonctionnelle. C\u2019est l\u2019honn\u00eatet\u00e9 scientifique dans toute sa splendeur\u00a0: d\u00e9crire ce qui r\u00e9siste \u00e0 l\u2019explication plut\u00f4t que de tricher."
+  },
+  {
+    id: "maxwell",
+    name: "D\u00e9mon de Maxwell",
+    date: "1867",
+    lieu: "\u00c9cosse",
+    inv: "James Clerk Maxwell",
+    type: "mp2",
+    tl: "MP2 \u2014 2e esp\u00e8ce",
+    icon: "\uD83D\uDD35",
+    tag: "Un \u00eatre intelligent qui trie les mol\u00e9cules",
+    desc: "Un \u00ab\u00a0d\u00e9mon\u00a0\u00bb intelligent garde une trappe entre deux compartiments. Il laisse passer les mol\u00e9cules rapides d\u2019un c\u00f4t\u00e9 et les lentes de l\u2019autre. Il cr\u00e9e ainsi un gradient de temp\u00e9rature sans travail apparent. On pourrait ensuite faire tourner un moteur entre les deux c\u00f4t\u00e9s.",
+    mag: "Le d\u00e9mon doit m\u00e9moriser l\u2019\u00e9tat de chaque mol\u00e9cule. Or effacer un bit d\u2019information est un processus physique irr\u00e9versible (Landauer, 1961) qui dissipe au minimum k_B\u00b7T\u00b7ln\u00a02 \u2248 2,85\u00d710\u207b\u00b2\u00b9\u00a0J \u00e0 300\u00a0K. L\u2019entropie produite par l\u2019effacement compense exactement la r\u00e9duction d\u2019entropie dans le gaz.",
+    eq: "Q_effacement \u2265 k_B \u00b7 T \u00b7 ln 2   (principe de Landauer)",
+    prin: "Viole le 2e principe en apparence. R\u00e9solu par la thermodynamique de l\u2019information\u00a0: \u0394S_univers = \u0394S_gaz + \u0394S_m\u00e9moire \u2265 0.",
+    vt: "mp2",
+    vx: "R\u00e9solu par Landauer (1961), confirm\u00e9 exp\u00e9rimentalement en 2012. L\u2019information a un co\u00fbt thermodynamique r\u00e9el et mesurable.",
+    ff: "Maxwell avait invent\u00e9 ce dispositif pour attaquer le 2e principe \u2014 pas pour construire une machine. Il a fallu 94\u00a0ans pour trouver la faille\u00a0: la m\u00e9moire du d\u00e9mon. C\u2019est le d\u00e9lai le plus long entre une question et sa r\u00e9ponse dans l\u2019histoire de la thermodynamique."
+  },
+  {
+    id: "gamgee",
+    name: "Moteur z\u00e9ro de Gamgee",
+    date: "1880",
+    lieu: "Washington D.C., \u00c9tats-Unis",
+    inv: "John Gamgee",
+    type: "mp2",
+    tl: "MP2 \u2014 2e esp\u00e8ce",
+    icon: "\uD83D\uDD35",
+    tag: "L\u2019ammoniac comme source unique de travail",
+    desc: "Un moteur utilisant l\u2019ammoniac liquide qui s\u2019\u00e9vapore \u00e0 temp\u00e9rature ambiante pour pousser un piston. L\u2019ammoniac se vaporise spontan\u00e9ment \u00e0 \u221233\u00b0C, donc \u00e0 temp\u00e9rature ambiante il produit un travail. La marine am\u00e9ricaine s\u2019y int\u00e9ressa s\u00e9rieusement.",
+    mag: "Sans source froide en dessous de la temp\u00e9rature ambiante, le cycle ne peut pas se refermer. L\u2019ammoniac se vaporise mais ne peut pas se recondenser sans source froide. Le piston avance mais ne revient jamais \u00e0 son \u00e9tat initial. Ce n\u2019est pas un cycle \u2014 c\u2019est un aller sans retour.",
+    eq: "\u03b7 \u2264 1 \u2212 T_fr / T_ch   \u2192   \u03b7 = 0 si T_fr = T_ch",
+    prin: "Viole le 2e principe\u00a0: une seule source thermique, pas de source froide. Le th\u00e9or\u00e8me de Carnot interdit tout travail net sur un cycle ferm\u00e9.",
+    vt: "mp2",
+    vx: "Violation du 2e principe. Un seul r\u00e9servoir thermique ne suffit pas pour fermer le cycle. L\u2019ammoniac \u00e9vapore mais ne se recondense pas.",
+    ff: "Gamgee avait aussi invent\u00e9 la premi\u00e8re patinoire m\u00e9caniquement r\u00e9frig\u00e9r\u00e9e en 1844. Il comprenait donc le froid \u2014 mais pas suffisamment la n\u00e9cessit\u00e9 d\u2019une source froide pour son moteur. Un g\u00e9nie du froid qui oublie le froid."
+  },
+  {
+    id: "keely",
+    name: "Moteur de Keely",
+    date: "1872\u20131898",
+    lieu: "Philadelphie, \u00c9tats-Unis",
+    inv: "John Ernst Worrell Keely",
+    type: "fraud",
+    tl: "MP1 \u2014 fraude av\u00e9r\u00e9e",
+    icon: "\uD83D\uDFE3",
+    tag: "L\u2019\u00e9nergie sympathique et les tubes d\u2019air comprim\u00e9",
+    desc: "Keely pr\u00e9tend capter une \u00ab\u00a0force \u00e9th\u00e9rique\u00a0\u00bb par r\u00e9sonance sympathique de vibrations aqueuses. Ses machines semblent produire une puissance consid\u00e9rable. Il l\u00e8ve des centaines de milliers de dollars sur 26\u00a0ans.",
+    mag: "Apr\u00e8s la mort de Keely en 1898, des ing\u00e9nieurs d\u00e9couvrirent sous le plancher de son laboratoire un r\u00e9seau de tubes d\u2019air comprim\u00e9 reli\u00e9s \u00e0 un r\u00e9servoir dissimul\u00e9 dans le sous-sol. La \u00ab\u00a0force sympathique\u00a0\u00bb \u00e9tait simplement de l\u2019air comprim\u00e9 achemin\u00e9 via des tubes cach\u00e9s dans les murs.",
+    eq: "W_net = 0 si Q = 0   \u2192   fraude\u00a0: W vient de l\u2019air comprim\u00e9 cach\u00e9",
+    prin: "Pr\u00e9tend au MPP1. En r\u00e9alit\u00e9\u00a0: source d\u2019\u00e9nergie dissimul\u00e9e (air comprim\u00e9). Aucun principe physique viol\u00e9 \u2014 juste la confiance des investisseurs.",
+    vt: "fraud",
+    vx: "Fraude industrielle. 26\u00a0ans d\u2019escroquerie. R\u00e9seau de tubes cach\u00e9s d\u00e9couvert post-mortem. Le plus grand imposteur de l\u2019histoire de la physique.",
+    ff: "Keely \u00e9tait si convaincant que certains investisseurs continu\u00e8rent \u00e0 croire en lui m\u00eame apr\u00e8s la d\u00e9couverte des tubes. Sa \u00ab\u00a0symphonie \u00e9th\u00e9rique\u00a0\u00bb \u00e9tait de l\u2019air comprim\u00e9 recharg\u00e9 \u00e0 la main."
+  },
+  {
+    id: "feynman",
+    name: "Cliquet de Feynman",
+    date: "1962",
+    lieu: "Caltech, \u00c9tats-Unis",
+    inv: "Richard Feynman",
+    type: "mp2",
+    tl: "MP2 \u2014 2e esp\u00e8ce",
+    icon: "\uD83D\uDD35",
+    tag: "Le mouvement brownien comme source de travail\u00a0?",
+    desc: "Une roue \u00e0 aubes plong\u00e9e dans un gaz \u00e0 T\u2081, reli\u00e9e par un axe rigide \u00e0 une roue \u00e0 cliquet dans un gaz \u00e0 T\u2082. L\u2019agitation brownienne pousse les aubes dans tous les sens. Le cliquet asym\u00e9trique semble ne laisser passer que les rotations vers l\u2019avant. On aurait extrait du travail du mouvement brownien.",
+    mag: "La came du cliquet est elle-m\u00eame soumise \u00e0 l\u2019agitation thermique \u00e0 T\u2082. Elle monte et descend spontan\u00e9ment. Quand T\u2081\u00a0= T\u2082, les fluctuations de la came soul\u00e8vent la dent vers l\u2019arri\u00e8re exactement aussi souvent que les aubes poussent vers l\u2019avant. Bilan\u00a0: z\u00e9ro.",
+    eq: "\u27E8W\u27E9 = 0 si T\u2081 = T\u2082   (principe de bilan d\u00e9taill\u00e9)",
+    prin: "Viole le 2e principe en apparence. L\u2019asym\u00e9trie g\u00e9om\u00e9trique du cliquet est exactement annul\u00e9e par les fluctuations thermiques de la came.",
+    vt: "mp2",
+    vx: "Violation du 2e principe impossible. La came gigote autant que les aubes. Pour extraire un travail, il faut T\u2081\u00a0> T\u2082 \u2014 et on retrouve Carnot.",
+    ff: "Feynman inventa ce dispositif pour montrer que le 2e principe tient m\u00eame \u00e0 l\u2019\u00e9chelle atomique. Les moteurs biologiques r\u00e9els (myosine, ATP synthase) sont de vrais cliquets browniens \u2014 mais aliment\u00e9s par l\u2019hydrolyse de l\u2019ATP, pas par une seule source thermique."
+  },
+  {
+    id: "jones",
+    name: "Machine de Daedalus",
+    date: "1981",
+    lieu: "York \u2192 Royal Society, Londres",
+    inv: "David Jones (alias Daedalus)",
+    type: "fraud",
+    tl: "Blague scientifique",
+    icon: "\uD83D\uDFE3",
+    tag: "La roue de v\u00e9lo scell\u00e9e dont personne ne conna\u00eet le secret",
+    desc: "Une roue de v\u00e9lo enferm\u00e9e dans un caisson en plexiglas qui semble tourner ind\u00e9finiment. Cr\u00e9\u00e9e pour une r\u00e9union de la British Association, sur commande de New Scientist. Jones, chimiste et chroniqueur dans The Guardian et Nature, a toujours avou\u00e9 que c\u2019\u00e9tait une blague d\u00e9lib\u00e9r\u00e9e.",
+    mag: "La source d\u2019\u00e9nergie est d\u00e9lib\u00e9r\u00e9ment dissimul\u00e9e. Jones a confi\u00e9 le secret dans une enveloppe fiscale recycl\u00e9e, d\u00e9pos\u00e9e \u00e0 la Royal Society avant sa mort en 2017. L\u2019enveloppe reste scell\u00e9e jusqu\u2019en 2048. La machine n\u00e9cessite parfois une petite impulsion d\u2019entretien.",
+    eq: "? \u2192 source interne \u00e0 dur\u00e9e de vie finie \u2192 r\u00e9v\u00e9lation en 2048",
+    prin: "Ne viole aucun principe physique. Sa valeur est p\u00e9dagogique\u00a0: montrer \u00e0 quel point il est facile de tromper des observateurs comp\u00e9tents quand la source est bien cach\u00e9e.",
+    vt: "fraud",
+    vx: "Blague savante. Aucun principe viol\u00e9. Secret scell\u00e9 jusqu\u2019en 2048. Hypoth\u00e8ses\u00a0: pile ou r\u00e9action chimique lente + \u00e9lectroaimant puls\u00e9 dans l\u2019axe.",
+    ff: "Jones affirmait que seule une personne avait jamais trouv\u00e9 la bonne r\u00e9ponse de son vivant. Adam Savage (MythBusters) examina la machine en 2023 sans percer le myst\u00e8re. Jones \u00e9tait aussi l\u2019homme qui proposa que Napol\u00e9on fut empoisonn\u00e9 par l\u2019arsenic de son papier peint vert."
+  },
+  {
+    id: "cox",
+    name: "Horloge de Cox",
+    date: "1760",
+    lieu: "Angleterre",
+    inv: "James Cox & John Joseph Merlin",
+    type: "mp2",
+    tl: "Faux MPP \u2014 source ambiante",
+    icon: "\uD83D\uDD35",
+    tag: "L\u2019horloge perp\u00e9tuelle aliment\u00e9e par l\u2019atmosph\u00e8re",
+    desc: "Une horloge que Cox pr\u00e9sentait comme un vrai mouvement perp\u00e9tuel. Elle fonctionne sans jamais \u00eatre remont\u00e9e \u00e0 la main, et est encore en \u00e9tat de marche aujourd\u2019hui. Aucune fraude \u2014 le dispositif est r\u00e9el et fonctionne effectivement.",
+    mag: "L\u2019horloge est aliment\u00e9e par les variations de pression atmosph\u00e9rique via un barom\u00e8tre \u00e0 mercure. Quand la pression monte, le mercure remonte le ressort. L\u2019\u00e9nergie vient de l\u2019atmosph\u00e8re, elle-m\u00eame aliment\u00e9e par le Soleil. Ce n\u2019est pas un MPP \u2014 c\u2019est un moteur \u00e0 source d\u2019\u00e9nergie non \u00e9vidente.",
+    eq: "W = \u222B P_atm dV_mercure   \u2192   source\u00a0: gradient barom\u00e9trique",
+    prin: "Ne viole rien. La source d\u2019\u00e9nergie existe \u2014 elle est cach\u00e9e dans les variations atmosph\u00e9riques. Cat\u00e9gorie\u00a0: machine \u00e0 source ambiante non apparente.",
+    vt: "mp2",
+    vx: "Pas un vrai MPP. Source r\u00e9elle\u00a0: pression atmosph\u00e9rique \u2192 Soleil. Fonctionne ind\u00e9finiment en pratique, mais s\u2019arr\u00eaterait si le Soleil s\u2019\u00e9teignait.",
+    ff: "L\u2019horloge de Cox est l\u2019anc\u00eatre des montres automatiques et de l\u2019horloge Atmos de Jaeger-LeCoultre (aliment\u00e9e par les variations de temp\u00e9rature). Une id\u00e9e g\u00e9niale \u2014 juste mal \u00e9tiquet\u00e9e comme perp\u00e9tuelle."
+  }
+];
+
+function renderList() {
+  document.getElementById("ml").innerHTML = machines.map(function(m) {
+    return '<button class="mbtn" onclick="show(\'' + m.id + '\')" id="btn-' + m.id + '">'
+      + '<div style="flex:1"><div class="bname">' + m.name + '</div>'
+      + '<div class="bdate">' + m.date + ' &middot; ' + m.lieu + '</div></div>'
+      + '<span class="badge ' + m.type + '">' + m.type.toUpperCase() + '</span>'
+      + '</button>';
+  }).join("");
+}
+
+function show(id) {
+  var m = null;
+  for (var i = 0; i < machines.length; i++) { if (machines[i].id === id) { m = machines[i]; break; } }
+  if (!m) return;
+  document.querySelectorAll(".mbtn").forEach(function(b) { b.classList.remove("active"); });
+  document.getElementById("btn-" + id).classList.add("active");
+  document.getElementById("ct").innerHTML =
+    '<div class="card ani">'
+    + '<div class="toprow">'
+    + '<div>'
+    + '<div class="mname">' + m.name + '</div>'
+    + '<div class="mmeta">'
+    + '<span class="chip">&#x1F4C5; ' + m.date + '</span>'
+    + '<span class="chip">&#x1F4CD; ' + m.lieu + '</span>'
+    + '<span class="chip">&#x1F464; ' + m.inv + '</span>'
+    + '</div>'
+    + '<div class="tagline">' + m.tag + '</div>'
+    + '</div>'
+    + '<div><div class="tbadge ' + m.type + '">' + m.icon + ' ' + m.tl + '</div></div>'
+    + '</div></div>'
+    + '<div class="g2">'
+    + '<div class="icard ani"><div class="stitle">Description</div><div class="btext">' + m.desc + '</div></div>'
+    + '<div class="icard ani"><div class="stitle">La magouille</div><div class="btext">' + m.mag + '</div></div>'
+    + '</div>'
+    + '<div class="card ani"><div class="stitle">\u00c9quation cl\u00e9</div>'
+    + '<div class="eqbox">' + m.eq + '</div>'
+    + '<div class="btext" style="margin-top:.7rem">' + m.prin + '</div></div>'
+    + '<div class="verdict ani"><div class="vicon">' + m.icon + '</div>'
+    + '<div><div class="vlabel ' + m.vt + '">Verdict thermodynamique</div>'
+    + '<div class="vtext">' + m.vx + '</div></div></div>'
+    + '<div class="ff ani"><div style="font-size:1.3rem;flex-shrink:0">&#x1F414;</div>'
+    + '<div class="fftext"><strong style="color:var(--accent);font-style:normal">Le saviez-vous\u00a0?</strong> ' + m.ff + '</div></div>';
+}
+
+renderList();
+show("bhaskara");
+</script>
+<footer style="margin-top:48px;padding:32px 24px 24px;border-top:1px solid #2a2a2a;font-family:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;color:#c4c4c4;text-align:center;"><div style="margin-bottom: 18px; font-style: italic; font-size: 12px; opacity:0.8; color:#b8b8b8;">Aucune loi de la thermodynamique n'a été violée pendant cette simulation.</div>
+<div style="margin-bottom:8px;">
+<strong style="color:#f0ece8;font-weight:700;"><a href="https://www.instagram.com/fabrizio.bucella" style="color:#f0ece8;font-weight:700;; text-decoration: none; color: inherit;">Prof. Fabrizio Bucella</a></strong>
+<span style="opacity:0.85;"> · ULB · Physicien</span>
+</div>
+<div style="margin-bottom:12px;">
+<span style="margin:0 6px;">#lasciencepeuttout</span>
+<span style="opacity:0.4;">·</span>
+<span style="margin:0 6px;">#salukes</span>
+</div>
+<div>
+<a href="https://linktr.ee/fabrizio.bucella" style="color:#d0d0d0;text-decoration:none;border-bottom:1px dotted #777;">← Tous mes simulateurs</a>
+</div>
+</footer></body>
+</html>

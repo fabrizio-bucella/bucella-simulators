@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="dark" name="color-scheme"/>
+<meta content="dark" name="supported-color-schemes"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.85em%22 font-size=%2280%22 text-anchor=%22middle%22 x=%2250%22 fill=%22white%22&gt;%CE%B6&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<style>
+:root {
+  color-scheme: only dark;
+  --bg: #0c0c0c;
+  --card: #161616;
+  --border: rgba(255,255,255,0.12);
+  --text: #ffffff;
+  --text-muted: rgba(255,255,255,0.65);
+  --text-dim: rgba(255,255,255,0.45);
+  --accent: #ffeb3b;
+  forced-color-adjust: none;
+}
+html { background: var(--bg); }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  min-height: 100vh;
+  padding: 24px 16px 40px;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 920px; margin: 0 auto; }
+header { margin-bottom: 24px; text-align: center; }
+h1 { font-size: 28px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.5px; }
+.subtitle { color: var(--text-muted); font-size: 15px; }
+.row { margin-bottom: 14px; }
+.row1 { display: grid; grid-template-columns: 170px 1fr; gap: 14px; }
+.row2 { display: flex; justify-content: center; }
+.row2 .panel { width: 100%; max-width: 540px; }
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+.panel-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+.panel-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+canvas { display: block; width: 100%; height: auto; border-radius: 6px; cursor: crosshair; background: #000; }
+.cap { font-size: 14px; color: var(--text-muted); margin-top: 12px; line-height: 1.55; }
+.controls { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.controls label { font-size: 14px; color: var(--text-muted); min-width: 70px; }
+.readout { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; font-size: 14px; line-height: 1.85; }
+.readout .label { color: var(--text-muted); }
+.status { font-size: 13px; color: var(--text-dim); margin-top: 6px; }
+button {
+  background: var(--card); color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px; padding: 9px 16px;
+  font-family: inherit; font-size: 14px;
+  cursor: pointer; min-width: 92px;
+  transition: background 0.15s;
+}
+button:hover { background: rgba(255,255,255,0.06); }
+button:active { background: rgba(255,255,255,0.10); }
+input[type="range"] {
+  flex: 1; min-width: 180px;
+  accent-color: var(--accent);
+  height: 4px;
+}
+.value-display { font-size: 14px; min-width: 78px; text-align: right; color: var(--text); }
+.value-display-small { font-size: 13px; color: var(--text-muted); min-width: 48px; text-align: right; }
+footer {
+  margin-top: 48px; padding-top: 22px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+footer .line1 { font-size: 14px; color: rgba(255,255,255,0.65); margin-bottom: 4px; }
+footer .line2 { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+footer .tags { font-size: 13px; color: var(--text-dim); }
+footer a { color: rgba(255,255,255,0.75); text-decoration: underline; text-underline-offset: 2px; }
+footer a:hover { color: var(--text); }
+@media (max-width: 640px) {
+  .row1 { grid-template-columns: 1fr; }
+  body { padding: 16px 12px 28px; }
+  h1 { font-size: 22px; }
+  .subtitle { font-size: 14px; }
+  .panel { padding: 12px; }
+  .controls label { min-width: 56px; font-size: 13px; }
+  .value-display { min-width: 60px; }
+}
+</style>
+<title>La conjecture de Riemann · Simulateur de physique · Prof. Bucella</title><meta content="Visualisation interactive de la fonction zêta de Riemann : coloriage de domaine, zoom adaptatif et trajectoire de ζ(½+it). Simulateur du Prof. Fabrizio Bucella, ULB." name="description"/><meta content="Prof. Fabrizio Bucella" name="author"/><meta content="physique, simulateur, Prof. Bucella, ULB, science, lasciencepeuttout" name="keywords"/><meta content="website" property="og:type"/><meta content="Prof. Fabrizio Bucella" property="og:site_name"/><meta content="La conjecture de Riemann · Simulateur de physique · Prof. Bucella" property="og:title"/><meta content="Visualisation interactive de la fonction zêta de Riemann : coloriage de domaine, zoom adaptatif et trajectoire de ζ(½+it). Simulateur du Prof. Fabrizio Bucella, ULB." property="og:description"/><meta content="https://fonction-zeta-riemann-profbucella.netlify.app/" property="og:url"/><meta content="https://fonction-zeta-riemann-profbucella.netlify.app/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="La conjecture de Riemann — Simulateur du Prof. Fabrizio Bucella" property="og:image:alt"/><meta content="fr_FR" property="og:locale"/><meta content="summary_large_image" name="twitter:card"/><meta content="La conjecture de Riemann · Simulateur de physique · Prof. Bucella" name="twitter:title"/><meta content="Visualisation interactive de la fonction zêta de Riemann : coloriage de domaine, zoom adaptatif et trajectoire de ζ(½+it). Simulateur du Prof. Fabrizio Bucella, ULB." name="twitter:description"/><meta content="https://fonction-zeta-riemann-profbucella.netlify.app/og-image.png" name="twitter:image"/><meta content="La conjecture de Riemann — Simulateur du Prof. Fabrizio Bucella" name="twitter:image:alt"/><meta content="@fabrizio_bucella" name="twitter:creator"/><link href="https://fonction-zeta-riemann-profbucella.netlify.app/" rel="canonical"/></head>
+<body>
+<div class="container">
+<header>
+<h1>La conjecture de Riemann</h1>
+<div class="subtitle">Coloriage de domaine, zoom adaptatif et trajectoire de ζ(½ + it)</div>
+</header>
+<div class="row row1">
+<div class="panel">
+<div class="panel-title">Navigateur</div>
+<div class="panel-sub">t ∈ [0, 100]</div>
+<canvas height="500" id="zw_nav" width="100"></canvas>
+<div class="cap">cliquez pour téléporter t<br/>cadre jaune = fenêtre de zoom</div>
+</div>
+<div class="panel">
+<div class="panel-title">Détail (zoom autour de ½ + i·t)</div>
+<div class="panel-sub">fenêtre carrée centrée sur la droite critique</div>
+<canvas height="240" id="zw_det" width="240"></canvas>
+<div class="cap">croix jaune = (½, t) • marqueurs blancs = zéros LMFDB connus</div>
+</div>
+</div>
+<div class="row row2">
+<div class="panel">
+<div class="panel-title">ζ(½ + it) dans ℂ</div>
+<div class="panel-sub">trajectoire paramétrique de 0 jusqu'à t courant</div>
+<canvas height="500" id="zw_cv" width="500"></canvas>
+<div class="cap">point jaune = position courante • passages par 0 = zéros non triviaux</div>
+</div>
+</div>
+<div class="controls">
+<button id="zw_play" type="button">▶ Lecture</button>
+<button id="zw_reset" type="button">⟲ Reset</button>
+<input id="zw_t" max="100" min="0" step="0.05" type="range" value="14.13"/>
+<div class="value-display">t = <span id="zw_tval">14.13</span></div>
+</div>
+<div class="controls">
+<label>Zoom</label>
+<input id="zw_w" max="10" min="0.3" step="0.05" type="range" value="2"/>
+<span class="value-display-small" id="zw_wval">±2.00</span>
+</div>
+<div class="controls">
+<label>Vitesse</label>
+<input id="zw_speed" max="15" min="0.5" step="0.1" type="range" value="2"/>
+<span class="value-display-small" id="zw_speedV">2.0×</span>
+</div>
+<div class="readout">
+<div><span class="label">ζ(½ + i·<span id="zw_t2">14.13</span>) =</span> <span id="zw_zval">…</span></div>
+<div><span class="label">|ζ(½ + it)| =</span> <span id="zw_zmag">…</span></div>
+<div><span class="label">échelle locale du zoom :</span> 1 px ≈ <span id="zw_scale">…</span></div>
+<div><span class="label">espacement moyen attendu (2π/log t) :</span> <span id="zw_spacing">…</span></div>
+<div class="status" id="zw_status">Initialisation…</div>
+</div>
+</div>
+<script>
+(function() {
+  const N = 40;
+  const Cb = [];
+  for (let n = 0; n <= N; n++) {
+    const row = new Array(n + 1);
+    row[0] = 1;
+    for (let k = 1; k <= n; k++) row[k] = (k === n) ? 1 : Cb[n-1][k-1] + Cb[n-1][k];
+    Cb.push(row);
+  }
+  const wB = new Array(N + 1).fill(0);
+  for (let k = 0; k <= N; k++) for (let n = k; n <= N; n++) wB[k] += Cb[n][k] / Math.pow(2, n + 1);
+  const wbsg = new Array(N + 1);
+  for (let k = 0; k <= N; k++) wbsg[k] = (k & 1) ? -wB[k] : wB[k];
+  const lgK = new Array(N + 1);
+  for (let k = 0; k <= N; k++) lgK[k] = Math.log(k + 1);
+  const ln2 = Math.log(2);
+
+  function zeta(sRe, sIm) {
+    let eR = 0, eI = 0;
+    for (let k = 0; k <= N; k++) {
+      const r = Math.pow(k + 1, -sRe);
+      const phi = -sIm * lgK[k];
+      eR += wbsg[k] * r * Math.cos(phi);
+      eI += wbsg[k] * r * Math.sin(phi);
+    }
+    const tw = Math.pow(2, 1 - sRe);
+    const cp = Math.cos(sIm * ln2);
+    const sp = Math.sin(sIm * ln2);
+    const dR = 1 - tw * cp;
+    const dI = tw * sp;
+    const dM = dR * dR + dI * dI;
+    if (dM < 1e-30) return [0, 0];
+    return [(eR * dR + eI * dI) / dM, (eI * dR - eR * dI) / dM];
+  }
+
+  function hsv(h, s, v) {
+    const i = Math.floor(h * 6), f = h * 6 - i;
+    const p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s);
+    let r, g, b;
+    switch (i % 6) {
+      case 0: r = v; g = t; b = p; break;
+      case 1: r = q; g = v; b = p; break;
+      case 2: r = p; g = v; b = t; break;
+      case 3: r = p; g = q; b = v; break;
+      case 4: r = t; g = p; b = v; break;
+      default: r = v; g = p; b = q;
+    }
+    return [r * 255, g * 255, b * 255];
+  }
+
+  function renderRegion(W, H, reMin, reMax, imMin, imMax, imgData) {
+    const powTab = new Array(W);
+    const pow2Tab = new Float64Array(W);
+    for (let px = 0; px < W; px++) {
+      const re = reMin + ((px + 0.5) / W) * (reMax - reMin);
+      const arr = new Float64Array(N + 1);
+      for (let k = 0; k <= N; k++) arr[k] = Math.pow(k + 1, -re);
+      powTab[px] = arr;
+      pow2Tab[px] = Math.pow(2, 1 - re);
+    }
+    const cosArr = new Float64Array(N + 1);
+    const sinArr = new Float64Array(N + 1);
+    const d = imgData.data;
+    for (let py = 0; py < H; py++) {
+      const im = imMax - ((py + 0.5) / H) * (imMax - imMin);
+      for (let k = 0; k <= N; k++) {
+        const phi = -im * lgK[k];
+        cosArr[k] = Math.cos(phi);
+        sinArr[k] = Math.sin(phi);
+      }
+      const cIm = Math.cos(im * ln2);
+      const sIm = Math.sin(im * ln2);
+      for (let px = 0; px < W; px++) {
+        const powArr = powTab[px];
+        let eR = 0, eI = 0;
+        for (let k = 0; k <= N; k++) {
+          const r = powArr[k];
+          eR += wbsg[k] * r * cosArr[k];
+          eI += wbsg[k] * r * sinArr[k];
+        }
+        const tw = pow2Tab[px];
+        const dR = 1 - tw * cIm;
+        const dI = tw * sIm;
+        const dM = dR * dR + dI * dI;
+        let zR, zI;
+        if (dM < 1e-30) { zR = 0; zI = 0; }
+        else { zR = (eR * dR + eI * dI) / dM; zI = (eI * dR - eR * dI) / dM; }
+        const arg = Math.atan2(zI, zR);
+        const mag = Math.sqrt(zR * zR + zI * zI);
+        const hue = (arg / (2 * Math.PI) + 1) % 1;
+        let v = 1 - Math.exp(-mag * 0.55);
+        const band = 0.82 + 0.18 * (0.5 + 0.5 * Math.sin(Math.log(mag + 1e-9) * 3.5));
+        v = Math.max(0, Math.min(1, v * band));
+        const rgb = hsv(hue, 0.95, v);
+        const idx = (py * W + px) * 4;
+        d[idx] = rgb[0]; d[idx+1] = rgb[1]; d[idx+2] = rgb[2]; d[idx+3] = 255;
+      }
+    }
+  }
+
+  const knownZeros = [
+    14.134725, 21.022040, 25.010858, 30.424876, 32.935062,
+    37.586178, 40.918719, 43.327073, 48.005151, 49.773832,
+    52.970321, 56.446248, 59.347044, 60.831779, 65.112544,
+    67.079811, 69.546402, 72.067158, 75.704691, 77.144840,
+    79.337375, 82.910381, 84.735493, 87.425275, 88.809111,
+    92.491899, 94.651344, 95.870634, 98.831194
+  ];
+
+  const nav = document.getElementById('zw_nav');
+  const navCtx = nav.getContext('2d');
+  const NAVW = nav.width, NAVH = nav.height;
+  const nReMin = -1, nReMax = 2, nImMin = 0, nImMax = 100;
+  const nMapX = (re) => ((re - nReMin) / (nReMax - nReMin)) * NAVW;
+  const nMapY = (im) => NAVH - ((im - nImMin) / (nImMax - nImMin)) * NAVH;
+  let navImg = null;
+
+  function drawNav(currentT, zoomW) {
+    if (!navImg) {
+      navCtx.fillStyle = '#000';
+      navCtx.fillRect(0, 0, NAVW, NAVH);
+      return;
+    }
+    navCtx.putImageData(navImg, 0, 0);
+    const xC = nMapX(0.5);
+    navCtx.strokeStyle = 'rgba(80,255,120,0.7)';
+    navCtx.lineWidth = 1;
+    navCtx.beginPath(); navCtx.moveTo(xC, 0); navCtx.lineTo(xC, NAVH); navCtx.stroke();
+    navCtx.fillStyle = 'rgba(255,255,255,0.85)';
+    for (const tz of knownZeros) {
+      navCtx.beginPath(); navCtx.arc(xC, nMapY(tz), 1.8, 0, 2 * Math.PI); navCtx.fill();
+    }
+    const yTop = nMapY(currentT + zoomW);
+    const yBot = nMapY(currentT - zoomW);
+    const xL = nMapX(0.5 - zoomW);
+    const xR = nMapX(0.5 + zoomW);
+    navCtx.strokeStyle = '#ffeb3b';
+    navCtx.lineWidth = 1.5;
+    navCtx.strokeRect(
+      Math.max(0, xL), Math.max(0, yTop),
+      Math.min(NAVW, xR) - Math.max(0, xL),
+      Math.min(NAVH, yBot) - Math.max(0, yTop)
+    );
+    const yT = nMapY(currentT);
+    navCtx.strokeStyle = 'rgba(255,255,255,0.5)';
+    navCtx.lineWidth = 0.8;
+    navCtx.beginPath(); navCtx.moveTo(0, yT); navCtx.lineTo(NAVW, yT); navCtx.stroke();
+  }
+
+  const det = document.getElementById('zw_det');
+  const detCtx = det.getContext('2d');
+  const DETW = det.width, DETH = det.height;
+  let detImgData = detCtx.createImageData(DETW, DETH);
+
+  function drawDet(currentT, zoomW) {
+    const reMin = 0.5 - zoomW, reMax = 0.5 + zoomW;
+    const imMin = currentT - zoomW, imMax = currentT + zoomW;
+    renderRegion(DETW, DETH, reMin, reMax, imMin, imMax, detImgData);
+    detCtx.putImageData(detImgData, 0, 0);
+    const dxRe = (re) => ((re - reMin) / (reMax - reMin)) * DETW;
+    const dyIm = (im) => DETH - ((im - imMin) / (imMax - imMin)) * DETH;
+    const xC = dxRe(0.5);
+    detCtx.strokeStyle = 'rgba(80,255,120,0.55)';
+    detCtx.lineWidth = 1;
+    detCtx.beginPath(); detCtx.moveTo(xC, 0); detCtx.lineTo(xC, DETH); detCtx.stroke();
+    detCtx.fillStyle = 'rgba(255,255,255,0.9)';
+    detCtx.strokeStyle = '#000';
+    detCtx.lineWidth = 1;
+    for (const tz of knownZeros) {
+      if (tz > imMin && tz < imMax) {
+        detCtx.beginPath(); detCtx.arc(xC, dyIm(tz), 3, 0, 2 * Math.PI); detCtx.fill(); detCtx.stroke();
+      }
+    }
+    const cx = dxRe(0.5), cy = dyIm(currentT);
+    detCtx.strokeStyle = '#ffeb3b';
+    detCtx.lineWidth = 1.5;
+    detCtx.beginPath();
+    detCtx.moveTo(cx - 8, cy); detCtx.lineTo(cx + 8, cy);
+    detCtx.moveTo(cx, cy - 8); detCtx.lineTo(cx, cy + 8);
+    detCtx.stroke();
+    detCtx.fillStyle = 'rgba(255,255,255,0.75)';
+    detCtx.font = '11px "Space Mono", monospace';
+    detCtx.fillText('Re: \u00bd\u00b1' + zoomW.toFixed(2), 6, DETH - 6);
+    detCtx.fillText('Im: ' + currentT.toFixed(2) + '\u00b1' + zoomW.toFixed(2), 6, 14);
+  }
+
+  const tMaxA = 100, dt = 0.04;
+  const samp = [];
+  for (let t = 0; t <= tMaxA + 1e-9; t += dt) {
+    const [zr, zi] = zeta(0.5, t);
+    samp.push({ t: t, re: zr, im: zi });
+  }
+  let cMnR = Infinity, cMxR = -Infinity, cMnI = Infinity, cMxI = -Infinity;
+  for (const p of samp) {
+    if (p.re < cMnR) cMnR = p.re; if (p.re > cMxR) cMxR = p.re;
+    if (p.im < cMnI) cMnI = p.im; if (p.im > cMxI) cMxI = p.im;
+  }
+  const padP = 0.5;
+  cMnR -= padP; cMxR += padP; cMnI -= padP; cMxI += padP;
+  const mxR = Math.max(cMxR - cMnR, cMxI - cMnI);
+  const cR = (cMnR + cMxR) / 2, cI = (cMnI + cMxI) / 2;
+  cMnR = cR - mxR / 2; cMxR = cR + mxR / 2;
+  cMnI = cI - mxR / 2; cMxI = cI + mxR / 2;
+
+  const cv = document.getElementById('zw_cv');
+  const cctx = cv.getContext('2d');
+  const CW = cv.width, CH = cv.height;
+  const cmX = (re) => ((re - cMnR) / (cMxR - cMnR)) * CW;
+  const cmY = (im) => CH - ((im - cMnI) / (cMxI - cMnI)) * CH;
+
+  function drawCurve(currentT) {
+    cctx.fillStyle = '#0a0a0a'; cctx.fillRect(0, 0, CW, CH);
+    cctx.strokeStyle = 'rgba(255,255,255,0.10)'; cctx.lineWidth = 1;
+    const ox = cmX(0), oy = cmY(0);
+    cctx.beginPath();
+    cctx.moveTo(0, oy); cctx.lineTo(CW, oy);
+    cctx.moveTo(ox, 0); cctx.lineTo(ox, CH);
+    cctx.stroke();
+    cctx.strokeStyle = 'rgba(255,255,255,0.13)'; cctx.lineWidth = 0.8;
+    cctx.beginPath(); cctx.moveTo(cmX(samp[0].re), cmY(samp[0].im));
+    for (let i = 1; i < samp.length; i++) cctx.lineTo(cmX(samp[i].re), cmY(samp[i].im));
+    cctx.stroke();
+    let aU = 0;
+    while (aU < samp.length && samp[aU].t <= currentT) aU++;
+    cctx.lineWidth = 1.5;
+    for (let i = 1; i < aU; i++) {
+      const tn = samp[i].t / tMaxA;
+      cctx.strokeStyle = 'hsl(' + (210 + tn * 180) + ', 90%, 62%)';
+      cctx.beginPath();
+      cctx.moveTo(cmX(samp[i-1].re), cmY(samp[i-1].im));
+      cctx.lineTo(cmX(samp[i].re), cmY(samp[i].im));
+      cctx.stroke();
+    }
+    cctx.fillStyle = '#ff3030';
+    cctx.beginPath(); cctx.arc(ox, oy, 5, 0, 2 * Math.PI); cctx.fill();
+    cctx.fillStyle = '#fff'; cctx.font = '12px "Space Mono", monospace';
+    cctx.fillText('0', ox + 8, oy - 6);
+    if (aU > 0) {
+      const cp = samp[aU - 1];
+      cctx.fillStyle = '#ffeb3b'; cctx.strokeStyle = '#000'; cctx.lineWidth = 1.5;
+      cctx.beginPath(); cctx.arc(cmX(cp.re), cmY(cp.im), 6, 0, 2 * Math.PI); cctx.fill(); cctx.stroke();
+    }
+  }
+
+  let currentT = 14.13;
+  let zoomW = 2.0;
+  let playing = false;
+  let speed = 2.0;
+  let timer = null;
+  let lastTs = 0;
+
+  const slider = document.getElementById('zw_t');
+  const wSlider = document.getElementById('zw_w');
+  const wVal = document.getElementById('zw_wval');
+  const playBtn = document.getElementById('zw_play');
+  const resetBtn = document.getElementById('zw_reset');
+  const sps = document.getElementById('zw_speed');
+  const spsV = document.getElementById('zw_speedV');
+  const status = document.getElementById('zw_status');
+
+  function update() {
+    drawNav(currentT, zoomW);
+    drawDet(currentT, zoomW);
+    drawCurve(currentT);
+    document.getElementById('zw_tval').textContent = currentT.toFixed(2);
+    document.getElementById('zw_t2').textContent = currentT.toFixed(2);
+    const [zr, zi] = zeta(0.5, currentT);
+    const sg = zi >= 0 ? '+' : '\u2212';
+    document.getElementById('zw_zval').textContent = zr.toFixed(4) + ' ' + sg + ' ' + Math.abs(zi).toFixed(4) + ' i';
+    document.getElementById('zw_zmag').textContent = Math.sqrt(zr*zr + zi*zi).toFixed(4);
+    const sc = (2 * zoomW) / DETW;
+    document.getElementById('zw_scale').textContent = sc.toExponential(2) + ' (en s)';
+    const tEff = Math.max(currentT, 2);
+    const sp = (2 * Math.PI / Math.log(tEff));
+    document.getElementById('zw_spacing').textContent = sp.toFixed(3) + ' (en t)';
+  }
+
+  slider.addEventListener('input', () => {
+    currentT = parseFloat(slider.value);
+    update();
+  });
+
+  wSlider.addEventListener('input', () => {
+    zoomW = parseFloat(wSlider.value);
+    wVal.textContent = '\u00b1' + zoomW.toFixed(2);
+    update();
+  });
+
+  playBtn.addEventListener('click', () => {
+    playing = !playing;
+    playBtn.textContent = playing ? '\u23f8 Pause' : '\u25b6 Lecture';
+    if (playing) {
+      lastTs = performance.now();
+      if (timer) clearInterval(timer);
+      timer = setInterval(() => {
+        const now = performance.now();
+        const dts = Math.min(0.1, (now - lastTs) / 1000);
+        lastTs = now;
+        currentT += speed * dts;
+        if (currentT > tMaxA) currentT = 0;
+        slider.value = currentT;
+        update();
+      }, 50);
+    } else {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+  });
+
+  resetBtn.addEventListener('click', () => {
+    currentT = 14.13; zoomW = 2.0;
+    slider.value = 14.13; wSlider.value = 2.0;
+    wVal.textContent = '\u00b12.00';
+    update();
+  });
+
+  sps.addEventListener('input', () => {
+    speed = parseFloat(sps.value);
+    spsV.textContent = speed.toFixed(1) + '\u00d7';
+  });
+
+  nav.addEventListener('click', (e) => {
+    const rect = nav.getBoundingClientRect();
+    const py = (e.clientY - rect.top) * (NAVH / rect.height);
+    const im = nImMax - (py / NAVH) * (nImMax - nImMin);
+    currentT = Math.max(0, Math.min(100, im));
+    slider.value = currentT;
+    update();
+  });
+
+  drawCurve(currentT);
+  status.textContent = 'Calcul du navigateur\u2026';
+  setTimeout(() => {
+    const t0 = performance.now();
+    const ndata = navCtx.createImageData(NAVW, NAVH);
+    renderRegion(NAVW, NAVH, nReMin, nReMax, nImMin, nImMax, ndata);
+    navImg = ndata;
+    const navDur = ((performance.now() - t0) / 1000).toFixed(2);
+    status.textContent = 'Navigateur pr\u00eat (' + navDur + ' s). Calcul du zoom\u2026';
+    setTimeout(() => {
+      const t1 = performance.now();
+      update();
+      const detDur = ((performance.now() - t1) / 1000).toFixed(2);
+      status.textContent = 'Tout est pr\u00eat. Zoom recalcul\u00e9 en ' + detDur + ' s.';
+    }, 30);
+  }, 50);
+})();
+</script>
+<footer style="margin-top:48px;padding:32px 24px 24px;border-top:1px solid #2a2a2a;font-family:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;color:#c4c4c4;text-align:center;"><div style="margin-bottom: 18px; font-style: italic; font-size: 12px; opacity:0.8; color:#b8b8b8;">Aucun zéro non trivial n'a été déplacé en dehors de la droite critique.</div>
+<div style="margin-bottom:8px;">
+<strong style="color:#f0ece8;font-weight:700;"><a href="https://www.instagram.com/fabrizio.bucella" style="color:#f0ece8;font-weight:700;; text-decoration: none; color: inherit;">Prof. Fabrizio Bucella</a></strong>
+<span style="opacity:0.85;"> · ULB · Physicien</span>
+</div>
+<div style="margin-bottom:12px;">
+<span style="margin:0 6px;">#lasciencepeuttout</span>
+<span style="opacity:0.4;">·</span>
+<span style="margin:0 6px;">#salukes</span>
+</div>
+<div>
+<a href="https://linktr.ee/fabrizio.bucella" style="color:#d0d0d0;text-decoration:none;border-bottom:1px dotted #777;">← Tous mes simulateurs</a>
+</div>
+</footer></body>
+</html>
