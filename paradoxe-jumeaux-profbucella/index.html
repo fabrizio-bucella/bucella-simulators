@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head><title>Paradoxe des jumeaux · Simulateur de physique · Prof. Bucella</title><meta content="Alice voyage à vitesse relativiste, Bob reste sur Terre : qui aura vieilli le moins ? Simulateur de dilatation du temps en relativité restreinte. Prof. Fabrizio Bucella, ULB." name="description"/><meta content="Prof. Fabrizio Bucella" name="author"/><meta content="physique, simulateur, relativité restreinte, dilatation du temps, paradoxe des jumeaux, Prof. Bucella, ULB, salukes, lasciencepeuttout" name="keywords"/><meta content="website" property="og:type"/><meta content="Prof. Fabrizio Bucella" property="og:site_name"/><meta content="Paradoxe des jumeaux · Simulateur de physique · Prof. Bucella" property="og:title"/><meta content="Alice voyage à vitesse relativiste, Bob reste sur Terre : qui aura vieilli le moins ? Simulateur de dilatation du temps en relativité restreinte. Prof. Fabrizio Bucella, ULB." property="og:description"/><meta content="https://paradoxe-jumeaux-profbucella.netlify.app/" property="og:url"/><meta content="https://paradoxe-jumeaux-profbucella.netlify.app/og-image.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="Paradoxe des jumeaux — Simulateur du Prof. Fabrizio Bucella" property="og:image:alt"/><meta content="fr_FR" property="og:locale"/><meta content="summary_large_image" name="twitter:card"/><meta content="Paradoxe des jumeaux · Simulateur de physique · Prof. Bucella" name="twitter:title"/><meta content="Alice voyage à vitesse relativiste, Bob reste sur Terre : qui aura vieilli le moins ? Simulateur de dilatation du temps en relativité restreinte. Prof. Fabrizio Bucella, ULB." name="twitter:description"/><meta content="https://paradoxe-jumeaux-profbucella.netlify.app/og-image.png" name="twitter:image"/><meta content="Paradoxe des jumeaux — Simulateur du Prof. Fabrizio Bucella" name="twitter:image:alt"/><meta content="@fabrizio_bucella" name="twitter:creator"/><link href="https://paradoxe-jumeaux-profbucella.netlify.app/" rel="canonical"/><link href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.85em%22 font-size=%2280%22 text-anchor=%22middle%22 x=%2250%22&gt;⏳&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,700;1,9..144,400&amp;family=Space+Mono:wght@400;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,700;1,9..144,400&amp;family=DM+Sans:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0a0e1a;
+  --bg-surface: rgba(19, 24, 41, 0.85);
+  --bg-elevated: #1c2236;
+  --border: #2a3148;
+  --border-soft: #1d2336;
+  --text: #e8ecf4;
+  --text-muted: #8892a8;
+  --bob: #4ecdc4;
+  --bob-glow: rgba(78, 205, 196, 0.4);
+  --alice: #ffd166;
+  --alice-glow: rgba(255, 209, 102, 0.4);
+  --accent: #ef476f;
+  --gold: #d4af37;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Mono', -apple-system, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 12% 23%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 87% 71%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 43% 51%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 91% 18%, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1px 1px at 7% 83%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 65% 35%, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 33% 78%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1.5px 1.5px at 78% 12%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 22% 45%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 55% 88%, rgba(255,255,255,0.7), transparent);
+  background-size: 100vw 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.7;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at top, rgba(78, 205, 196, 0.06), transparent 60%),
+              radial-gradient(ellipse at bottom right, rgba(255, 209, 102, 0.05), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+
+h1 em {
+  font-style: italic;
+  color: var(--alice);
+  font-weight: 500;
+}
+
+h1 .amp {
+  font-style: italic;
+  color: var(--text-muted);
+  margin: 0 0.25rem;
+}
+
+h1 .bob-name {
+  color: var(--bob);
+  font-weight: 500;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--bg-surface);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.75rem;
+}
+
+.panel h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 1.3rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.panel h2::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+}
+
+.field {
+  margin-bottom: 1.25rem;
+}
+
+.field:last-child { margin-bottom: 0; }
+
+label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+select, input[type="number"], input[type="text"] {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+  padding: 0.7rem 0.9rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+select:focus, input:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: #232a44;
+}
+
+select {
+  font-family: 'Space Mono', sans-serif;
+  cursor: pointer;
+}
+
+.unit-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+  padding: 3px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.unit-toggle button {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  padding: 0.5rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.unit-toggle button.active {
+  background: var(--gold);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.dual-display {
+  display: flex;
+  gap: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dual-display span {
+  background: var(--bg-elevated);
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-soft);
+}
+
+.dual-display b {
+  color: var(--text);
+  font-weight: 500;
+}
+
+input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: var(--bg-elevated);
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  margin-top: 0.5rem;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--gold);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--gold);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.result-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.result-card.bob { border-left: 3px solid var(--bob); }
+.result-card.alice { border-left: 3px solid var(--alice); }
+.result-card.full { grid-column: 1 / -1; }
+
+.result-card .label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4rem;
+}
+
+.result-card .value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.result-card .value.lorentz {
+  font-size: 1.8rem;
+  color: var(--gold);
+}
+
+.result-card .formula {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+}
+
+.diagram-panel {
+  background: var(--bg-surface);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.75rem;
+}
+
+.diagram-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.diagram-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Space Mono', sans-serif;
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn:hover {
+  background: #232a44;
+  border-color: var(--gold);
+}
+
+.btn.primary {
+  background: var(--gold);
+  color: var(--bg);
+  font-weight: 600;
+  border-color: var(--gold);
+}
+
+.btn.primary:hover {
+  background: #c9a32f;
+  border-color: #c9a32f;
+}
+
+.diagram-wrap {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(180deg, #0f1424 0%, #0a0e1a 100%);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+svg.spacetime {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.clocks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.clock {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.clock.bob { border-color: var(--bob); box-shadow: 0 0 20px rgba(78, 205, 196, 0.1); }
+.clock.alice { border-color: var(--alice); box-shadow: 0 0 20px rgba(255, 209, 102, 0.1); }
+
+.clock-icon {
+  font-size: 1.8rem;
+}
+
+.clock-info { flex: 1; }
+
+.clock-name {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.clock-name.bob { color: var(--bob); }
+.clock-name.alice { color: var(--alice); }
+
+.clock-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin-top: 0.15rem;
+}
+
+.legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  font-size: 0.82rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-muted);
+}
+
+.legend-swatch {
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.info-box {
+  background: rgba(78, 205, 196, 0.06);
+  border: 1px solid rgba(78, 205, 196, 0.2);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.info-box b { color: var(--text); font-weight: 500; }
+
+footer {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-soft);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+footer .sig {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--gold);
+  margin-bottom: 0.25rem;
+}
+
+.equation {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  color: var(--gold);
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-row input { width: auto; cursor: pointer; }
+
+.warn {
+  background: rgba(239, 71, 105, 0.08);
+  border: 1px solid rgba(239, 71, 105, 0.25);
+  color: #f7a4b4;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+  display: none;
+}
+
+.warn.visible { display: block; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<div class="eyebrow">Relativité restreinte · Dilatation du temps</div>
+<h1>Le paradoxe des <em>jumeaux</em></h1>
+<p class="subtitle"><span style="color:var(--alice)">Alice</span> embarque pour un aller-retour à vitesse relativiste. <span style="color:var(--bob)">Bob</span> reste sur Terre. Qui aura vieilli le moins en retrouvant l'autre ?</p>
+</header>
+<div class="grid">
+<!-- CONFIGURATION -->
+<section class="panel">
+<h2>Configuration du voyage</h2>
+<div class="field">
+<label for="destination">Destination</label>
+<select id="destination">
+<option value="lune">Lune — 384 400 km</option>
+<option value="mars">Mars (distance moy.) — 225 millions km</option>
+<option value="soleil">Soleil — 1 UA</option>
+<option value="pluton">Pluton (moy.) — 39 UA</option>
+<option selected="" value="proxima">Proxima Centauri — 4,2465 a-l</option>
+<option value="sirius">Sirius — 8,6 a-l</option>
+<option value="vega">Véga — 25 a-l</option>
+<option value="centre_galactique">Centre galactique — 26 000 a-l</option>
+<option value="andromede">Andromède — 2,537 millions a-l</option>
+<option value="custom">Distance personnalisée…</option>
+</select>
+</div>
+<div class="field" id="customField" style="display:none">
+<label for="customDistance">Distance (années-lumière)</label>
+<input id="customDistance" min="0.0000001" step="0.1" type="number" value="4.2465"/>
+</div>
+<div class="field">
+<label>Vitesse de croisière</label>
+<div class="unit-toggle">
+<button class="active" data-unit="percent">% de c</button>
+<button data-unit="kmh">km/h</button>
+</div>
+<input id="velocity" min="0" step="0.1" type="number" value="80"/>
+<input id="velocitySlider" max="99.999" min="0.001" step="0.001" type="range" value="80"/>
+<div class="dual-display">
+<span>v = <b id="vPercent">80,000 % c</b></span>
+<span><b id="vKmh">863 millions km/h</b></span>
+<span><b id="vKms">239 834 km/s</b></span>
+</div>
+<div class="warn" id="speedWarn">La vitesse doit rester strictement inférieure à c.</div>
+</div>
+</section>
+<!-- RÉSULTATS -->
+<section class="panel">
+<h2>Résultats du voyage</h2>
+<div class="results-grid">
+<div class="result-card full">
+<div class="label">Facteur de Lorentz</div>
+<div class="value lorentz" id="lorentz">γ = 1,667</div>
+<div class="formula">γ = 1 / √(1 − v²/c²)</div>
+</div>
+<div class="result-card bob">
+<div class="label">⏱ Temps Bob (Terre)</div>
+<div class="value" id="bobTime">10,62 ans</div>
+<div class="formula">T = 2D / v</div>
+</div>
+<div class="result-card alice">
+<div class="label">🚀 Temps Alice (vaisseau)</div>
+<div class="value" id="aliceTime">6,37 ans</div>
+<div class="formula">τ = T / γ</div>
+</div>
+<div class="result-card full">
+<div class="label">Différence d'âge au retour</div>
+<div class="value" id="ageDiff" style="color:var(--accent)">+ 4,25 ans pour Bob</div>
+<div class="formula">ΔÂge = T − τ = T (1 − 1/γ)</div>
+</div>
+</div>
+</section>
+</div>
+<!-- DIAGRAMME ESPACE-TEMPS -->
+<section class="diagram-panel">
+<div class="diagram-header">
+<h2 style="margin:0; font-family:'Fraunces',serif; font-size:1.3rem; font-weight:500; display:flex; align-items:center; gap:0.6rem">
+<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--gold); box-shadow:0 0 8px var(--gold)"></span>
+      Diagramme espace-temps
+    </h2>
+<div class="diagram-controls">
+<label class="checkbox-row">
+<input id="showSimul" type="checkbox"/> Lignes de simultanéité d'Alice
+      </label>
+<button class="btn primary" id="playBtn">▶ Lancer</button>
+<button class="btn" id="resetBtn">↺</button>
+</div>
+</div>
+<div class="diagram-wrap">
+<svg class="spacetime" preserveaspectratio="xMidYMid meet" viewbox="0 0 800 500">
+<!-- Grille -->
+<g id="grid"></g>
+<!-- Axes -->
+<line id="xAxis" stroke="#3a4262" stroke-width="1.5" x1="80" x2="760" y1="450" y2="450"></line>
+<line id="yAxis" stroke="#3a4262" stroke-width="1.5" x1="80" x2="80" y1="450" y2="40"></line>
+<!-- Labels axes -->
+<text fill="#8892a8" font-family="Fraunces" font-size="14" font-style="italic" text-anchor="end" x="780" y="455">distance →</text>
+<text fill="#8892a8" font-family="Fraunces" font-size="14" font-style="italic" text-anchor="end" x="75" y="35">↑ temps</text>
+<text fill="#8892a8" font-family="JetBrains Mono" font-size="10" text-anchor="middle" x="80" y="470">0</text>
+<text fill="#8892a8" font-family="JetBrains Mono" font-size="10" id="distLabel" text-anchor="middle" x="720" y="470">D</text>
+<!-- Cônes de lumière -->
+<g id="lightCones" opacity="0.15">
+<line stroke="#ffeb3b" stroke-dasharray="2,3" stroke-width="1" x1="80" x2="760" y1="450" y2="40"></line>
+</g>
+<!-- Lignes de simultanéité (cachées par défaut) -->
+<g id="simulLines" style="display:none"></g>
+<!-- Worldline Bob -->
+<line id="bobLine" opacity="0.8" stroke="#4ecdc4" stroke-width="3" x1="80" x2="80" y1="450" y2="40"></line>
+<!-- Worldline Alice -->
+<polyline fill="none" id="aliceLine" opacity="0.85" points="80,450 720,245 80,40" stroke="#ffd166" stroke-width="3"></polyline>
+<!-- Point Bob animé -->
+<circle cx="80" cy="450" fill="#4ecdc4" id="bobDot" r="7">
+<animate attributename="r" dur="2s" repeatcount="indefinite" values="7;9;7"></animate>
+</circle>
+<circle cx="80" cy="450" fill="#4ecdc4" id="bobGlow" opacity="0.25" r="14"></circle>
+<!-- Point Alice animé -->
+<circle cx="80" cy="450" fill="#ffd166" id="aliceDot" r="7">
+<animate attributename="r" dur="2s" repeatcount="indefinite" values="7;9;7"></animate>
+</circle>
+<circle cx="80" cy="450" fill="#ffd166" id="aliceGlow" opacity="0.25" r="14"></circle>
+<!-- Étiquettes -->
+<text fill="#4ecdc4" font-family="Fraunces" font-size="16" font-style="italic" id="bobLabel" text-anchor="end" x="60" y="250">Bob</text>
+<text fill="#ffd166" font-family="Fraunces" font-size="16" font-style="italic" id="aliceLabelOut" x="395" y="335">Alice →</text>
+<text fill="#ffd166" font-family="Fraunces" font-size="16" font-style="italic" id="aliceLabelBack" x="395" y="160">← Alice</text>
+<!-- Symbole Terre (au point d'origine) -->
+<circle cx="80" cy="450" fill="#2196f3" r="4" stroke="#fff" stroke-width="0.5"></circle>
+<!-- Symbole destination (en haut, point de retournement) -->
+<text fill="#ef476f" font-size="16" id="destSymbol" text-anchor="middle" x="720" y="250">★</text>
+</svg>
+</div>
+<div class="clocks">
+<div class="clock bob">
+<div class="clock-icon">🌍</div>
+<div class="clock-info">
+<div class="clock-name bob">Bob — Terre</div>
+<div class="clock-time" id="bobClock">0,00 ans</div>
+</div>
+</div>
+<div class="clock alice">
+<div class="clock-icon">🚀</div>
+<div class="clock-info">
+<div class="clock-name alice">Alice — vaisseau</div>
+<div class="clock-time" id="aliceClock">0,00 ans</div>
+</div>
+</div>
+</div>
+<div class="legend">
+<div class="legend-item"><span class="legend-swatch" style="background:#4ecdc4"></span>Ligne d'univers de Bob (immobile sur Terre)</div>
+<div class="legend-item"><span class="legend-swatch" style="background:#ffd166"></span>Ligne d'univers d'Alice (aller-retour)</div>
+<div class="legend-item"><span class="legend-swatch" style="background:#ffeb3b; opacity:0.6"></span>Cône de lumière (vitesse c)</div>
+</div>
+<div class="info-box">
+<b>Lecture du diagramme.</b> Le temps file vers le haut, l'espace vers la droite. Bob trace une verticale : il reste là où il est. Alice fait un aller-retour : sa ligne d'univers est plus longue géométriquement, mais en métrique de Minkowski elle est plus <em>courte</em> en temps propre. C'est tout le retournement contre-intuitif du <span class="equation">ds² = c²dt² − dx²</span>. La rupture de symétrie tient au fait qu'Alice doit faire un demi-tour alors que Bob n'en fait pas.
+  </div>
+</section>
+
+<footer style="margin-top:48px;padding:32px 24px 24px;border-top:1px solid #2a3148;font-family:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;color:#c4c4c4;text-align:center;">
+<div style="margin-bottom:18px;font-style:italic;font-size:12px;opacity:0.8;color:#b8b8b8;">Aucun jumeau n'a vieilli plus vite que prévu pendant cette simulation.</div>
+<div style="margin-bottom:8px;">
+<a href="https://www.instagram.com/fabrizio.bucella" style="color:#e8ecf4;font-weight:700;text-decoration:none;">Prof. Fabrizio Bucella</a>
+<span style="opacity:0.85;"> · ULB · Physicien</span>
+</div>
+<div style="margin-bottom:12px;">
+<span style="margin:0 6px;">#lasciencepeuttout</span>
+<span style="opacity:0.4;">·</span>
+<span style="margin:0 6px;">#salukes</span>
+</div>
+<div>
+<a href="https://linktr.ee/fabrizio.bucella" style="color:#d0d0d0;text-decoration:none;border-bottom:1px dotted #777;">← Tous mes simulateurs</a>
+</div>
+</footer></div>
+<script>
+// ──────────── Constantes physiques ────────────
+const C_KMS = 299792.458;                    // km/s
+const C_KMH = C_KMS * 3600;                  // km/h
+const SECONDS_PER_YEAR = 365.25 * 24 * 3600; // s
+const LY_KM = C_KMS * SECONDS_PER_YEAR;      // km par année-lumière
+const AU_KM = 149597870.7;                   // km par unité astronomique
+
+// ──────────── Destinations ────────────
+const destinations = {
+  lune:              { name: 'Lune',                 d_ly: 384400 / LY_KM },
+  mars:              { name: 'Mars',                 d_ly: 2.25e8 / LY_KM },
+  soleil:            { name: 'Soleil',               d_ly: AU_KM / LY_KM },
+  pluton:            { name: 'Pluton',               d_ly: 39 * AU_KM / LY_KM },
+  proxima:           { name: 'Proxima Centauri',     d_ly: 4.2465 },
+  sirius:            { name: 'Sirius',               d_ly: 8.6 },
+  vega:              { name: 'Véga',                 d_ly: 25 },
+  centre_galactique: { name: 'Centre galactique',    d_ly: 26000 },
+  andromede:         { name: 'Andromède',            d_ly: 2.537e6 }
+};
+
+// ──────────── État ────────────
+let currentUnit = 'percent';   // 'percent' | 'kmh'
+let velocityFraction = 0.80;   // v/c
+let destinationKey = 'proxima';
+let customDistanceLy = 4.2465;
+let isPlaying = false;
+let animProgress = 0;          // 0 → 1 (fraction du voyage complet)
+let lastFrameTime = null;
+let animDurationMs = 12000;    // 12 s pour le voyage complet à l'écran
+
+// ──────────── DOM ────────────
+const $ = id => document.getElementById(id);
+
+// ──────────── Formatage ────────────
+function fmtNumber(x, decimals = 2) {
+  if (!isFinite(x)) return '∞';
+  if (x === 0) return '0';
+  const abs = Math.abs(x);
+  if (abs >= 1e6 || (abs < 0.001 && abs > 0)) {
+    return x.toExponential(decimals).replace('.', ',').replace('e+', '·10^').replace('e-', '·10^−');
+  }
+  return x.toLocaleString('fr-FR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+function fmtTime(seconds) {
+  if (!isFinite(seconds)) return '∞';
+  if (seconds === 0) return '0 s';
+  const abs = Math.abs(seconds);
+  if (abs < 60)               return fmtNumber(seconds, 3) + ' s';
+  if (abs < 3600)             return fmtNumber(seconds/60, 2) + ' min';
+  if (abs < 86400)            return fmtNumber(seconds/3600, 2) + ' h';
+  if (abs < 86400 * 365.25)   return fmtNumber(seconds/86400, 2) + ' j';
+  if (abs < SECONDS_PER_YEAR * 1000) return fmtNumber(seconds/SECONDS_PER_YEAR, 2) + ' ans';
+  return fmtNumber(seconds/SECONDS_PER_YEAR, 2) + ' ans';
+}
+
+function fmtBigKm(km) {
+  if (km < 1e6)  return fmtNumber(km, 0) + ' km';
+  if (km < 1e9)  return fmtNumber(km/1e6, 2) + ' millions km';
+  if (km < 1e12) return fmtNumber(km/1e9, 2) + ' milliards km';
+  return fmtNumber(km/1e12, 2) + ' billions km';
+}
+
+// ──────────── Physique ────────────
+function getDistanceLy() {
+  return destinationKey === 'custom' ? customDistanceLy : destinations[destinationKey].d_ly;
+}
+
+function compute() {
+  const D_ly = getDistanceLy();          // distance Terre → destination (a-l)
+  const beta = velocityFraction;          // v/c
+  const v_kms = beta * C_KMS;
+  const v_kmh = beta * C_KMH;
+  const gamma = 1 / Math.sqrt(1 - beta * beta);
+
+  // Temps de Bob : 2D / v
+  // D en a-l → durée à v = c serait 2·D années, à v = β·c → 2D/β années
+  const bobYears = 2 * D_ly / beta;
+  const bobSeconds = bobYears * SECONDS_PER_YEAR;
+
+  // Temps d'Alice : T / γ
+  const aliceSeconds = bobSeconds / gamma;
+  const aliceYears = bobYears / gamma;
+
+  return {
+    D_ly, beta, v_kms, v_kmh, gamma,
+    bobYears, bobSeconds, aliceYears, aliceSeconds,
+    diffSeconds: bobSeconds - aliceSeconds
+  };
+}
+
+// ──────────── Mise à jour de l'UI ────────────
+function updateVelocityDisplays() {
+  const beta = velocityFraction;
+  const v_kms = beta * C_KMS;
+  const v_kmh = beta * C_KMH;
+  $('vPercent').textContent = fmtNumber(beta * 100, 4) + ' % c';
+  $('vKmh').textContent = fmtBigKm(v_kmh) + '/h';
+  $('vKms').textContent = fmtNumber(v_kms, 0) + ' km/s';
+}
+
+function updateResults() {
+  const r = compute();
+
+  $('lorentz').textContent = 'γ = ' + (r.gamma > 1000 ? fmtNumber(r.gamma, 0) : fmtNumber(r.gamma, 4));
+
+  $('bobTime').textContent = fmtTime(r.bobSeconds);
+  $('aliceTime').textContent = fmtTime(r.aliceSeconds);
+
+  const diff = r.diffSeconds;
+  if (Math.abs(diff) < 0.001) {
+    $('ageDiff').textContent = '≈ 0 (effet négligeable)';
+    $('ageDiff').style.color = 'var(--text-muted)';
+  } else {
+    $('ageDiff').textContent = '+ ' + fmtTime(diff) + ' pour Bob';
+    $('ageDiff').style.color = 'var(--accent)';
+  }
+}
+
+// ──────────── Diagramme espace-temps ────────────
+const SVG_X0 = 80, SVG_Y0 = 450, SVG_X1 = 720, SVG_Y1 = 40;
+const SVG_W = SVG_X1 - SVG_X0;
+const SVG_H = SVG_Y0 - SVG_Y1;
+
+function updateDiagram() {
+  const r = compute();
+  // Le diagramme est normalisé : axe x va de 0 à D, axe y va de 0 à T_bob
+
+  // Worldline Bob : verticale en x=0 (toujours pareille)
+  // Worldline Alice : (0,0) → (D, D/v en temps Bob) → (0, 2D/v)
+  // En coord. SVG : turnaround à y = SVG_Y0 - SVG_H/2 (milieu)
+  const xMax = SVG_X1;
+  const yMid = SVG_Y0 - SVG_H / 2;
+  const yTop = SVG_Y1;
+
+  $('aliceLine').setAttribute('points', `${SVG_X0},${SVG_Y0} ${xMax},${yMid} ${SVG_X0},${yTop}`);
+  $('bobLine').setAttribute('x1', SVG_X0);
+  $('bobLine').setAttribute('y1', SVG_Y0);
+  $('bobLine').setAttribute('x2', SVG_X0);
+  $('bobLine').setAttribute('y2', yTop);
+
+  // Étiquette distance
+  const D = r.D_ly;
+  let dLabel;
+  if (D < 1e-5) dLabel = fmtNumber(D * SECONDS_PER_YEAR, 2) + ' s-l';
+  else if (D < 0.001) dLabel = fmtNumber(D * SECONDS_PER_YEAR / 60, 2) + ' min-l';
+  else if (D < 1) dLabel = fmtNumber(D, 4) + ' a-l';
+  else dLabel = fmtNumber(D, 2) + ' a-l';
+  $('distLabel').textContent = dLabel;
+
+  // Lignes de simultanéité d'Alice (pente ±v/c² selon direction)
+  // En diagramme normalisé (x = position/D, y = temps/T_bob),
+  // une ligne de simultanéité d'Alice à temps propre τ a l'équation t - t0 = (v/c²)·x dans l'aller
+  // En SVG normalisé : pente = β · (yMid - SVG_Y0) / (xMax - SVG_X0) × ... attention au repère inversé
+  drawSimulLines(r);
+
+  drawGrid();
+}
+
+function drawGrid() {
+  const grid = $('grid');
+  grid.innerHTML = '';
+  // 5 lignes horizontales et verticales
+  for (let i = 1; i <= 4; i++) {
+    const y = SVG_Y0 - (SVG_H * i / 5);
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', SVG_X0); line.setAttribute('y1', y);
+    line.setAttribute('x2', SVG_X1); line.setAttribute('y2', y);
+    line.setAttribute('stroke', '#1d2336'); line.setAttribute('stroke-width', '1');
+    grid.appendChild(line);
+
+    const x = SVG_X0 + (SVG_W * i / 5);
+    const lineV = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    lineV.setAttribute('x1', x); lineV.setAttribute('y1', SVG_Y0);
+    lineV.setAttribute('x2', x); lineV.setAttribute('y2', SVG_Y1);
+    lineV.setAttribute('stroke', '#1d2336'); lineV.setAttribute('stroke-width', '1');
+    grid.appendChild(lineV);
+  }
+}
+
+function drawSimulLines(r) {
+  const group = $('simulLines');
+  group.innerHTML = '';
+  if (!$('showSimul').checked) {
+    group.style.display = 'none';
+    return;
+  }
+  group.style.display = '';
+
+  const beta = r.beta;
+  // En coord. SVG normalisé : la pente d'une ligne de simultanéité d'Alice
+  // (en unités où c=1) est β. On l'applique au diagramme de Bob.
+  // En SVG : y diminue vers le haut. Une ligne t = β x + cste devient
+  // (SVG_Y0 - y_svg) = β · ((x_svg - SVG_X0) / SVG_W) · T_bob_svg
+  // Or T_bob_svg = SVG_H, donc dy_svg = -β · dx_svg · (SVG_H / SVG_W)
+  // Mais le diagramme est en unités où x et y vont de 0 à D (et 0 à 2D/β en temps).
+  // On normalise pour que la lumière fasse 45° → SVG_H / SVG_W représente 2/β
+  // c'est-à-dire pour un voyage donné, la pente géométrique du segment d'Alice est :
+  // dy_svg/dx_svg = (SVG_H/2) / SVG_W (à l'aller) = SVG_H/(2·SVG_W)
+  // Donc la "vitesse 1c" géométrique est cette pente fois (1/β), soit SVG_H/(2β·SVG_W).
+  // Lumière (45° physique) → pente géom = SVG_H/(2β·SVG_W)
+  // Simultanéité Alice (pente physique β) → pente géom = β² · SVG_H/(2β·SVG_W) = β·SVG_H/(2·SVG_W)
+  const slopeOut = beta * SVG_H / (2 * SVG_W);  // descendant en SVG vers la droite (aller)
+  // Pour le retour, la pente est -β
+  const slopeBack = -beta * SVG_H / (2 * SVG_W);
+
+  // Tracer 5 lignes équidistantes durant la phase aller, 5 durant le retour
+  for (let i = 1; i <= 4; i++) {
+    // ALLER : Alice est à (xA = i/5 · SVG_W, yA = SVG_Y0 - i/5 · SVG_H/2)
+    const xA = SVG_X0 + (i/5) * SVG_W;
+    const yA = SVG_Y0 - (i/5) * (SVG_H / 2);
+    // Ligne de pente slopeOut passant par (xA, yA), tracée jusqu'à x=SVG_X0
+    const yAtBob = yA + slopeOut * (SVG_X0 - xA);
+    if (yAtBob > SVG_Y1 && yAtBob < SVG_Y0) {
+      const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      ln.setAttribute('x1', SVG_X0); ln.setAttribute('y1', yAtBob);
+      ln.setAttribute('x2', xA); ln.setAttribute('y2', yA);
+      ln.setAttribute('stroke', '#ffd166'); ln.setAttribute('stroke-width', '0.8');
+      ln.setAttribute('opacity', '0.35'); ln.setAttribute('stroke-dasharray', '4,3');
+      group.appendChild(ln);
+    }
+
+    // RETOUR : Alice est à (xA = (1 - i/5) · SVG_W, yA = SVG_Y0 - SVG_H/2 - (i/5) · SVG_H/2)
+    const xR = SVG_X0 + (1 - i/5) * SVG_W;
+    const yR = SVG_Y0 - SVG_H/2 - (i/5) * (SVG_H/2);
+    const yAtBobR = yR + slopeBack * (SVG_X0 - xR);
+    if (yAtBobR > SVG_Y1 && yAtBobR < SVG_Y0) {
+      const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      ln.setAttribute('x1', SVG_X0); ln.setAttribute('y1', yAtBobR);
+      ln.setAttribute('x2', xR); ln.setAttribute('y2', yR);
+      ln.setAttribute('stroke', '#ffd166'); ln.setAttribute('stroke-width', '0.8');
+      ln.setAttribute('opacity', '0.35'); ln.setAttribute('stroke-dasharray', '4,3');
+      group.appendChild(ln);
+    }
+  }
+}
+
+// ──────────── Animation ────────────
+function animateFrame(now) {
+  if (!isPlaying) return;
+  if (lastFrameTime === null) lastFrameTime = now;
+  const dt = now - lastFrameTime;
+  lastFrameTime = now;
+
+  animProgress += dt / animDurationMs;
+  if (animProgress >= 1) {
+    animProgress = 1;
+    isPlaying = false;
+    $('playBtn').textContent = '▶ Rejouer';
+  }
+  updateAnimationFrame();
+  if (isPlaying) requestAnimationFrame(animateFrame);
+}
+
+function updateAnimationFrame() {
+  const r = compute();
+  const p = animProgress;          // 0 → 1 (fraction du voyage total selon Bob)
+
+  // Position de Bob : (x=0, y évolue)
+  const yMid = SVG_Y0 - SVG_H / 2;
+  const yTop = SVG_Y1;
+  const bobY = SVG_Y0 - p * SVG_H;
+  $('bobDot').setAttribute('cy', bobY);
+  $('bobGlow').setAttribute('cy', bobY);
+
+  // Position d'Alice : aller pour p ∈ [0, 0.5], retour pour p ∈ [0.5, 1]
+  let aliceX, aliceY;
+  if (p <= 0.5) {
+    const pA = p / 0.5;  // 0 → 1
+    aliceX = SVG_X0 + pA * SVG_W;
+    aliceY = SVG_Y0 - pA * (SVG_H / 2);
+  } else {
+    const pA = (p - 0.5) / 0.5; // 0 → 1
+    aliceX = SVG_X1 - pA * SVG_W;
+    aliceY = yMid - pA * (SVG_H / 2);
+  }
+  $('aliceDot').setAttribute('cx', aliceX);
+  $('aliceDot').setAttribute('cy', aliceY);
+  $('aliceGlow').setAttribute('cx', aliceX);
+  $('aliceGlow').setAttribute('cy', aliceY);
+
+  // Horloges
+  const bobElapsed = p * r.bobSeconds;
+  const aliceElapsed = p * r.aliceSeconds;
+  $('bobClock').textContent = fmtTime(bobElapsed);
+  $('aliceClock').textContent = fmtTime(aliceElapsed);
+}
+
+function resetAnimation() {
+  isPlaying = false;
+  animProgress = 0;
+  lastFrameTime = null;
+  $('playBtn').textContent = '▶ Lancer';
+  updateAnimationFrame();
+}
+
+// ──────────── Handlers ────────────
+$('destination').addEventListener('change', e => {
+  destinationKey = e.target.value;
+  $('customField').style.display = (destinationKey === 'custom') ? 'block' : 'none';
+  updateResults();
+  updateDiagram();
+  resetAnimation();
+});
+
+$('customDistance').addEventListener('input', e => {
+  customDistanceLy = Math.max(0.0000001, parseFloat(e.target.value) || 0.0000001);
+  updateResults();
+  updateDiagram();
+  resetAnimation();
+});
+
+document.querySelectorAll('.unit-toggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.unit-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentUnit = btn.dataset.unit;
+    syncVelocityInputDisplay();
+  });
+});
+
+function syncVelocityInputDisplay() {
+  const inp = $('velocity');
+  if (currentUnit === 'percent') {
+    inp.value = (velocityFraction * 100).toFixed(3);
+    inp.step = '0.001';
+    inp.max = '99.999';
+  } else {
+    inp.value = (velocityFraction * C_KMH).toFixed(0);
+    inp.step = '1';
+    inp.max = (C_KMH * 0.99999).toFixed(0);
+  }
+}
+
+$('velocity').addEventListener('input', e => {
+  const v = parseFloat(e.target.value) || 0;
+  let frac;
+  if (currentUnit === 'percent') {
+    frac = v / 100;
+  } else {
+    frac = v / C_KMH;
+  }
+  if (frac >= 1) {
+    $('speedWarn').classList.add('visible');
+    frac = 0.99999;
+  } else if (frac < 0) {
+    frac = 0;
+    $('speedWarn').classList.remove('visible');
+  } else {
+    $('speedWarn').classList.remove('visible');
+  }
+  velocityFraction = frac;
+  $('velocitySlider').value = (frac * 100);
+  updateVelocityDisplays();
+  updateResults();
+  resetAnimation();
+});
+
+$('velocitySlider').addEventListener('input', e => {
+  const pct = parseFloat(e.target.value);
+  velocityFraction = pct / 100;
+  syncVelocityInputDisplay();
+  updateVelocityDisplays();
+  updateResults();
+  resetAnimation();
+  $('speedWarn').classList.remove('visible');
+});
+
+$('playBtn').addEventListener('click', () => {
+  if (animProgress >= 1) {
+    animProgress = 0;
+    lastFrameTime = null;
+  }
+  isPlaying = !isPlaying;
+  if (isPlaying) {
+    $('playBtn').textContent = '⏸ Pause';
+    lastFrameTime = null;
+    requestAnimationFrame(animateFrame);
+  } else {
+    $('playBtn').textContent = '▶ Reprendre';
+  }
+});
+
+$('resetBtn').addEventListener('click', resetAnimation);
+
+$('showSimul').addEventListener('change', () => {
+  drawSimulLines(compute());
+});
+
+// ──────────── Init ────────────
+syncVelocityInputDisplay();
+updateVelocityDisplays();
+updateResults();
+updateDiagram();
+updateAnimationFrame();
+</script>
+</body>
+</html>
