@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ============= SEO + RÉSEAUX SOCIAUX ============= -->
+<title>Courbure spatio-temporelle · Simulateur de physique · Prof. Bucella</title>
+<meta name="description" content="Diagramme d'encastrement Soleil-Terre-Lune : l'analogie 2D+1 de la relativité générale. Simulateur du Prof. Fabrizio Bucella, ULB.">
+<meta name="author" content="Prof. Fabrizio Bucella">
+<meta name="keywords" content="physique, simulateur, relativité générale, courbure, espace-temps, géodésique, Prof. Bucella, ULB, science, lasciencepeuttout, salukes">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Prof. Fabrizio Bucella">
+<meta property="og:title" content="Courbure spatio-temporelle · Simulateur de physique · Prof. Bucella">
+<meta property="og:description" content="Diagramme d'encastrement Soleil-Terre-Lune : l'analogie 2D+1 de la relativité générale. Simulateur du Prof. Fabrizio Bucella, ULB.">
+<meta property="og:url" content="https://courbure-spatiotemps-profbucella.netlify.app/">
+<meta property="og:image" content="https://courbure-spatiotemps-profbucella.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Courbure spatio-temporelle — Simulateur du Prof. Fabrizio Bucella">
+<meta property="og:locale" content="fr_FR">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Courbure spatio-temporelle · Simulateur de physique · Prof. Bucella">
+<meta name="twitter:description" content="Diagramme d'encastrement Soleil-Terre-Lune : l'analogie 2D+1 de la relativité générale. Simulateur du Prof. Fabrizio Bucella, ULB.">
+<meta name="twitter:image" content="https://courbure-spatiotemps-profbucella.netlify.app/og-image.png">
+<meta name="twitter:image:alt" content="Courbure spatio-temporelle — Simulateur du Prof. Fabrizio Bucella">
+<meta name="twitter:creator" content="@fabrizio_bucella">
+
+<link rel="canonical" href="https://courbure-spatiotemps-profbucella.netlify.app/">
+
+<!-- Favicon emoji -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.85em%22 font-size=%2280%22 text-anchor=%22middle%22 x=%2250%22>🌌</text></svg>">
+
+<!-- Police Space Mono (charte commune) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root { color-scheme: dark; }
+  html, body {
+    margin: 0; padding: 0;
+    background: #0C0C0C; color: #F0ECE8;
+    font-family: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    padding: 12px 20px;
+    border-bottom: 1px solid #2a2a2a;
+    background: rgba(8, 8, 12, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  header .eyebrow {
+    font-size: 10px; letter-spacing: 3px;
+    color: #d0d0d0; text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  header h1 {
+    margin: 0; font-size: 18px; font-weight: 700;
+    color: #F0ECE8; letter-spacing: 0.3px;
+  }
+  header p  {
+    margin: 4px 0 0; font-size: 12px;
+    color: #c4c4c4;
+  }
+  .controls {
+    display: flex; gap: 18px; flex-wrap: wrap; align-items: center;
+    padding: 12px 20px;
+    background: rgba(14, 14, 20, 0.92);
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .controls label {
+    font-size: 12px; color: #c4c4c4;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .controls input[type=range] {
+    width: 120px;
+    accent-color: #FBBF24;
+  }
+  .controls span {
+    font-size: 12px; color: #F0ECE8; min-width: 38px;
+    font-weight: 700;
+  }
+  .controls button {
+    background: #F0ECE8; color: #0C0C0C;
+    border: none; padding: 6px 16px;
+    cursor: pointer;
+    font-family: inherit; font-size: 11px;
+    font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .controls button:hover { background: #FBBF24; }
+  #canvasWrap {
+    position: relative; width: 100%;
+    height: calc(100vh - 122px);
+    background: #0C0C0C; overflow: hidden;
+  }
+  #legend {
+    position: absolute; top: 14px; left: 16px;
+    font-size: 12px; color: #c4c4c4;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 6px 10px; border-radius: 4px;
+  }
+  #hint {
+    position: absolute; top: 14px; right: 16px;
+    font-size: 11px; color: #a0a0a0;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 6px 10px; border-radius: 4px;
+  }
+
+  /* ============= FOOTER discret (style Calabi-Yau) ============= */
+  #credit {
+    position: fixed;
+    bottom: 14px;
+    right: 16px;
+    font-size: 11px;
+    opacity: 1;
+    text-align: right;
+    line-height: 1.5;
+    font-family: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: #e8e8e8;
+    z-index: 20;
+    pointer-events: auto;
+  }
+  #credit .gag {
+    margin-bottom: 8px;
+    font-style: italic;
+    font-size: 10px;
+    opacity: 0.75;
+    max-width: 280px;
+    margin-left: auto;
+    color: #b8b8b8;
+  }
+  #credit .sig {
+    margin-bottom: 4px;
+  }
+  #credit .sig a {
+    color: #f0ece8;
+    text-decoration: none;
+    font-weight: 700;
+  }
+  #credit .tags {
+    margin-bottom: 4px;
+    font-size: 10px;
+    color: #c4c4c4;
+  }
+  #credit .back a {
+    color: #d0d0d0;
+    text-decoration: none;
+    border-bottom: 1px dotted #777;
+    padding-bottom: 1px;
+  }
+
+  /* Sur petits écrans, garder le credit lisible */
+  @media (max-width: 640px) {
+    #credit { font-size: 10px; max-width: 220px; }
+    #credit .gag { font-size: 9px; max-width: 220px; }
+    #hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Simulateur de physique</div>
+  <h1>Courbure spatio-temporelle</h1>
+  <p>Diagramme d'encastrement Soleil-Terre-Lune — l'analogie 2D+1 de la relativité générale.</p>
+</header>
+
+<div class="controls">
+  <label>Masse Soleil
+    <input type="range" id="mSun" min="0" max="120" value="55" step="1">
+    <span id="mSunV">55</span>
+  </label>
+  <label>Masse Terre
+    <input type="range" id="mEarth" min="0" max="40" value="12" step="1">
+    <span id="mEarthV">12</span>
+  </label>
+  <label>Profondeur
+    <input type="range" id="depth" min="30" max="250" value="100" step="5">
+    <span id="depthV">1.0×</span>
+  </label>
+  <label>Vitesse
+    <input type="range" id="speed" min="0" max="300" value="100" step="5">
+    <span id="speedV">1.0×</span>
+  </label>
+  <button id="resetBtn">Reset</button>
+</div>
+
+<div id="canvasWrap">
+  <div id="legend">☉ Soleil · <span style="color:#6fb8ff">⊕ Terre</span> · <span style="color:#cfcfcf">☾ Lune</span></div>
+  <div id="hint">Glisser pour tourner · molette pour zoomer</div>
+</div>
+
+<!-- ============= FOOTER COMMUN HARMONISÉ (style fullscreen / Calabi-Yau) ============= -->
+<div id="credit">
+  <div class="gag">Aucune géodésique n'a été déviée pendant cette simulation.</div>
+  <div class="sig">
+    <a href="https://www.instagram.com/fabrizio.bucella">Prof. Fabrizio Bucella</a> · ULB
+  </div>
+  <div class="tags">#lasciencepeuttout · #salukes</div>
+  <div class="back">
+    <a href="https://linktr.ee/fabrizio.bucella">← Tous mes simulateurs</a>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  const wrap = document.getElementById('canvasWrap');
+  function getSize(){ return { W: wrap.clientWidth, H: wrap.clientHeight }; }
+  let { W, H } = getSize();
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0C0C0C);
+
+  const camera = new THREE.PerspectiveCamera(38, W/H, 0.1, 3000);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  wrap.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+  const key = new THREE.DirectionalLight(0xffffff, 0.9);
+  key.position.set(40, 80, 30); scene.add(key);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.25);
+  fill.position.set(-50, 30, -40); scene.add(fill);
+
+  const SIZE = 180, SEG = 48;
+  const sheetGeo = new THREE.PlaneGeometry(SIZE, SIZE, SEG, SEG);
+  sheetGeo.rotateX(-Math.PI/2);
+  const sheet = new THREE.Mesh(sheetGeo, new THREE.MeshBasicMaterial({
+    color: 0x4a7fc9, wireframe: true, transparent: true, opacity: 0.95
+  }));
+  scene.add(sheet);
+
+  const sun = new THREE.Mesh(new THREE.SphereGeometry(5.0, 48, 48),
+    new THREE.MeshLambertMaterial({ color: 0xe6d72a }));
+  const earth = new THREE.Mesh(new THREE.SphereGeometry(2.2, 32, 32),
+    new THREE.MeshLambertMaterial({ color: 0x2e6dd8 }));
+  const moon = new THREE.Mesh(new THREE.SphereGeometry(1.0, 24, 24),
+    new THREE.MeshLambertMaterial({ color: 0xcccccc }));
+  scene.add(sun); scene.add(earth); scene.add(moon);
+
+  let mSun=55, mEarth=12, mMoon=2.5, depthScale=1.0;
+  function wellAmp(m){ return m * 0.34 * depthScale; }
+  function wellSig(m){ return Math.max(3.5, Math.sqrt(m) * 1.45); }
+
+  const posAttr = sheetGeo.attributes.position;
+  const basePos = new Float32Array(posAttr.array);
+
+  function field(px, pz, sx, sz, ex, ez, mx, mz){
+    const ks=wellAmp(mSun), ss=wellSig(mSun);
+    const ke=wellAmp(mEarth), se=wellSig(mEarth);
+    const km=wellAmp(mMoon), sm=wellSig(mMoon);
+    const ds=Math.hypot(px-sx,pz-sz);
+    const de=Math.hypot(px-ex,pz-ez);
+    const dm=Math.hypot(px-mx,pz-mz);
+    return -(ks/Math.sqrt(1+(ds/ss)*(ds/ss))
+            +ke/Math.sqrt(1+(de/se)*(de/se))
+            +km/Math.sqrt(1+(dm/sm)*(dm/sm)));
+  }
+  function updateSheet(sx,sz,ex,ez,mx,mz){
+    const arr = posAttr.array;
+    for (let i=0;i<arr.length;i+=3){
+      arr[i+1] = field(basePos[i], basePos[i+2], sx,sz,ex,ez,mx,mz);
+    }
+    posAttr.needsUpdate = true;
+  }
+
+  const state = {tE:0, tM:0};
+  const earthOrbit=42, moonOrbit=7.5;
+  let speedMul=1.0;
+
+  let yaw=0.5, pitch=0.40, dist=160;
+  function applyCam(){
+    camera.position.set(Math.sin(yaw)*Math.cos(pitch)*dist,
+                        Math.sin(pitch)*dist,
+                        Math.cos(yaw)*Math.cos(pitch)*dist);
+    camera.lookAt(0,-3,0);
+  }
+  applyCam();
+
+  let drag=false, lx=0, ly=0;
+  renderer.domElement.addEventListener('mousedown', e=>{drag=true; lx=e.clientX; ly=e.clientY;});
+  window.addEventListener('mouseup', ()=>drag=false);
+  window.addEventListener('mousemove', e=>{
+    if(!drag) return;
+    yaw -= (e.clientX-lx)*0.005;
+    pitch += (e.clientY-ly)*0.005;
+    pitch = Math.max(0.08, Math.min(1.45, pitch));
+    lx=e.clientX; ly=e.clientY;
+    applyCam();
+  });
+  renderer.domElement.addEventListener('wheel', e=>{
+    e.preventDefault();
+    dist = Math.max(60, Math.min(320, dist + e.deltaY*0.08));
+    applyCam();
+  }, {passive:false});
+
+  // tactile
+  renderer.domElement.addEventListener('touchstart', e=>{
+    if(e.touches.length===1){drag=true; lx=e.touches[0].clientX; ly=e.touches[0].clientY;}
+  });
+  renderer.domElement.addEventListener('touchend', ()=>drag=false);
+  renderer.domElement.addEventListener('touchmove', e=>{
+    if(!drag||e.touches.length!==1) return;
+    yaw -= (e.touches[0].clientX-lx)*0.005;
+    pitch += (e.touches[0].clientY-ly)*0.005;
+    pitch = Math.max(0.08, Math.min(1.45, pitch));
+    lx=e.touches[0].clientX; ly=e.touches[0].clientY;
+    applyCam();
+  });
+
+  const $ = id => document.getElementById(id);
+  $('mSun').addEventListener('input', e=>{mSun=+e.target.value; $('mSunV').textContent=mSun;});
+  $('mEarth').addEventListener('input', e=>{mEarth=+e.target.value; $('mEarthV').textContent=mEarth;});
+  $('depth').addEventListener('input', e=>{depthScale=e.target.value/100; $('depthV').textContent=depthScale.toFixed(1)+'×';});
+  $('speed').addEventListener('input', e=>{speedMul=e.target.value/100; $('speedV').textContent=speedMul.toFixed(1)+'×';});
+  $('resetBtn').addEventListener('click', ()=>{state.tE=0; state.tM=0;});
+
+  let last = performance.now();
+  function tick(now){
+    const dt = Math.min(0.05, (now-last)/1000) * speedMul;
+    last = now;
+    state.tE += dt * 0.55 / Math.sqrt(Math.max(1, mSun)/30);
+    state.tM += dt * 2.1;
+
+    const sx=0, sz=0;
+    const ex = Math.cos(state.tE)*earthOrbit;
+    const ez = Math.sin(state.tE)*earthOrbit;
+    const mx = ex + Math.cos(state.tM)*moonOrbit;
+    const mz = ez + Math.sin(state.tM)*moonOrbit;
+    updateSheet(sx,sz,ex,ez,mx,mz);
+
+    const sScale = Math.max(0.4, Math.cbrt(mSun/55));
+    sun.scale.setScalar(sScale);
+    sun.position.set(sx, field(sx,sz,sx,sz,ex,ez,mx,mz) + 5.0*sScale*0.55, sz);
+
+    const eScale = Math.max(0.4, Math.cbrt(mEarth/12));
+    earth.scale.setScalar(eScale);
+    earth.position.set(ex, field(ex,ez,sx,sz,ex,ez,mx,mz) + 2.2*eScale*0.6, ez);
+
+    moon.position.set(mx, field(mx,mz,sx,sz,ex,ez,mx,mz) + 0.8, mz);
+
+    renderer.render(scene, camera);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  window.addEventListener('resize', ()=>{
+    const s = getSize(); W = s.W; H = s.H;
+    renderer.setSize(W, H);
+    camera.aspect = W/H;
+    camera.updateProjectionMatrix();
+  });
+})();
+</script>
+</body>
+</html>
