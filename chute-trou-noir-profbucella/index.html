@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ============= SEO + RÉSEAUX SOCIAUX ============= -->
+<title>Tomber dans un trou noir · Simulateur de physique · Prof. Bucella</title>
+<meta name="description" content="Chute vers un trou noir, deux points de vue : à bord (τ fini, ~20 min) et de loin (t infini). Simulateur du Prof. Fabrizio Bucella, ULB.">
+<meta name="author" content="Prof. Fabrizio Bucella">
+<meta name="keywords" content="physique, simulateur, trou noir, Schwarzschild, relativité générale, horizon, ISCO, spaghettification, Prof. Bucella, ULB, lasciencepeuttout, salukes">
+
+<!-- Open Graph (Facebook, LinkedIn, WhatsApp, Slack) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Prof. Fabrizio Bucella">
+<meta property="og:title" content="Tomber dans un trou noir · Simulateur de physique · Prof. Bucella">
+<meta property="og:description" content="Chute vers un trou noir, deux points de vue : à bord (τ fini, ~20 min) et de loin (t infini). Simulateur du Prof. Fabrizio Bucella, ULB.">
+<meta property="og:url" content="https://chute-trou-noir-profbucella.netlify.app/">
+<meta property="og:image" content="https://chute-trou-noir-profbucella.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Tomber dans un trou noir — Simulateur du Prof. Fabrizio Bucella">
+<meta property="og:locale" content="fr_FR">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tomber dans un trou noir · Simulateur de physique · Prof. Bucella">
+<meta name="twitter:description" content="Chute vers un trou noir, deux points de vue : à bord (τ fini, ~20 min) et de loin (t infini). Simulateur du Prof. Fabrizio Bucella, ULB.">
+<meta name="twitter:image" content="https://chute-trou-noir-profbucella.netlify.app/og-image.png">
+<meta name="twitter:image:alt" content="Tomber dans un trou noir — Simulateur du Prof. Fabrizio Bucella">
+<meta name="twitter:creator" content="@fabrizio_bucella">
+
+<link rel="canonical" href="https://chute-trou-noir-profbucella.netlify.app/">
+
+<!-- Favicon SVG inline ⏱ deux horloges = signature du simu -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.85em%22 font-size=%2280%22 text-anchor=%22middle%22 x=%2250%22>⏱️</text></svg>">
+
+<!-- Police Space Mono (charte commune) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#000; --cyan:#22d3ee; --indigo:#6366f1; --magenta:#e879f9; --red:#ff5340; --dim:#9ca3af;
+    color-scheme: dark;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--bg); color:#e5e7eb;
+    font-family:'Space Mono', monospace;
+    min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    gap:14px; padding:14px;
+  }
+  #stage{position:relative;background:#000;border:1px solid #1f2937;}
+  canvas{display:block;width:100%;height:100%;}
+  #controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;font-size:13px;}
+  button,select{
+    font-family:'Space Mono',monospace;font-size:13px;background:#000;color:var(--cyan);
+    border:1px solid var(--indigo);padding:7px 14px;cursor:pointer;
+  }
+  button:hover,select:hover{border-color:var(--cyan);}
+  button:focus-visible,select:focus-visible{outline:2px solid var(--magenta);outline-offset:2px;}
+  .lbl{color:var(--dim);}
+  #hint{color:var(--dim);font-size:12px;max-width:600px;text-align:center;line-height:1.5;}
+
+  /* ============= FOOTER HARMONISÉ (position:fixed bas-droite) ============= */
+  #credit {
+    position: fixed;
+    bottom: 14px;
+    right: 16px;
+    font-size: 11px;
+    text-align: right;
+    line-height: 1.5;
+    font-family: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: #e8e8e8;
+    z-index: 20;
+    pointer-events: auto;
+    max-width: 280px;
+  }
+  #credit .gag {
+    margin-bottom: 8px;
+    font-style: italic;
+    font-size: 10px;
+    opacity: 0.7;
+    color: #b8b8b8;
+  }
+  #credit .sig { margin-bottom: 4px; }
+  #credit .sig a {
+    color: #f0ece8;
+    text-decoration: none;
+    font-weight: 700;
+  }
+  #credit .tags {
+    margin-bottom: 4px;
+    font-size: 10px;
+    color: #c4c4c4;
+  }
+  #credit .back a {
+    color: #d0d0d0;
+    text-decoration: none;
+    border-bottom: 1px dotted #777;
+    padding-bottom: 1px;
+  }
+  @media (max-width: 720px) {
+    #credit { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage"><canvas id="cv"></canvas></div>
+
+<div id="controls">
+  <span class="lbl">rendu</span>
+  <select id="selMode">
+    <option value="cinema" selected>cinéma</option>
+    <option value="sobre">sobre</option>
+  </select>
+  <button id="btnReplay">▶ rejouer</button>
+  <button id="btnPause">⏸ pause</button>
+  <button id="btnAudio">🔇 son</button>
+  <span class="lbl">vitesse</span>
+  <select id="selSpeed">
+    <option value="0.5">×0,5</option>
+    <option value="1" selected>×1</option>
+    <option value="1.5">×1,5</option>
+  </select>
+  <span class="lbl">trou noir</span>
+  <select id="selMass">
+    <option value="smbh" selected>Sgr A* (4,3·10⁶ M☉)</option>
+    <option value="stellar">stellaire (10 M☉)</option>
+  </select>
+  <span class="lbl">format</span>
+  <select id="selAspect">
+    <option value="916" selected>9:16 (Reel)</option>
+    <option value="169">16:9 (YouTube)</option>
+  </select>
+</div>
+<div id="hint">Physique de Schwarzschild réelle : τ exact, t intégré numériquement, redshift 1+z = 1/(1−√(rₛ/r)), marées Δa = c²rₛL/r³. Rendu « cinéma » : disque d'accrétion Doppler, lensing stylisé, intro/outro, son optionnel. Rendu « sobre » : épure pédagogique.</div>
+
+<!-- ============= FOOTER COMMUN HARMONISÉ (style Calabi-Yau / fullscreen) ============= -->
+<div id="credit">
+  <div class="gag">Aucune sonde n'a réellement franchi l'horizon pendant cette simulation.</div>
+  <div class="sig">
+    <a href="https://www.instagram.com/fabrizio.bucella">Prof. Fabrizio Bucella</a> · ULB
+  </div>
+  <div class="tags">#lasciencepeuttout · #salukes</div>
+  <div class="back">
+    <a href="https://linktr.ee/fabrizio.bucella">← Tous mes simulateurs</a>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ================= constantes & charte ================= */
+const C={bg:"#000",cyan:"#22d3ee",indigo:"#6366f1",magenta:"#e879f9",red:"#ff5340",
+         dim:"#9ca3af",white:"#f9fafb"};
+const c_SI=2.998e8,G_SI=6.674e-11,MSUN=1.989e30,g0=9.81,BODY_L=2.0;
+
+/* ================= scénarios (unités rs=1, c=1) ================= */
+function makeScenario(massSolar,r0,keyframes,captions,massLabel){
+  const rs_m=2*G_SI*massSolar*MSUN/(c_SI*c_SI);
+  const tUnit=rs_m/c_SI;
+  const Ktide=c_SI*c_SI*BODY_L/(rs_m*rs_m*g0);
+  const rDeath=Math.cbrt(Ktide/10);
+  return {massSolar,rs_m,tUnit,Ktide,rDeath,r0,keyframes,captions,massLabel};
+}
+const tauOf=(r,r0)=>(2/3)*(Math.pow(r0,1.5)-Math.pow(Math.max(r,0),1.5));
+function buildTtable(r0){
+  const pts=[],N=3000,lo=Math.log(1e-6),hi=Math.log(r0-1);
+  for(let i=0;i<=N;i++)pts.push(1+Math.exp(hi-(hi-lo)*i/N));
+  const t=[0],f=(r)=>Math.sqrt(r)/(1-1/r);
+  for(let i=1;i<=N;i++)t.push(t[i-1]+(pts[i-1]-pts[i])*0.5*(f(pts[i-1])+f(pts[i])));
+  return {r:pts,t};
+}
+function tOf(tb,r){
+  const{r:R,t:T}=tb;
+  if(r>=R[0])return 0;
+  if(r<=R[R.length-1])return Infinity;
+  let lo=0,hi=R.length-1;
+  while(hi-lo>1){const m=(lo+hi)>>1;(R[m]>r)?(lo=m):(hi=m);}
+  const f=(R[lo]-r)/(R[lo]-R[hi]);
+  return T[lo]+f*(T[hi]-T[lo]);
+}
+
+const SCEN={
+  smbh:makeScenario(4.3e6,12,
+    [[0,12],[0.17,8],[0.33,6],[0.52,3],[0.65,1.5],[0.78,1.0001],[0.88,0.45],[0.955,0.05],[1,0.004]],
+    [
+      {r:12,t:"DÉPART · r = 12 rₛ",s:"Chute libre vers Sagittarius A*. À bord : apesanteur totale, rien ne signale le danger."},
+      {r:6,t:"ISCO · r = 6 rₛ",s:"Dernière orbite circulaire stable. En dessous, impossible de rester en orbite : on tombe."},
+      {r:1.5,t:"SPHÈRE DE PHOTONS · r = 1,5 rₛ",s:"Ici, la lumière elle-même tourne en rond autour du trou noir."},
+      {r:1.0,t:"HORIZON · r = 1 rₛ",s:"Vu de loin : l'image gèle et rougit pour toujours. À bord : rien. Aucun mur, aucune secousse."},
+      {r:0.45,t:"À L'INTÉRIEUR",s:"r n'est plus une distance mais un temps : la singularité n'est pas un lieu, c'est un futur."},
+      {r:0.05,t:"SPAGHETTIFICATION",s:"Les marées dépassent enfin le seuil létal… seulement maintenant, bien après l'horizon."},
+      {r:0.004,t:"FIN DU TEMPS PROPRE",s:"Durée totale à bord depuis 12 rₛ : environ 20 minutes."}
+    ],"Sgr A* · 4,3 millions de masses solaires"),
+  stellar:makeScenario(10,200,
+    [[0,200],[0.22,128.5],[0.42,40],[0.58,6],[0.70,1.5],[0.82,1.0001],[0.93,0.3],[1,0.004]],
+    [
+      {r:200,t:"DÉPART · r = 200 rₛ",s:"Chute vers un trou noir stellaire de 10 M☉ (rₛ ≈ 30 km). Tout est calme… pour l'instant."},
+      {r:128.5,t:"SPAGHETTIFICATION · r ≈ 128 rₛ",s:"Déjà ?! Plus le trou noir est petit, plus les marées sont violentes. Mort bien AVANT l'horizon."},
+      {r:6,t:"ISCO · r = 6 rₛ",s:"Les débris passent la dernière orbite stable."},
+      {r:1.5,t:"SPHÈRE DE PHOTONS",s:"La lumière tourne en rond. Les débris continuent leur chute."},
+      {r:1.0,t:"HORIZON · r = 1 rₛ",s:"Vu de loin, l'image des débris gèle et rougit. Le temps lointain t diverge."},
+      {r:0.004,t:"SINGULARITÉ",s:"Durée totale de la chute, à bord : une fraction de seconde."}
+    ],"trou noir stellaire · 10 masses solaires")
+};
+
+/* ================= état global ================= */
+let CINEMA=true;
+let scen=SCEN.smbh, tTable=buildTtable(scen.r0);
+let aspect="916", DUR=34, speed=1, playing=true;
+let wall=0, lastTs=null, simT=0;
+const INTRO=1.9;                 // ignorée en mode sobre
+let frozenAlpha=1, trail=[], shakeAmp=0, flash=0, deathFired=false;
+let capCur=null, capAlpha=0, outroAlpha=0;
+
+function rng(seed){let x=seed;return ()=>{x=(x*16807)%2147483647;return x/2147483647;};}
+function makeStars(n,w,h,seed){
+  const r=rng(seed),s=[];
+  for(let i=0;i<n;i++)s.push({x:r()*w,y:r()*h,r:0.4+r()*1.5,a:0.22+r()*0.7,tw:r()*6.28});
+  return s;
+}
+let starsOut=[],starsIn=[],plasma=[];
+function makePlasma(n){
+  const r=rng(424242),p=[];
+  for(let i=0;i<n;i++)p.push({ang:r()*6.283,rad:1.15+r()*2.2,sz:0.6+r()*1.6});
+  return p;
+}
+
+/* ================= canvas & layout ================= */
+const cv=document.getElementById("cv"),ctx=cv.getContext("2d");
+const stage=document.getElementById("stage");
+let W=1080,H=1920,U=1,L={};
+function layout(){
+  if(aspect==="916"){W=1080;H=1920;}else{W=1920;H=1080;}
+  cv.width=W;cv.height=H;
+  const maxW=Math.min(window.innerWidth-28,aspect==="916"?430:940);
+  stage.style.width=maxW+"px";stage.style.height=(maxW*H/W)+"px";
+  U=H/1920*(aspect==="916"?1:1.45);
+  const head=Math.round(140*U),capH=Math.round(245*U),foot=Math.round(54*U);
+  if(aspect==="916"){
+    const ph=(H-head-capH-foot)/2;
+    L={head,p1:{x:0,y:head,w:W,h:ph},p2:{x:0,y:head+ph,w:W,h:ph},
+       cap:{x:0,y:head+2*ph,w:W,h:capH},foot:{x:0,y:H-foot,w:W,h:foot}};
+  }else{
+    const ph=H-head-capH-foot,pw=W/2;
+    L={head,p1:{x:0,y:head,w:pw,h:ph},p2:{x:pw,y:head,w:pw,h:ph},
+       cap:{x:0,y:head+ph,w:W,h:capH},foot:{x:0,y:H-foot,w:W,h:foot}};
+  }
+  starsOut=makeStars(130,L.p1.w,L.p1.h,12345);
+  starsIn=makeStars(160,L.p2.w,L.p2.h,67890);
+  plasma=makePlasma(220);
+}
+
+/* ================= physique au temps mur ================= */
+function rOfWall(p){
+  const k=scen.keyframes;
+  if(p<=0)return k[0][1];
+  if(p>=1)return k[k.length-1][1];
+  for(let i=1;i<k.length;i++)
+    if(p<=k[i][0]){const f=(p-k[i-1][0])/(k[i][0]-k[i-1][0]);return k[i-1][1]+f*(k[i][1]-k[i-1][1]);}
+  return k[k.length-1][1];
+}
+
+/* ================= formats & couleurs ================= */
+function fmtSec(s){
+  if(!isFinite(s))return "∞";
+  if(s>=3600)return Math.floor(s/3600)+" h "+String(Math.floor(s/60)%60).padStart(2,"0")+" min";
+  if(s>=60)return Math.floor(s/60)+" min "+String(Math.floor(s)%60).padStart(2,"0")+" s";
+  if(s>=1)return s.toFixed(2).replace(".",",")+" s";
+  return (s*1000).toFixed(1).replace(".",",")+" ms";
+}
+function sup(n){const m={"-":"⁻","0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹"};
+  return String(n).split("").map(c=>m[c]||c).join("");}
+function fmtG(v){
+  if(v<=0)return "0 g";
+  const e=Math.floor(Math.log10(v));
+  if(e>=-2&&e<=2)return Number(v.toPrecision(2)).toString().replace(".",",")+" g";
+  return (v/Math.pow(10,e)).toFixed(1).replace(".",",")+"×10"+sup(e)+" g";
+}
+const lerp=(a,b,f)=>a+(b-a)*f;
+const qOf=(r)=>Math.max(0,1-Math.sqrt(1/Math.max(r,1.0000001)));
+function probeColor(r){
+  const q=qOf(r);let col,alpha;
+  if(q>0.5){const f=(q-0.5)/0.5;col=[lerp(255,34,f),lerp(160,211,f),lerp(80,238,f)];alpha=1;}
+  else{col=[255,lerp(60,160,q/0.5),lerp(40,80,q/0.5)];alpha=Math.max(0.06,q/0.5);}
+  return {css:`rgba(${col[0]|0},${col[1]|0},${col[2]|0},${alpha})`,q};
+}
+function dopplerColor(f,boost){
+  const b=Math.max(0,Math.min(1,0.5+0.5*f));
+  const r=lerp(232,100,b),g=lerp(100,235,b),bl=lerp(180,255,b);
+  const a=(0.18+0.82*Math.pow(b,1.6))*boost;
+  return `rgba(${r|0},${g|0},${bl|0},${Math.min(1,a).toFixed(3)})`;
+}
+
+/* ================= helpers dessin ================= */
+function glowDot(x,y,rad,color,strength){
+  const g=ctx.createRadialGradient(x,y,0,x,y,rad);
+  g.addColorStop(0,color);g.addColorStop(1,"rgba(0,0,0,0)");
+  ctx.globalAlpha=strength;ctx.fillStyle=g;
+  ctx.beginPath();ctx.arc(x,y,rad,0,6.283);ctx.fill();ctx.globalAlpha=1;
+}
+function drawCapsule(x,y,s,col,stretch,destroyed){
+  ctx.save();ctx.translate(x,y);ctx.scale(1,stretch);
+  if(!destroyed){
+    ctx.fillStyle=col;ctx.beginPath();
+    ctx.moveTo(0,-s);ctx.quadraticCurveTo(s*0.8,-s*0.2,s*0.55,s*0.9);
+    ctx.lineTo(-s*0.55,s*0.9);ctx.quadraticCurveTo(-s*0.8,-s*0.2,0,-s);ctx.fill();
+    ctx.fillStyle="#000";ctx.beginPath();ctx.arc(0,-s*0.25,s*0.22,0,6.283);ctx.fill();
+  }else{
+    ctx.fillStyle=col;
+    for(let i=0;i<7;i++){const a=i*0.9,d=s*(0.5+0.18*i);
+      ctx.fillRect(Math.cos(a)*d,Math.sin(a)*d*1.6,s*0.26,s*0.26);}
+  }
+  ctx.restore();
+}
+function panelHud(p,label,clockLabel,clockVal,clockCol){
+  ctx.strokeStyle="#1f2937";ctx.lineWidth=1;ctx.strokeRect(p.x+0.5,p.y+0.5,p.w-1,p.h-1);
+  ctx.fillStyle=C.dim;ctx.font=`${25*U}px 'Space Mono'`;ctx.textAlign="left";ctx.textBaseline="top";
+  ctx.fillText(label,p.x+24*U,p.y+18*U);
+  ctx.textAlign="right";ctx.font=`${21*U}px 'Space Mono'`;
+  ctx.fillText(clockLabel,p.x+p.w-24*U,p.y+16*U);
+  ctx.fillStyle=clockCol;ctx.font=`bold ${42*U}px 'Space Mono'`;
+  ctx.fillText(clockVal,p.x+p.w-24*U,p.y+44*U);
+}
+/* étoiles : streaks de lensing en mode cinéma, points simples en mode sobre */
+function drawStars(stars,p,cx,cy,Rbh,now,aberr){
+  for(const s of stars){
+    const tw=CINEMA?0.75+0.25*Math.sin(now*1.7+s.tw):1;
+    let sx=p.x+s.x,sy=p.y+s.y;
+    if(CINEMA&&aberr>0){
+      sx=cx+(sx-cx)*(1+aberr);sy=cy+(sy-cy)*(1+aberr);
+      if(sx<p.x||sx>p.x+p.w||sy<p.y||sy>p.y+p.h)continue;
+    }
+    const dx=sx-cx,dy=sy-cy,d=Math.hypot(dx,dy);
+    if(d<=Rbh*1.02)continue;
+    if(CINEMA&&d<Rbh*2.6){
+      const a=Math.atan2(dy,dx);
+      const span=Math.min(1.1,0.10*Rbh/(d-Rbh*0.98));
+      ctx.strokeStyle=`rgba(223,250,255,${(s.a*tw*Math.min(1,0.35+span)).toFixed(3)})`;
+      ctx.lineWidth=Math.max(0.8,s.r*0.9);
+      ctx.beginPath();ctx.arc(cx,cy,d,a-span,a+span);ctx.stroke();
+    }else{
+      ctx.globalAlpha=s.a*tw;ctx.fillStyle=C.white;
+      ctx.fillRect(sx,sy,s.r,s.r);ctx.globalAlpha=1;
+    }
+  }
+  ctx.globalAlpha=1;
+}
+function drawDisk(cx,cy,Rin,Rout,tilt,rot,boost,front){
+  ctx.globalCompositeOperation="lighter";
+  const SEG=72;
+  for(let i=0;i<SEG;i++){
+    const a0=rot+i*6.283/SEG,a1=a0+6.283/SEG*1.12;
+    const mid=(a0+a1)/2,sn=Math.sin(mid);
+    if(front!==null&&((front&&sn<0)||(!front&&sn>=0)))continue;
+    const dopp=Math.cos(mid);
+    for(const rr of [Rin*1.08,Rin+(Rout-Rin)*0.38,Rin+(Rout-Rin)*0.66,Rout*0.94]){
+      const w=(Rout-Rin)*0.42;
+      ctx.strokeStyle=dopplerColor(dopp,boost*(rr===Rout*0.94?0.55:1));
+      ctx.lineWidth=w;
+      ctx.beginPath();ctx.ellipse(cx,cy,rr,rr*tilt,0,a0,a1);ctx.stroke();
+    }
+  }
+  ctx.globalCompositeOperation="source-over";
+}
+
+/* ================= panneau 1 : vue extérieure ================= */
+function drawOutside(p,r,tDist,now,dt){
+  ctx.save();ctx.beginPath();ctx.rect(p.x,p.y,p.w,p.h);ctx.clip();
+  ctx.fillStyle="#000";ctx.fillRect(p.x,p.y,p.w,p.h);
+
+  const cx=p.x+p.w/2,cy=p.y+p.h-110*U;
+  const Rbh=Math.min(p.w,p.h)*(CINEMA?0.115:0.105);
+  const maxD=p.h-240*U;
+  const dOf=(rr)=>Rbh+(maxD-Rbh)*Math.log(Math.max(rr,1))/Math.log(scen.r0);
+
+  drawStars(starsOut,p,cx,cy,Rbh,now,0);
+
+  if(CINEMA){
+    drawDisk(cx,cy,Rbh*1.5,Rbh*2.7,0.30,now*0.55,0.9,false);
+    ctx.globalCompositeOperation="lighter";
+    for(const q of plasma){
+      if(dt>0){q.ang+=dt*1.6/Math.pow(q.rad,1.5);q.rad-=dt*0.10/Math.sqrt(q.rad);
+        if(q.rad<1.06){q.rad=1.6+Math.random()*1.6;q.ang=Math.random()*6.283;}}
+      const sn=Math.sin(q.ang);if(sn>=0)continue;
+      const px=cx+Math.cos(q.ang)*q.rad*Rbh,py=cy+sn*q.rad*Rbh*0.30;
+      ctx.fillStyle=dopplerColor(Math.cos(q.ang),0.65);
+      ctx.beginPath();ctx.arc(px,py,q.sz*2.4*U,0,6.283);ctx.fill();
+    }
+    ctx.globalCompositeOperation="source-over";
+
+    ctx.globalCompositeOperation="lighter";
+    glowDot(cx,cy,Rbh*1.9,"rgba(99,102,241,0.55)",0.9);
+    ctx.globalCompositeOperation="source-over";
+    ctx.fillStyle="#000";ctx.beginPath();ctx.arc(cx,cy,Rbh,0,6.283);ctx.fill();
+    ctx.globalCompositeOperation="lighter";
+    ctx.strokeStyle="rgba(223,250,255,0.95)";ctx.lineWidth=2.6*U;
+    ctx.beginPath();ctx.arc(cx,cy,Rbh*1.01,0,6.283);ctx.stroke();
+    ctx.strokeStyle="rgba(34,211,238,0.55)";ctx.lineWidth=5*U;
+    ctx.beginPath();ctx.arc(cx,cy,Rbh*1.06,0,6.283);ctx.stroke();
+    ctx.globalCompositeOperation="source-over";
+
+    drawDisk(cx,cy,Rbh*1.5,Rbh*2.7,0.30,now*0.55,1.1,true);
+    ctx.globalCompositeOperation="lighter";
+    for(const q of plasma){
+      const sn=Math.sin(q.ang);if(sn<0)continue;
+      const px=cx+Math.cos(q.ang)*q.rad*Rbh,py=cy+sn*q.rad*Rbh*0.30;
+      ctx.fillStyle=dopplerColor(Math.cos(q.ang),0.7);
+      ctx.beginPath();ctx.arc(px,py,q.sz*2.4*U,0,6.283);ctx.fill();
+    }
+    ctx.globalCompositeOperation="source-over";
+  }else{
+    const grd=ctx.createRadialGradient(cx,cy,Rbh*0.95,cx,cy,Rbh*1.5);
+    grd.addColorStop(0,"rgba(34,211,238,0.85)");
+    grd.addColorStop(0.4,"rgba(99,102,241,0.35)");
+    grd.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=grd;ctx.beginPath();ctx.arc(cx,cy,Rbh*1.5,0,6.283);ctx.fill();
+    ctx.fillStyle="#000";ctx.beginPath();ctx.arc(cx,cy,Rbh,0,6.283);ctx.fill();
+    ctx.strokeStyle=C.cyan;ctx.lineWidth=2.5*U;
+    ctx.beginPath();ctx.arc(cx,cy,Rbh,0,6.283);ctx.stroke();
+  }
+
+  /* repères r */
+  ctx.setLineDash([6*U,9*U]);ctx.lineWidth=1.4;
+  for(const[rr,lab]of[[1.5,"1,5 rₛ"],[6,"6 rₛ"]]){
+    if(rr<scen.r0*0.9){
+      ctx.strokeStyle=CINEMA?"rgba(99,102,241,0.28)":"rgba(99,102,241,0.35)";
+      ctx.beginPath();ctx.arc(cx,cy,dOf(rr),0,6.283);ctx.stroke();
+      if(!CINEMA){
+        ctx.fillStyle="rgba(99,102,241,0.75)";ctx.font=`${20*U}px 'Space Mono'`;
+        ctx.textAlign="left";ctx.textBaseline="middle";
+        ctx.fillText(lab,cx+dOf(rr)*0.72,cy-dOf(rr)*0.72);
+      }
+    }
+  }
+  ctx.setLineDash([]);
+  ctx.fillStyle=C.dim;ctx.font=`${20*U}px 'Space Mono'`;ctx.textAlign="center";ctx.textBaseline="alphabetic";
+  ctx.fillText("horizon",cx,cy+Rbh+28*U);
+
+  /* sonde */
+  const rView=Math.max(r,CINEMA?1.05:1.045),crossed=r<=1.0001;
+  if(crossed)frozenAlpha=Math.max(0.04,frozenAlpha*0.985);
+  const pc=probeColor(rView),d=dOf(rView),px=cx,py=cy-d;
+  trail.push({x:px,y:py,col:pc.css});
+  if(trail.length>70)trail.shift();
+  if(CINEMA)ctx.globalCompositeOperation="lighter";
+  for(let i=0;i<trail.length;i++){
+    ctx.globalAlpha=(i/trail.length)*(CINEMA?0.45:0.4)*(crossed?frozenAlpha:1);
+    ctx.fillStyle=trail[i].col;
+    ctx.beginPath();ctx.arc(trail[i].x,trail[i].y,3.4*U,0,6.283);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+  if(CINEMA){glowDot(px,py,26*U,pc.css,(crossed?frozenAlpha:1)*0.9);
+    ctx.globalCompositeOperation="source-over";}
+  ctx.globalAlpha=crossed?frozenAlpha:1;
+  drawCapsule(px,py,13*U,pc.css,1,r<scen.rDeath&&!crossed);
+  ctx.globalAlpha=1;
+  if(crossed){
+    ctx.fillStyle="rgba(255,83,64,0.92)";ctx.font=`${24*U}px 'Space Mono'`;ctx.textAlign="center";
+    ctx.fillText("image gelée · redshift → ∞",cx,py-46*U);
+  }
+
+  panelHud(p,"VUE EXTÉRIEURE — observateur lointain","TEMPS LOINTAIN t",
+           fmtSec(tDist),crossed?C.red:C.cyan);
+  ctx.restore();
+}
+
+/* ================= panneau 2 : vue embarquée ================= */
+function drawOnboard(p,r,tau,now){
+  ctx.save();ctx.beginPath();ctx.rect(p.x,p.y,p.w,p.h);ctx.clip();
+  ctx.fillStyle="#000";ctx.fillRect(p.x,p.y,p.w,p.h);
+
+  const cx=p.x+p.w/2,cy=p.y+p.h*0.52;
+  const Rfull=Math.min(p.w,p.h)*0.46;
+  const inside=r<1;
+  const tide=scen.Ktide/Math.pow(Math.max(r,0.004),3);
+
+  if(!inside){
+    const aberr=Math.min(0.9,Math.sqrt(1/r)*0.55);
+    const bc=2.598,arg=Math.min(1,bc*Math.sqrt(Math.max(0,1-1/r))/r);
+    let theta=Math.asin(arg);if(r<=1.5)theta=Math.PI-theta;
+    const Rsh=Math.max(6*U,(theta/Math.PI)*Rfull*2.05);
+
+    drawStars(starsIn,p,cx,cy,Rsh,now,aberr);
+
+    if(CINEMA&&r>1.18){
+      const fade=Math.min(1,Math.max(0,(r-1.18)/0.8));
+      const boost=Math.min(1.25,0.35+1.6/r)*fade;
+      ctx.globalCompositeOperation="lighter";
+      const SEG=46;
+      for(let i=0;i<SEG;i++){
+        const a0=-Math.PI+i*Math.PI/SEG,a1=a0+Math.PI/SEG*1.15;
+        const dopp=Math.cos((a0+a1)/2);
+        ctx.strokeStyle=dopplerColor(dopp,boost);
+        ctx.lineWidth=Rsh*0.16;
+        ctx.beginPath();ctx.arc(cx,cy,Rsh*1.18,a0,a1);ctx.stroke();
+      }
+      ctx.globalCompositeOperation="source-over";
+      if(r>1.7)drawDisk(cx,cy+Rsh*0.18,Rsh*1.25,Rsh*2.5,0.22,now*0.7,boost*0.8,true);
+    }
+
+    if(CINEMA){
+      ctx.globalCompositeOperation="lighter";
+      glowDot(cx,cy,Rsh*1.5,"rgba(232,121,249,0.4)",0.9);
+      ctx.globalCompositeOperation="source-over";
+    }
+    ctx.fillStyle="#000";ctx.beginPath();ctx.arc(cx,cy,Rsh,0,6.283);ctx.fill();
+    if(CINEMA){
+      ctx.globalCompositeOperation="lighter";
+      ctx.strokeStyle="rgba(223,250,255,0.9)";ctx.lineWidth=2.2*U;
+      ctx.beginPath();ctx.arc(cx,cy,Rsh*1.012,0,6.283);ctx.stroke();
+      ctx.strokeStyle="rgba(232,121,249,0.6)";ctx.lineWidth=4.5*U;
+      ctx.beginPath();ctx.arc(cx,cy,Rsh*1.05,0,6.283);ctx.stroke();
+      ctx.globalCompositeOperation="source-over";
+    }else{
+      ctx.strokeStyle=C.magenta;ctx.lineWidth=2*U;
+      ctx.beginPath();ctx.arc(cx,cy,Rsh,0,6.283);ctx.stroke();
+    }
+  }else{
+    const Rsky=Math.max(2,Rfull*Math.pow(Math.max(r,0.001),0.9));
+    if(CINEMA){
+      ctx.globalCompositeOperation="lighter";
+      for(let i=0;i<26;i++){
+        const a=i*6.283/26+now*0.15;
+        const g=ctx.createLinearGradient(cx+Math.cos(a)*Rsky,cy+Math.sin(a)*Rsky,
+                                         cx+Math.cos(a)*Rfull*1.6,cy+Math.sin(a)*Rfull*1.6);
+        g.addColorStop(0,"rgba(99,102,241,0.30)");g.addColorStop(1,"rgba(0,0,0,0)");
+        ctx.strokeStyle=g;ctx.lineWidth=2.5*U;
+        ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*Rsky,cy+Math.sin(a)*Rsky);
+        ctx.lineTo(cx+Math.cos(a)*Rfull*1.6,cy+Math.sin(a)*Rfull*1.6);ctx.stroke();
+      }
+      ctx.globalCompositeOperation="source-over";
+    }
+    ctx.save();ctx.beginPath();ctx.arc(cx,cy,Rsky,0,6.283);ctx.clip();
+    ctx.fillStyle="#0b1026";ctx.fillRect(cx-Rsky,cy-Rsky,2*Rsky,2*Rsky);
+    for(const s of starsIn){
+      const sx=cx+(s.x-p.w/2)*(Rsky/Rfull)*0.9,sy=cy+(s.y-p.h/2)*(Rsky/Rfull)*0.9;
+      ctx.globalAlpha=s.a;ctx.fillStyle="#cfe9ff";ctx.fillRect(sx,sy,s.r,s.r);
+    }
+    ctx.globalAlpha=1;ctx.restore();
+    ctx.strokeStyle=CINEMA?"rgba(232,121,249,0.8)":C.indigo;ctx.lineWidth=2.5*U;
+    ctx.beginPath();ctx.arc(cx,cy,Rsky,0,6.283);ctx.stroke();
+    ctx.fillStyle=C.dim;ctx.font=`${22*U}px 'Space Mono'`;ctx.textAlign="center";
+    ctx.fillText("tout l'univers extérieur, là-haut",cx,cy-Rsky-22*U);
+    if(CINEMA&&r<0.06){
+      for(let i=0;i<5;i++){
+        const yy=p.y+Math.random()*p.h,hh=(2+Math.random()*5)*U;
+        ctx.fillStyle="rgba(232,121,249,0.22)";ctx.fillRect(p.x,yy,p.w,hh);
+      }
+    }
+  }
+
+  /* jauge marées */
+  const gx=p.x+p.w-64*U,gy0=p.y+112*U,gh=p.h-225*U;
+  const lg=(v)=>(Math.log10(v)+6)/14;
+  ctx.strokeStyle="#374151";ctx.lineWidth=2*U;ctx.strokeRect(gx,gy0,20*U,gh);
+  const f=Math.min(1,Math.max(0,lg(tide)));
+  const gcol=tide>10?C.red:(tide>0.1?C.magenta:C.cyan);
+  ctx.fillStyle=gcol;ctx.fillRect(gx,gy0+gh*(1-f),20*U,gh*f);
+  const yL=gy0+gh*(1-lg(10));
+  ctx.strokeStyle=C.red;ctx.setLineDash([5*U,5*U]);
+  ctx.beginPath();ctx.moveTo(gx-10*U,yL);ctx.lineTo(gx+30*U,yL);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=C.red;ctx.font=`${18*U}px 'Space Mono'`;ctx.textAlign="right";
+  ctx.fillText("10 g · létal",gx-16*U,yL+6*U);
+  ctx.fillStyle=C.dim;ctx.font=`${20*U}px 'Space Mono'`;
+  ctx.fillText("MARÉES tête-pieds",gx+24*U,gy0-34*U);
+  ctx.fillStyle=gcol;ctx.font=`bold ${26*U}px 'Space Mono'`;
+  ctx.fillText("Δa ≈ "+fmtG(tide),gx+24*U,gy0+gh+18*U);
+
+  const destroyed=r<scen.rDeath;
+  const stretch=1+Math.min(2.6,tide/8);
+  drawCapsule(p.x+92*U,cy,22*U,destroyed?C.red:C.cyan,stretch,destroyed);
+  ctx.fillStyle=C.dim;ctx.font=`${20*U}px 'Space Mono'`;ctx.textAlign="center";
+  ctx.fillText(destroyed?"détruite":"la sonde",p.x+92*U,cy+92*U);
+
+  ctx.fillStyle=C.dim;ctx.font=`${22*U}px 'Space Mono'`;ctx.textAlign="left";
+  ctx.fillText("r = "+(r>=10?r.toFixed(0):r.toFixed(2)).replace(".",",")+" rₛ",p.x+24*U,p.y+p.h-42*U);
+
+  panelHud(p,"VUE EMBARQUÉE — à bord de la sonde","TEMPS À BORD τ",
+           fmtSec(tau),C.magenta);
+  ctx.restore();
+}
+
+/* ================= bandeaux ================= */
+function drawHead(){
+  ctx.fillStyle="#000";ctx.fillRect(0,0,W,L.head);
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  ctx.fillStyle=C.white;ctx.font=`bold ${44*U}px 'Space Mono'`;
+  ctx.fillText("TOMBER DANS UN TROU NOIR",W/2,L.head*0.40);
+  ctx.fillStyle=C.cyan;ctx.font=`${25*U}px 'Space Mono'`;
+  ctx.fillText("deux points de vue · "+scen.massLabel,W/2,L.head*0.76);
+}
+function wrapText(txt,x,y,maxW,lh){
+  const words=txt.split(" ");let line="",yy=y;
+  for(const w of words){
+    const test=line?line+" "+w:w;
+    if(ctx.measureText(test).width>maxW&&line){ctx.fillText(line,x,yy);line=w;yy+=lh;}
+    else line=test;
+  }
+  ctx.fillText(line,x,yy);
+}
+function drawCaptionBand(r){
+  let best=null;
+  for(const c of scen.captions){if(r<=c.r)best=c;}
+  if(best!==capCur){capCur=best;capAlpha=0;}
+  if(capAlpha<1)capAlpha=Math.min(1,capAlpha+0.045);
+  const p=L.cap;
+  ctx.fillStyle="#000";ctx.fillRect(p.x,p.y,p.w,p.h);
+  ctx.strokeStyle="#1f2937";ctx.strokeRect(p.x+0.5,p.y+0.5,p.w-1,p.h-1);
+  if(!capCur)return;
+  ctx.globalAlpha=capAlpha;
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  ctx.fillStyle=C.magenta;ctx.font=`bold ${34*U}px 'Space Mono'`;
+  ctx.fillText(capCur.t,W/2,p.y+p.h*0.27);
+  ctx.fillStyle=C.white;ctx.font=`${25*U}px 'Space Mono'`;
+  wrapText(capCur.s,W/2,p.y+p.h*0.54,p.w-110*U,34*U);
+  ctx.globalAlpha=1;
+}
+function drawFoot(){
+  const p=L.foot;
+  ctx.fillStyle="#000";ctx.fillRect(p.x,p.y,p.w,p.h);
+  ctx.fillStyle="#4b5563";ctx.font=`${20*U}px 'Space Mono'`;
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  ctx.fillText("Prof. Bucella · #lasciencepeuttout · #salukes",W/2,p.y+p.h/2);
+}
+
+/* ================= intro / outro (mode cinéma) ================= */
+function drawIntro(t){
+  const a=t<INTRO-0.5?1:Math.max(0,(INTRO-t)/0.5);
+  ctx.fillStyle=`rgba(0,0,0,${0.92*a})`;ctx.fillRect(0,0,W,H);
+  if(a<=0)return;
+  ctx.globalAlpha=a;ctx.textAlign="center";ctx.textBaseline="middle";
+  const jx=(t<0.8)?(Math.random()-0.5)*14*U:0;
+  ctx.font=`bold ${58*U}px 'Space Mono'`;
+  ctx.fillStyle=C.cyan;ctx.fillText("TOMBER DANS",W/2+jx+4*U,H*0.42);
+  ctx.fillStyle=C.magenta;ctx.fillText("TOMBER DANS",W/2+jx-4*U,H*0.42);
+  ctx.fillStyle=C.white;ctx.fillText("TOMBER DANS",W/2+jx,H*0.42);
+  ctx.font=`bold ${78*U}px 'Space Mono'`;
+  ctx.fillStyle=C.cyan;ctx.fillText("UN TROU NOIR",W/2-3*U,H*0.50);
+  ctx.fillStyle=C.magenta;ctx.fillText("UN TROU NOIR",W/2+3*U,H*0.50);
+  ctx.fillStyle=C.white;ctx.fillText("UN TROU NOIR",W/2,H*0.50);
+  ctx.fillStyle=C.dim;ctx.font=`${26*U}px 'Space Mono'`;
+  ctx.fillText("deux points de vue, deux horloges",W/2,H*0.585);
+  ctx.globalAlpha=1;
+}
+function drawOutro(){
+  outroAlpha=Math.min(1,outroAlpha+0.02);
+  ctx.fillStyle=`rgba(0,0,0,${0.86*outroAlpha})`;ctx.fillRect(0,0,W,H);
+  ctx.globalAlpha=outroAlpha;
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  const tauTot=tauOf(0.004,scen.r0)*scen.tUnit;
+  ctx.fillStyle=C.white;ctx.font=`bold ${50*U}px 'Space Mono'`;
+  ctx.fillText("LA MÊME CHUTE",W/2,H*0.36);
+  ctx.fillStyle=C.magenta;ctx.font=`bold ${40*U}px 'Space Mono'`;
+  ctx.fillText("à bord : "+fmtSec(tauTot),W/2,H*0.45);
+  ctx.fillStyle=C.cyan;
+  ctx.fillText("vue de loin : un temps infini",W/2,H*0.51);
+  ctx.fillStyle=C.dim;ctx.font=`${25*U}px 'Space Mono'`;
+  ctx.fillText(scen.massLabel,W/2,H*0.58);
+  ctx.fillStyle="#4b5563";
+  ctx.fillText("Prof. Bucella · #lasciencepeuttout",W/2,H*0.65);
+  ctx.globalAlpha=1;
+}
+
+/* ================= audio (mode cinéma) ================= */
+let AC=null,oscG=null,osc=null,noiseG=null,audioOn=false;
+function toggleAudio(){
+  if(!audioOn){
+    try{
+      AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+      osc=AC.createOscillator();osc.type="sine";osc.frequency.value=70;
+      oscG=AC.createGain();oscG.gain.value=0.05;
+      osc.connect(oscG).connect(AC.destination);osc.start();
+      const buf=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);
+      const d=buf.getChannelData(0);
+      for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+      const src=AC.createBufferSource();src.buffer=buf;src.loop=true;
+      const lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=120;
+      noiseG=AC.createGain();noiseG.gain.value=0;
+      src.connect(lp).connect(noiseG).connect(AC.destination);src.start();
+      audioOn=true;document.getElementById("btnAudio").textContent="🔊 son";
+    }catch(e){console.error("audio:",e);}
+  }else{
+    try{if(AC)AC.suspend();}catch(e){}
+    audioOn=false;document.getElementById("btnAudio").textContent="🔇 son";
+  }
+  if(audioOn&&AC&&AC.state==="suspended")AC.resume();
+}
+function updateAudio(r,tide){
+  if(!audioOn||!AC)return;
+  const q=qOf(Math.max(r,1.0001));
+  const target=r<=1?24:24+160*q;
+  osc.frequency.setTargetAtTime(target,AC.currentTime,0.1);
+  noiseG.gain.setTargetAtTime(Math.min(0.12,0.012*Math.log10(1+tide)),AC.currentTime,0.15);
+}
+
+/* ================= boucle ================= */
+function frame(ts){
+  if(lastTs===null)lastTs=ts;
+  const dt=Math.min(0.05,(ts-lastTs)/1000);lastTs=ts;
+  if(playing)simT+=dt;
+  const inIntro=CINEMA&&simT<INTRO;
+  if(playing&&!inIntro)wall=Math.min(1,wall+dt*speed/DUR);
+
+  const r=rOfWall(wall);
+  const tau=tauOf(r,scen.r0)*scen.tUnit;
+  const tD=tOf(tTable,Math.max(r,1.000001));
+  const tDist=(r<=1.0001)?Infinity:tD*scen.tUnit;
+  const tide=scen.Ktide/Math.pow(Math.max(r,0.004),3);
+
+  const destroyed=r<scen.rDeath;
+  if(destroyed&&!deathFired){deathFired=true;if(CINEMA)flash=1;}
+  shakeAmp=CINEMA?Math.min(14*U,Math.max(0,Math.log10(Math.max(tide,0.001))+1)*3*U):0;
+  if(flash>0)flash=Math.max(0,flash-dt*2.2);
+
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.fillStyle="#000";ctx.fillRect(0,0,W,H);
+  const sx=(Math.random()-0.5)*shakeAmp,sy=(Math.random()-0.5)*shakeAmp;
+  ctx.setTransform(1,0,0,1,sx,sy);
+
+  drawHead();
+  drawOutside(L.p1,r,tDist,simT,playing&&!inIntro?dt:0);
+  drawOnboard(L.p2,r,tau,simT);
+  drawCaptionBand(r);
+  drawFoot();
+
+  ctx.setTransform(1,0,0,1,0,0);
+  if(flash>0){ctx.fillStyle=`rgba(232,121,249,${0.55*flash})`;ctx.fillRect(0,0,W,H);}
+  if(inIntro)drawIntro(simT);
+  if(CINEMA&&wall>=1)drawOutro();else outroAlpha=0;
+
+  updateAudio(r,tide);
+  requestAnimationFrame(frame);
+}
+
+/* ================= contrôles ================= */
+function reset(){
+  wall=0;simT=0;trail=[];frozenAlpha=1;capCur=null;capAlpha=0;
+  deathFired=false;flash=0;outroAlpha=0;playing=true;
+  document.getElementById("btnPause").textContent="⏸ pause";
+}
+document.getElementById("selMode").onchange=e=>{
+  CINEMA=(e.target.value==="cinema");
+  document.getElementById("btnAudio").style.display=CINEMA?"":"none";
+  if(!CINEMA&&audioOn)toggleAudio();
+  reset();
+};
+document.getElementById("btnReplay").onclick=reset;
+document.getElementById("btnPause").onclick=function(){
+  playing=!playing;this.textContent=playing?"⏸ pause":"▶ lecture";
+  if(audioOn&&AC)playing?AC.resume():AC.suspend();
+};
+document.getElementById("btnAudio").onclick=toggleAudio;
+document.getElementById("selSpeed").onchange=e=>speed=parseFloat(e.target.value);
+document.getElementById("selMass").onchange=e=>{
+  scen=SCEN[e.target.value];tTable=buildTtable(scen.r0);reset();
+};
+document.getElementById("selAspect").onchange=e=>{aspect=e.target.value;layout();reset();};
+window.addEventListener("resize",layout);
+
+const mq=window.matchMedia("(prefers-reduced-motion: reduce)");
+if(mq.matches){playing=false;document.getElementById("btnPause").textContent="▶ lecture";}
+
+layout();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
