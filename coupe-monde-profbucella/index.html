@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ============= SEO + RÉSEAUX SOCIAUX ============= -->
+<title>Coupe du monde · Simulateur de physique · Prof. Bucella</title>
+<meta name="description" content="Qui gagne la Coupe du monde ? Modèle Poisson-Elo, 13 éditions de 1982 à 2026, jusqu'à 100 000 tournois rejoués. Simulateur du Prof. Fabrizio Bucella, ULB.">
+<meta name="author" content="Prof. Fabrizio Bucella">
+<meta name="keywords" content="Coupe du monde, simulateur, Monte Carlo, Poisson, Elo, football, statistique, Prof. Bucella, ULB, science, lasciencepeuttout, salukes">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Prof. Fabrizio Bucella">
+<meta property="og:title" content="Coupe du monde · Simulateur de physique · Prof. Bucella">
+<meta property="og:description" content="Qui gagne la Coupe du monde ? Modèle Poisson-Elo, 13 éditions de 1982 à 2026, jusqu'à 100 000 tournois rejoués. Simulateur du Prof. Fabrizio Bucella, ULB.">
+<meta property="og:url" content="https://coupe-monde-profbucella.netlify.app/">
+<meta property="og:image" content="https://coupe-monde-profbucella.netlify.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Coupe du monde — Simulateur du Prof. Fabrizio Bucella">
+<meta property="og:locale" content="fr_FR">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Coupe du monde · Simulateur de physique · Prof. Bucella">
+<meta name="twitter:description" content="Qui gagne la Coupe du monde ? Modèle Poisson-Elo, 13 éditions de 1982 à 2026, jusqu'à 100 000 tournois rejoués. Simulateur du Prof. Fabrizio Bucella, ULB.">
+<meta name="twitter:image" content="https://coupe-monde-profbucella.netlify.app/og-image.png">
+<meta name="twitter:image:alt" content="Coupe du monde — Simulateur du Prof. Fabrizio Bucella">
+<meta name="twitter:creator" content="@fabrizio_bucella">
+
+<link rel="canonical" href="https://coupe-monde-profbucella.netlify.app/">
+
+<!-- Favicon ⚽ -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.85em%22 font-size=%2280%22 text-anchor=%22middle%22 x=%2250%22>⚽</text></svg>">
+
+<!-- Police Space Mono (charte commune) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08080d; --panel:#101019; --line:#23233a;
+    --ink:#e8e8f2; --dim:#8a8aa8;
+    --cyan:#22d3ee; --indigo:#6366f1; --magenta:#e040fb;
+    --good:#3ddc97; --warn:#ffb86b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Space Mono',monospace;line-height:1.5;
+    background-image:radial-gradient(circle at 18% -10%,rgba(99,102,241,.13),transparent 42%),radial-gradient(circle at 92% 0%,rgba(224,64,251,.10),transparent 42%);}
+  .wrap{max-width:940px;margin:0 auto;padding:28px 18px 60px}
+  header h1{font-size:clamp(20px,4.5vw,30px);margin:0 0 4px;letter-spacing:-.5px}
+  header h1 .acc{background:linear-gradient(90deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+  header p{color:var(--dim);margin:0 0 22px;font-size:13px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:18px}
+  .controls{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
+  label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);margin-bottom:6px}
+  select,button{font-family:inherit;font-size:14px;border-radius:8px;border:1px solid var(--line);background:#16161f;color:var(--ink);padding:9px 12px}
+  select{min-width:260px}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{border:0;border-radius:0;background:#16161f;padding:9px 12px;cursor:pointer}
+  .seg button.on{background:linear-gradient(90deg,var(--indigo),var(--magenta));color:#fff}
+  .run{cursor:pointer;background:linear-gradient(90deg,var(--cyan),var(--indigo));color:#06060a;font-weight:700;border:0;padding:11px 20px}
+  .run:active{transform:translateY(1px)}
+  .slider-row{min-width:230px}
+  input[type=range]{accent-color:var(--magenta);width:160px}
+  .tog{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink)}
+  .tog input{accent-color:var(--cyan);width:16px;height:16px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:680px){.grid{grid-template-columns:1fr}select{min-width:0;width:100%}}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--cyan);margin:0 0 14px}
+  h2 .n{color:var(--dim);text-transform:none;letter-spacing:0}
+  .bar{display:grid;grid-template-columns:128px 1fr 52px;align-items:center;gap:8px;margin-bottom:7px;font-size:13px}
+  .bar .name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .track{height:14px;background:#1b1b27;border-radius:7px;overflow:hidden}
+  .fill{height:100%;border-radius:7px;background:linear-gradient(90deg,var(--cyan),var(--magenta))}
+  .bar .pct{text-align:right;color:var(--dim)}
+  .bar.real .name{color:var(--magenta);font-weight:700}
+  .bar.real .name::after{content:" ★";color:var(--magenta)}
+  .reality{font-size:14px}
+  .reality .line{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line)}
+  .reality .line:last-child{border-bottom:0}
+  .reality .tag{color:var(--dim);font-size:12px}
+  .hit{color:var(--good)} .miss{color:var(--warn)}
+  .score{font-size:15px;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#13131d}
+  .score b{color:var(--cyan)}
+  .tblwrap{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:12.5px;min-width:460px}
+  th,td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--dim);text-transform:uppercase;font-size:10.5px;letter-spacing:.5px;font-weight:400}
+  td.win{color:var(--magenta);font-weight:700}
+  tr.realrow td:first-child{color:var(--magenta)}
+  .sample .champ{font-size:18px;font-weight:700;background:linear-gradient(90deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .muted{color:var(--dim)}
+  footer{margin-top:30px;border-top:1px solid var(--line);padding-top:18px;font-size:12px;color:var(--dim);line-height:1.7}
+  footer b{color:var(--ink)} footer code{color:var(--cyan)}
+  footer .sig{color:var(--magenta);margin-top:10px}
+  .spin{display:none;align-items:center;gap:10px;color:var(--cyan);font-size:13px;margin-top:12px}
+  .spin.on{display:flex}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--magenta);animation:pulse .9s infinite ease-in-out}
+  @keyframes pulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+  .hidden{display:none}
+  .fmt{font-size:11px;color:var(--dim);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Qui gagne la <span class="acc">Coupe du monde</span> ?</h1>
+    <p>On choisit une édition, on lance le modèle, on compare au réel. Les buts suivent une loi de Poisson : la force de chaque équipe pipe les dés.</p>
+  </header>
+
+  <div class="panel">
+    <div class="controls">
+      <div>
+        <label for="ed">Édition</label>
+        <select id="ed"></select>
+      </div>
+      <div>
+        <label>Nombre de simulations</label>
+        <div class="seg" id="seg">
+          <button data-n="1000">1 000</button>
+          <button data-n="10000" class="on">10 000</button>
+          <button data-n="100000">100 000</button>
+        </div>
+      </div>
+      <div class="slider-row">
+        <label>Poids de la force <span id="scaleVal" class="muted"></span></label>
+        <input type="range" id="scale" min="0" max="2" step="0.1" value="0.6">
+      </div>
+      <label class="tog"><input type="checkbox" id="host" checked> Avantage de l'hôte</label>
+      <button class="run" id="run">Lancer la simulation</button>
+    </div>
+    <div class="fmt" id="fmtNote"></div>
+    <div class="spin" id="spin"><span class="dot"></span> calcul des tournois en cours…</div>
+  </div>
+
+  <div id="results" class="hidden">
+    <div class="grid">
+      <div class="panel">
+        <h2>Probabilité de titre <span class="n" id="champN"></span></h2>
+        <div id="champBars"></div>
+      </div>
+      <div class="panel">
+        <h2>Probabilité d'atteindre la demi-finale</h2>
+        <div id="semiBars"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Survie par tour <span class="n">· probabilité d'atteindre chaque stade</span></h2>
+      <div class="tblwrap"><table id="survTable"></table></div>
+    </div>
+
+    <div class="panel reality">
+      <h2 id="realityTitle">Confrontation avec la réalité</h2>
+      <div id="realityBox"></div>
+      <div class="score" id="scoreBox"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Un tirage au hasard</h2>
+      <p class="muted" style="margin-top:-6px;font-size:13px">Une seule Coupe du monde, jouée une fois. Relancez : le résultat change. C'est tout l'intérêt d'en simuler 100 000.</p>
+      <div class="sample" id="sampleBox"></div>
+      <button class="run" id="oneShot" style="margin-top:12px;background:linear-gradient(90deg,var(--magenta),var(--indigo))">Tirer un tournoi</button>
+    </div>
+  </div>
+
+  <footer>
+    <b>Comment ça marche.</b> Chaque équipe reçoit une force (note Elo d'avant-tournoi). Pour un match, les deux nombres de buts sont tirés selon une loi de Poisson dont la moyenne dépend de l'écart de force : λ = 1,35 · exp(±poids · Δelo/400). Le tableau de l'édition est rejoué entièrement (poules, élimination directe, tirs au but modélisés par une pièce biaisée par la force), N fois.<br><br>
+    <b>Formats.</b> 1982 : 24 équipes, deux tours de poules puis demi-finales. 1986-1994 : 24 équipes, 6 poules, 2 premiers plus 4 meilleurs troisièmes. 1998-2022 : 32 équipes, 8 poules, vrai tableau de l'époque. 2026 : 48 équipes, 12 poules, 2 premiers plus 8 meilleurs troisièmes. La répartition des troisièmes et le tableau de 2026 suivent ici un classement par la force (têtes de série), simplification par rapport aux tables officielles de la FIFA.<br><br>
+    <b>Ce que ce n'est pas.</b> Une version à une seule force par équipe. Le modèle de Groll &amp; Zeileis combine quatre signaux (Poisson historique, consensus de 24 bookmakers, notes plus/minus des joueurs, valeurs Transfermarkt) via une forêt aléatoire. Références : Karlis &amp; Ntzoufras (2003) ; Groll, Ley, Schauberger, Van Eetvelde (2018) ; Leitner, Zeileis &amp; Hornik (2010) ; Pantuso &amp; Hvattum (2021).<br><br>
+    <b>Les forces Elo sont approximatives et modifiables</b> dans l'objet <code>EDITIONS</code>.
+  </footer>
+
+  <!-- ============= FOOTER COMMUN HARMONISÉ ============= -->
+  <footer style="margin-top:48px;padding:32px 24px 24px;border-top:1px solid #23233a;font-family:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.7;color:#c4c4c4;text-align:center;">
+    <div style="margin-bottom:18px;font-style:italic;font-size:12px;opacity:0.8;color:#b8b8b8;">Aucune VAR n'a été consultée pendant cette simulation.</div>
+    <div style="margin-bottom:8px;">
+      <a href="https://www.instagram.com/fabrizio.bucella" style="color:#e8e8f2;font-weight:700;text-decoration:none;">Prof. Fabrizio Bucella</a>
+      <span style="opacity:0.85;"> · ULB · Physicien</span>
+    </div>
+    <div style="margin-bottom:12px;">
+      <span style="margin:0 6px;">#lasciencepeuttout</span>
+      <span style="opacity:0.4;">·</span>
+      <span style="margin:0 6px;">#salukes</span>
+    </div>
+    <div>
+      <a href="https://linktr.ee/fabrizio.bucella" style="color:#d0d0d0;text-decoration:none;border-bottom:1px dotted #777;">← Tous mes simulateurs</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* ----------------------------- DONNÉES (noms en français) ----------------------------- */
+const g=(...t)=>t.map(([name,elo])=>({name,elo}));
+
+const EDITIONS={
+ 1982:{label:"1982 · Espagne (24 équipes)",format:24,special:"1982",hosts:["Espagne"],
+  groups:{
+   "1":g(["Italie",1980],["Pologne",1850],["Cameroun",1700],["Pérou",1760]),
+   "2":g(["RFA",2030],["Autriche",1820],["Algérie",1700],["Chili",1740]),
+   "3":g(["Belgique",1850],["Argentine",1970],["Hongrie",1820],["Salvador",1560]),
+   "4":g(["Angleterre",1950],["France",1950],["Tchécoslovaquie",1820],["Koweït",1580]),
+   "5":g(["Espagne",1880],["Irlande du Nord",1760],["Yougoslavie",1830],["Honduras",1640]),
+   "6":g(["Brésil",2060],["URSS",1900],["Écosse",1800],["Nouvelle-Zélande",1560])},
+  reality:{type:"real",champion:"Italie",semis:["Italie","Pologne","RFA","France"]}},
+
+ 1986:{label:"1986 · Mexique (24 équipes)",format:24,hosts:["Mexique"],
+  groups:{
+   A:g(["Argentine",2000],["Italie",1950],["Bulgarie",1760],["Corée du Sud",1700]),
+   B:g(["Mexique",1820],["Paraguay",1780],["Belgique",1860],["Irak",1640]),
+   C:g(["France",1980],["URSS",1900],["Hongrie",1790],["Canada",1620]),
+   D:g(["Brésil",2030],["Espagne",1900],["Irlande du Nord",1750],["Algérie",1700]),
+   E:g(["RFA",1980],["Danemark",1860],["Uruguay",1830],["Écosse",1780]),
+   F:g(["Maroc",1720],["Angleterre",1930],["Pologne",1820],["Portugal",1800])},
+  reality:{type:"real",champion:"Argentine",semis:["Argentine","RFA","France","Belgique"]}},
+
+ 1990:{label:"1990 · Italie (24 équipes)",format:24,hosts:["Italie"],
+  groups:{
+   A:g(["Italie",2000],["Tchécoslovaquie",1800],["Autriche",1790],["États-Unis",1660]),
+   B:g(["Argentine",1980],["Cameroun",1760],["Roumanie",1810],["URSS",1880]),
+   C:g(["Brésil",2030],["Costa Rica",1680],["Écosse",1780],["Suède",1820]),
+   D:g(["RFA",2040],["Yougoslavie",1850],["Colombie",1820],["Émirats arabes unis",1560]),
+   E:g(["Espagne",1900],["Belgique",1850],["Uruguay",1820],["Corée du Sud",1700]),
+   F:g(["Angleterre",1920],["Irlande",1780],["Pays-Bas",1950],["Égypte",1700])},
+  reality:{type:"real",champion:"RFA",semis:["RFA","Argentine","Italie","Angleterre"]}},
+
+ 1994:{label:"1994 · États-Unis (24 équipes)",format:24,hosts:["États-Unis"],
+  groups:{
+   A:g(["États-Unis",1720],["Suisse",1780],["Colombie",1880],["Roumanie",1860]),
+   B:g(["Brésil",2030],["Suède",1850],["Russie",1820],["Cameroun",1740]),
+   C:g(["Allemagne",2000],["Espagne",1900],["Corée du Sud",1720],["Bolivie",1660]),
+   D:g(["Argentine",1950],["Nigéria",1800],["Bulgarie",1820],["Grèce",1700]),
+   E:g(["Italie",1980],["Mexique",1800],["Irlande",1810],["Norvège",1820]),
+   F:g(["Pays-Bas",1950],["Belgique",1840],["Arabie saoudite",1680],["Maroc",1700])},
+  reality:{type:"real",champion:"Brésil",semis:["Brésil","Italie","Suède","Bulgarie"]}},
+
+ 1998:{label:"1998 · France (32 équipes)",format:32,hosts:["France"],
+  groups:{
+   A:g(["Brésil",2060],["Norvège",1820],["Maroc",1740],["Écosse",1780]),
+   B:g(["Italie",1980],["Chili",1820],["Autriche",1760],["Cameroun",1740]),
+   C:g(["France",1980],["Danemark",1840],["Afrique du Sud",1680],["Arabie saoudite",1660]),
+   D:g(["Nigéria",1820],["Paraguay",1800],["Espagne",1960],["Bulgarie",1760]),
+   E:g(["Pays-Bas",1980],["Mexique",1820],["Belgique",1830],["Corée du Sud",1700]),
+   F:g(["Allemagne",2000],["Yougoslavie",1870],["Iran",1700],["États-Unis",1740]),
+   G:g(["Roumanie",1840],["Angleterre",1950],["Colombie",1820],["Tunisie",1700]),
+   H:g(["Argentine",2000],["Croatie",1880],["Jamaïque",1620],["Japon",1720])},
+  reality:{type:"real",champion:"France",semis:["France","Brésil","Croatie","Pays-Bas"]}},
+
+ 2002:{label:"2002 · Corée du Sud / Japon (32 équipes)",format:32,hosts:["Corée du Sud","Japon"],
+  groups:{
+   A:g(["France",2070],["Sénégal",1700],["Uruguay",1780],["Danemark",1800]),
+   B:g(["Espagne",1960],["Paraguay",1780],["Afrique du Sud",1660],["Slovénie",1720]),
+   C:g(["Brésil",2040],["Turquie",1820],["Chine",1640],["Costa Rica",1720]),
+   D:g(["Corée du Sud",1750],["États-Unis",1780],["Portugal",1900],["Pologne",1760]),
+   E:g(["Allemagne",1960],["Irlande",1780],["Cameroun",1780],["Arabie saoudite",1640]),
+   F:g(["Argentine",2050],["Angleterre",1950],["Suède",1850],["Nigéria",1780]),
+   G:g(["Italie",1980],["Mexique",1830],["Croatie",1820],["Équateur",1660]),
+   H:g(["Japon",1760],["Belgique",1830],["Russie",1800],["Tunisie",1680])},
+  reality:{type:"real",champion:"Brésil",semis:["Brésil","Allemagne","Corée du Sud","Turquie"]}},
+
+ 2006:{label:"2006 · Allemagne (32 équipes)",format:32,hosts:["Allemagne"],
+  groups:{
+   A:g(["Allemagne",1960],["Pologne",1780],["Équateur",1720],["Costa Rica",1700]),
+   B:g(["Angleterre",1980],["Suède",1850],["Paraguay",1790],["Trinité-et-Tobago",1600]),
+   C:g(["Argentine",2030],["Pays-Bas",1960],["Côte d'Ivoire",1790],["Serbie-et-Monténégro",1820]),
+   D:g(["Mexique",1860],["Portugal",1950],["Angola",1640],["Iran",1720]),
+   E:g(["Italie",2000],["Ghana",1750],["États-Unis",1820],["République tchèque",1900]),
+   F:g(["Brésil",2090],["Australie",1760],["Croatie",1820],["Japon",1760]),
+   G:g(["France",1980],["Suisse",1830],["Corée du Sud",1760],["Togo",1620]),
+   H:g(["Espagne",1990],["Ukraine",1800],["Tunisie",1700],["Arabie saoudite",1620])},
+  reality:{type:"real",champion:"Italie",semis:["Italie","France","Allemagne","Portugal"]}},
+
+ 2010:{label:"2010 · Afrique du Sud (32 équipes)",format:32,hosts:["Afrique du Sud"],
+  groups:{
+   A:g(["Afrique du Sud",1680],["Mexique",1860],["Uruguay",1900],["France",1950]),
+   B:g(["Argentine",2000],["Nigéria",1780],["Corée du Sud",1780],["Grèce",1810]),
+   C:g(["Angleterre",1960],["États-Unis",1820],["Algérie",1700],["Slovénie",1720]),
+   D:g(["Allemagne",1980],["Australie",1760],["Serbie",1820],["Ghana",1790]),
+   E:g(["Pays-Bas",2010],["Danemark",1810],["Japon",1750],["Cameroun",1780]),
+   F:g(["Italie",1950],["Paraguay",1830],["Nouvelle-Zélande",1600],["Slovaquie",1740]),
+   G:g(["Brésil",2080],["Corée du Nord",1600],["Côte d'Ivoire",1840],["Portugal",1940]),
+   H:g(["Espagne",2100],["Suisse",1820],["Honduras",1680],["Chili",1880])},
+  reality:{type:"real",champion:"Espagne",semis:["Espagne","Pays-Bas","Allemagne","Uruguay"]}},
+
+ 2014:{label:"2014 · Brésil (32 équipes)",format:32,hosts:["Brésil"],
+  groups:{
+   A:g(["Brésil",2050],["Croatie",1850],["Mexique",1840],["Cameroun",1720]),
+   B:g(["Espagne",2040],["Pays-Bas",1950],["Chili",1920],["Australie",1700]),
+   C:g(["Colombie",1920],["Grèce",1800],["Côte d'Ivoire",1810],["Japon",1780]),
+   D:g(["Uruguay",1940],["Costa Rica",1760],["Angleterre",1900],["Italie",1950]),
+   E:g(["Suisse",1870],["Équateur",1780],["France",1950],["Honduras",1680]),
+   F:g(["Argentine",2030],["Bosnie-Herzégovine",1820],["Iran",1740],["Nigéria",1790]),
+   G:g(["Allemagne",2080],["Portugal",1960],["Ghana",1780],["États-Unis",1820]),
+   H:g(["Belgique",1950],["Algérie",1760],["Russie",1810],["Corée du Sud",1760])},
+  reality:{type:"real",champion:"Allemagne",semis:["Allemagne","Argentine","Pays-Bas","Brésil"]}},
+
+ 2018:{label:"2018 · Russie (32 équipes)",format:32,hosts:["Russie"],
+  groups:{
+   A:g(["Russie",1680],["Arabie saoudite",1620],["Égypte",1740],["Uruguay",1970]),
+   B:g(["Portugal",1980],["Espagne",2040],["Maroc",1790],["Iran",1780]),
+   C:g(["France",2030],["Australie",1730],["Pérou",1850],["Danemark",1840]),
+   D:g(["Argentine",1980],["Islande",1790],["Croatie",1900],["Nigéria",1760]),
+   E:g(["Brésil",2130],["Suisse",1880],["Costa Rica",1760],["Serbie",1820]),
+   F:g(["Allemagne",2070],["Mexique",1860],["Suède",1830],["Corée du Sud",1740]),
+   G:g(["Belgique",1990],["Panama",1640],["Tunisie",1740],["Angleterre",1940]),
+   H:g(["Pologne",1840],["Sénégal",1800],["Colombie",1900],["Japon",1760])},
+  reality:{type:"real",champion:"France",semis:["France","Croatie","Belgique","Angleterre"]}},
+
+ 2022:{label:"2022 · Qatar (32 équipes)",format:32,hosts:["Qatar"],
+  groups:{
+   A:g(["Qatar",1680],["Équateur",1820],["Sénégal",1860],["Pays-Bas",1990]),
+   B:g(["Angleterre",1980],["Iran",1780],["États-Unis",1860],["Pays de Galles",1800]),
+   C:g(["Argentine",2080],["Arabie saoudite",1700],["Mexique",1840],["Pologne",1810]),
+   D:g(["France",2000],["Australie",1760],["Danemark",1880],["Tunisie",1760]),
+   E:g(["Espagne",2030],["Costa Rica",1740],["Allemagne",1960],["Japon",1830]),
+   F:g(["Belgique",1960],["Canada",1790],["Maroc",1840],["Croatie",1920]),
+   G:g(["Brésil",2100],["Serbie",1840],["Suisse",1860],["Cameroun",1740]),
+   H:g(["Portugal",1980],["Ghana",1720],["Uruguay",1900],["Corée du Sud",1800])},
+  reality:{type:"real",champion:"Argentine",semis:["Argentine","France","Croatie","Maroc"]}},
+
+ 2026:{label:"2026 · Canada / Mexique / États-Unis (48 équipes)",format:48,hosts:["Mexique","Canada","États-Unis"],
+  groups:{
+   A:g(["Mexique",1850],["Afrique du Sud",1730],["Corée du Sud",1820],["Tchéquie",1810]),
+   B:g(["Canada",1820],["Bosnie-Herzégovine",1810],["Qatar",1700],["Suisse",1900]),
+   C:g(["Brésil",2080],["Maroc",1910],["Haïti",1620],["Écosse",1810]),
+   D:g(["États-Unis",1850],["Paraguay",1800],["Australie",1790],["Turquie",1860]),
+   E:g(["Allemagne",2060],["Curaçao",1600],["Côte d'Ivoire",1840],["Équateur",1840]),
+   F:g(["Pays-Bas",2010],["Japon",1870],["Suède",1830],["Tunisie",1780]),
+   G:g(["Belgique",1980],["Égypte",1820],["Iran",1800],["Nouvelle-Zélande",1660]),
+   H:g(["Espagne",2120],["Cap-Vert",1690],["Arabie saoudite",1710],["Uruguay",1960]),
+   I:g(["France",2090],["Sénégal",1890],["Irak",1710],["Norvège",1860]),
+   J:g(["Argentine",2070],["Algérie",1820],["Autriche",1850],["Jordanie",1700]),
+   K:g(["Portugal",2040],["RD Congo",1750],["Ouzbékistan",1730],["Colombie",1950]),
+   L:g(["Angleterre",2090],["Croatie",1950],["Ghana",1780],["Panama",1730])},
+  reality:{type:"forecast",published:{"Espagne":14.5,"Angleterre":12.4,"France":12.4,"Allemagne":11.2,"Portugal":8.9,"Argentine":8.2}}}
+};
+
+/* ----------------------------- MOTEUR ----------------------------- */
+const BASE=1.35,HOST_BONUS=80; let SCALE=0.6,HOST_ON=true,N=10000;
+const inc=(o,k)=>{o[k]=(o[k]||0)+1;};
+const STAGE={16:"R16",8:"QF",4:"SF",2:"F",1:"W"};
+
+function poisson(l){const L=Math.exp(-l);let k=0,p=1;do{k++;p*=Math.random();}while(p>L);return k-1;}
+function lambdas(eA,eB){const a=SCALE*(eA-eB)/400;return[Math.max(.12,BASE*Math.exp(a)),Math.max(.12,BASE*Math.exp(-a))];}
+function matchGoals(A,B){const[la,lb]=lambdas(A.elo,B.elo);return[poisson(la),poisson(lb)];}
+function ko(A,B){let[ga,gb]=matchGoals(A,B);if(ga>gb)return A;if(gb>ga)return B;const pa=1/(1+Math.pow(10,-(A.elo-B.elo)/600));return Math.random()<pa?A:B;}
+
+function groupSim(teams){
+  const s=teams.map(t=>({t,pts:0,gd:0,gf:0}));
+  for(let i=0;i<teams.length;i++)for(let j=i+1;j<teams.length;j++){
+    const[gi,gj]=matchGoals(teams[i],teams[j]);
+    s[i].gf+=gi;s[i].gd+=gi-gj;s[j].gf+=gj;s[j].gd+=gj-gi;
+    if(gi>gj)s[i].pts+=3;else if(gj>gi)s[j].pts+=3;else{s[i].pts++;s[j].pts++;}
+  }
+  s.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||Math.random()-0.5);
+  return s;
+}
+function buildGroups(ed){const o={};for(const L in ed.groups)
+  o[L]=ed.groups[L].map(t=>({name:t.name,elo:t.elo+((HOST_ON&&ed.hosts.includes(t.name))?HOST_BONUS:0)}));return o;}
+
+function seedOrder(n){let p=[1,2];while(p.length<n){const m=p.length*2+1,np=[];for(const x of p){np.push(x);np.push(m-x);}p=np;}return p;}
+const SEED16=seedOrder(16),SEED32=seedOrder(32);
+
+function playoff(order,C){
+  let cur=order;
+  while(cur.length>1){
+    const nxt=[];
+    for(let i=0;i<cur.length;i+=2)nxt.push(ko(cur[i],cur[i+1]));
+    nxt.forEach(t=>inc(C[STAGE[nxt.length]],t.name));
+    cur=nxt;
+  }
+}
+
+/* 32 équipes : 8 poules, vrai tableau (croisements officiels) */
+function tournament32(G,C){
+  const st={};for(const L in G)st[L]=groupSim(G[L]);
+  const W=L=>st[L][0].t,R=L=>st[L][1].t;
+  const order=[W('A'),R('B'),W('C'),R('D'),W('E'),R('F'),W('G'),R('H'),
+               W('B'),R('A'),W('D'),R('C'),W('F'),R('E'),W('H'),R('G')];
+  order.forEach(t=>inc(C.R16,t.name));
+  playoff(order,C);
+}
+
+/* 24 ou 48 équipes : 2 premiers + meilleurs troisièmes, têtes de série Elo */
+function tournamentSeeded(G,C,thirdsNeeded,bracketSize,firstStage){
+  const winners=[],runners=[],thirds=[];
+  for(const L in G){const s=groupSim(G[L]);winners.push(s[0].t);runners.push(s[1].t);
+    thirds.push({t:s[2].t,pts:s[2].pts,gd:s[2].gd,gf:s[2].gf});}
+  thirds.sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf||Math.random()-0.5);
+  const quals=winners.concat(runners,thirds.slice(0,thirdsNeeded).map(x=>x.t));
+  quals.forEach(t=>inc(C[firstStage],t.name));
+  const seeded=quals.slice().sort((a,b)=>b.elo-a.elo);
+  const SO=bracketSize===32?SEED32:SEED16;
+  playoff(SO.map(s=>seeded[s-1]),C);
+}
+
+/* 1982 : 24 équipes, 6 poules de 4 -> 4 poules de 3 -> demi-finales */
+function tournament1982(G,C){
+  const q=[];for(const L in G){const s=groupSim(G[L]);q.push(s[0].t,s[1].t);}
+  q.forEach(t=>inc(C.G2,t.name));
+  const seeded=q.slice().sort((a,b)=>b.elo-a.elo);
+  const pots=[[],[],[],[]];
+  seeded.forEach((t,i)=>{const round=Math.floor(i/4);let pos=i%4;if(round%2===1)pos=3-pos;pots[pos].push(t);});
+  const winners=pots.map(p=>groupSim(p)[0].t);
+  winners.forEach(t=>inc(C.SF,t.name));
+  const ws=winners.slice().sort((a,b)=>b.elo-a.elo);
+  const s1=ko(ws[0],ws[3]),s2=ko(ws[1],ws[2]);
+  [s1,s2].forEach(t=>inc(C.F,t.name));
+  inc(C.W,ko(s1,s2).name);
+}
+
+function play(G,ed,C){
+  if(ed.special==="1982")return tournament1982(G,C);
+  if(ed.format===32)return tournament32(G,C);
+  if(ed.format===48)return tournamentSeeded(G,C,8,32,"R32");
+  return tournamentSeeded(G,C,4,16,"R16");
+}
+function newC(){return{R32:{},R16:{},QF:{},SF:{},F:{},W:{},G2:{}};}
+function runMany(ed,n){const G=buildGroups(ed),C=newC();for(let i=0;i<n;i++)play(G,ed,C);return C;}
+
+/* ----------------------------- AFFICHAGE ----------------------------- */
+const $=id=>document.getElementById(id);
+const pct=x=>(100*x).toFixed(1)+'%';
+function fillEditions(){const s=$('ed');for(const y in EDITIONS){const o=document.createElement('option');o.value=y;o.textContent=EDITIONS[y].label;s.appendChild(o);}s.value="2022";}
+
+function bars(box,counts,n,realSet){
+  const arr=Object.entries(counts).map(([name,c])=>({name,p:c/n})).sort((a,b)=>b.p-a.p);
+  const top=arr.slice(0,14),max=top[0]?top[0].p:1;box.innerHTML='';
+  top.forEach(d=>{const real=realSet&&realSet.has(d.name);const row=document.createElement('div');row.className='bar'+(real?' real':'');
+    row.innerHTML=`<span class="name">${d.name}</span><div class="track"><div class="fill" style="width:${Math.max(2,100*d.p/max)}%"></div></div><span class="pct">${pct(d.p)}</span>`;
+    box.appendChild(row);});
+  return arr;
+}
+const rankOf=(arr,name)=>{const i=arr.findIndex(d=>d.name===name);return i<0?null:i+1;};
+
+function colsFor(ed){
+  if(ed.special==="1982")return[["G2","2e tour"],["SF","demie"],["F","finale"],["W","titre"]];
+  if(ed.format===48)return[["R32","32es"],["R16","8es"],["QF","quarts"],["SF","demie"],["F","finale"],["W","titre"]];
+  return[["R16","8es"],["QF","quarts"],["SF","demie"],["F","finale"],["W","titre"]];
+}
+function survTable(ed,C,n,realSet){
+  const champArr=Object.entries(C.W).map(([name,c])=>({name,p:c/n})).sort((a,b)=>b.p-a.p);
+  const cols=colsFor(ed);
+  let html='<thead><tr><th>Équipe</th>'+cols.map(c=>`<th>${c[1]}</th>`).join('')+'</tr></thead><tbody>';
+  champArr.slice(0,12).forEach(d=>{const real=realSet&&realSet.has(d.name);
+    html+=`<tr class="${real?'realrow':''}"><td>${d.name}</td>`+
+      cols.map(c=>{const v=(C[c[0]][d.name]||0)/n;return `<td class="${c[0]==='W'?'win':''}">${(100*v).toFixed(v>=0.1?0:1)}%</td>`;}).join('')+'</tr>';});
+  $('survTable').innerHTML=html+'</tbody>';
+}
+
+let lastEd=null;
+function simulate(){
+  const ed=EDITIONS[$('ed').value];lastEd=ed;
+  $('spin').classList.add('on');$('results').classList.add('hidden');
+  setTimeout(()=>{
+    const C=runMany(ed,N);
+    $('champN').textContent='· '+N.toLocaleString('fr-FR')+' tournois';
+    const isReal=ed.reality.type==='real';
+    const realChampSet=isReal?new Set([ed.reality.champion]):null;
+    const champArr=bars($('champBars'),C.W,N,realChampSet);
+    const semiArr=bars($('semiBars'),C.SF,N,isReal?new Set(ed.reality.semis):null);
+    survTable(ed,C,N,realChampSet);
+
+    const box=$('realityBox');box.innerHTML='';
+    if(isReal){
+      $('realityTitle').textContent='Confrontation avec la réalité';
+      const cRank=rankOf(champArr,ed.reality.champion),cP=(C.W[ed.reality.champion]||0)/N;
+      const champHit=champArr[0]&&champArr[0].name===ed.reality.champion;
+      const head=document.createElement('div');head.className='line';
+      const note=champHit?'favori du modèle ✓':('classé n°'+cRank+' ('+pct(cP)+')');
+      head.innerHTML=`<span><b>Vrai vainqueur : ${ed.reality.champion}</b></span><span class="${champHit?'hit':'miss'}">${note}</span>`;
+      box.appendChild(head);
+      const top4=new Set(semiArr.slice(0,4).map(d=>d.name));let found=0;
+      ed.reality.semis.forEach(name=>{const r=rankOf(semiArr,name),p=(C.SF[name]||0)/N,inT=top4.has(name);if(inT)found++;
+        const l=document.createElement('div');l.className='line';
+        l.innerHTML=`<span>${name} <span class="tag">demi-finaliste réel</span></span><span class="${inT?'hit':'miss'}">${inT?'✓ ':''}P(demi)=${pct(p)} · n°${r}</span>`;
+        box.appendChild(l);});
+      $('scoreBox').innerHTML=`Le modèle place <b>${found}/4</b> des vrais demi-finalistes dans son propre top 4, et ${champHit?'désigne correctement le vainqueur.':'classe le vainqueur réel n°'+cRank+'.'}`;
+    } else {
+      $('realityTitle').textContent='Comparaison avec le modèle publié (Groll-Zeileis 2026)';
+      const pub=ed.reality.published;
+      Object.keys(pub).forEach(name=>{const mine=(C.W[name]||0)/N;
+        const l=document.createElement('div');l.className='line';
+        l.innerHTML=`<span>${name}</span><span><span class="tag">modèle publié</span> ${pub[name].toFixed(1)}% &nbsp;·&nbsp; ce simulateur <b class="hit">${pct(mine)}</b></span>`;
+        box.appendChild(l);});
+      $('scoreBox').innerHTML=`Tournoi 2026 en cours : pas encore de vainqueur réel. Cible = probabilités publiées par l'équipe de Groll &amp; Zeileis (Espagne favorite à 14,5 %).`;
+    }
+    sampleOne();
+    $('spin').classList.remove('on');$('results').classList.remove('hidden');
+  },30);
+}
+
+function sampleOne(){
+  if(!lastEd)return;const G=buildGroups(lastEd),C=newC();play(G,lastEd,C);
+  const k=o=>Object.keys(o);
+  $('sampleBox').innerHTML=`<div>Champion : <span class="champ">${k(C.W)[0]}</span></div>
+     <div class="muted" style="margin-top:6px">Finale : ${k(C.F).join(' vs ')}</div>
+     <div class="muted">Demi-finalistes : ${k(C.SF).join(' · ')}</div>`;
+}
+
+function updFmtNote(){const ed=EDITIONS[$('ed').value];
+  $('fmtNote').textContent=
+    ed.special==="1982"?"Format 1982 : 6 poules de 4, 2 premiers, puis 4 poules de 3 ; les vainqueurs vont en demi-finale.":
+    ed.format===48?"Format 48 équipes : 12 poules, 2 premiers + 8 meilleurs troisièmes, 32es de finale.":
+    ed.format===24?"Format 24 équipes : 6 poules, 2 premiers + 4 meilleurs troisièmes, 8es de finale.":
+    "Format 32 équipes : 8 poules, 2 premiers, 8es de finale.";}
+
+/* ----------------------------- ÉVÉNEMENTS ----------------------------- */
+fillEditions();updFmtNote();
+$('scaleVal').textContent='(×'+SCALE.toFixed(1)+')';
+$('ed').addEventListener('change',updFmtNote);
+$('seg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...$('seg').children].forEach(x=>x.classList.remove('on'));b.classList.add('on');N=+b.dataset.n;});
+$('scale').addEventListener('input',e=>{SCALE=+e.target.value;$('scaleVal').textContent='(×'+SCALE.toFixed(1)+')';});
+$('host').addEventListener('change',e=>{HOST_ON=e.target.checked;});
+$('run').addEventListener('click',simulate);
+$('oneShot').addEventListener('click',sampleOne);
+</script>
+</body>
+</html>
